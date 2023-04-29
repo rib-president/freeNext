@@ -1,0 +1,86 @@
+    <div class="row">
+        <div class="col">
+            <header>
+                <div class="container d-flex flex-wrap justify-content-center align-items-center eframe-width mode_white flex items-center py-4 py-9 mx-auto">
+                    <div class="flex flex-col flex-row items-center justify-center">
+                        <a href="../admin/main" class="flex-row items-center justify-center flex flex-col float-left text-decoration-none">
+                            <img class="img-fluid" src="../img/freenext_logo.png"><span class="KOHIBaeumOTF text-red text-fs-20 pt-2 pl-2">*admin</span>
+                        </a>
+                    </div>
+                    <ul class="nav me-auto flex items-center justify-center mx-auto font-medium text-fs-10 text-fs-18">
+                    	<li class="float-left m-1 m-2 nav-item bold"><a href="../admin/dashBoard" class="nav-link link-dark px-2">대시보드</a></li>                    
+                        <li class="float-left m-1 m-2 nav-item bold"><a href="#" class="nav-link link-dark px-2">|</a></li>                   
+                        <li class="float-left m-1 m-2 nav-item bold"><a href="../admin/manageMemberPage" class="nav-link link-dark px-2">회원 관리</a></li>                        
+                    </ul>
+                    <span th:if="${#strings.isEmpty(session.sessionAdmin)}" class="text-fs-13 mt-1 me-2">로그인이 필요합니다 </span>                    
+                    <span th:unless="${#strings.isEmpty(session.sessionAdmin)}" class="text-fs-13 mt-1 me-2" th:text="|관리자 ${session.sessionAdmin.admin_name} 님 |"></span>
+                    <nav class="Btn_Menu flex cursor-pointer headerbar-menu bg-gray-c_ff border-gray-c_e1 items-center py-4 border position-relative" style="width:6rem;">					
+                        <svg xmlns="http://www.w3.org/2000/svg" class="headerbar-menu-svg" fill="none" viewBox="1 3 20 20" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <span class="ms-4 top-px inline-block h-9 w-9 text-center rounded-full overflow-hidden border border-gray-c_e1 bg-gray-c_e1">
+                            <img th:if="${#strings.isEmpty(session.sessionAdmin)}" class="eprofile-img" src="../img/img-user-none.png">
+                            <img th:unless="${#strings.isEmpty(session.sessionAdmin)}" class="eprofile-img" src="../img/admin.png">
+                        </span>
+                    </nav>
+                </div>
+            </header>
+        </div>
+    </div>
+    <!-- 메뉴 모달 -->
+    <div id="modalContainer" class="modal-container">
+        <div id="main_menu" class="static menubar-frame border border-gray-c_e1 rounded-10">
+            <!-- Modal content -->
+            <div class="menubar-content rounded-10">
+                <ul class="py-0">
+                    <li th:if="${#strings.isEmpty(session.sessionAdmin)}" class="menu-li font-normal mt-3 py-0"><a class="text-fs-14" href="/admin/loginPage">로그인</a></li>
+                    <li th:unless="${#strings.isEmpty(session.sessionAdmin)}" class="menu-li font-normal mt-3 py-0"><a href="/admin/logoutProcess">로그아웃</a></li>
+                    <li class="menu-li font-normal"><a href="../normal/main">서비스 페이지</a></li>
+                    <li class="menu-split py-0"></li>
+                    <li class="menu-li py-0"><a class="bold" href="#">사이트 소개서</a></li>
+                    <li class="menu-li py-0"><a class="bold" href="http://localhost:8181/shareoffice/guest/mainPage" target="_blank">쉐어오피스</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    const menu_modal = document.getElementById('main_menu');
+    const modal_container = document.querySelector('.modal-container');
+
+    function hideMenu() {
+        modal_container.classList.remove('show-modal');
+        modal_container.classList.add('hidden');
+
+        scrollAble();
+    }
+
+    function ShowMenu() {
+        var btnLeft = 0;
+        var btnOffset = $('.Btn_Menu').offset();
+        btnLeft = parseInt(btnOffset.left)-60;
+        $('#main_menu').css('left', btnLeft+"px");
+        $('#main_menu').css('top', (btnOffset.top+55) + "px");
+        
+        modal_container.classList.remove('hidden');
+        modal_container.classList.add('show-modal');
+
+        scrollDisable();       
+    }
+
+    $(document).ready(function() {
+
+        $('.Btn_Menu').click(function() {
+            ShowMenu();
+        });
+     
+    });
+
+    window.onclick = function(e) {
+        if(e.target == modal_container) {
+            hideMenu();
+        }
+    }
+
+</script>
+    

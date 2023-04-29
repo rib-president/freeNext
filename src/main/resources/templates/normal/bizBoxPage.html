@@ -1,0 +1,2488 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/setMemberInfo.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/echarts.min.js" integrity="sha256-up/VQ00XWfwfCN9hDtxDmZk9PgDVs83dQvTPRnWK0p4=" crossorigin="anonymous"></script>
+	<link th:href="@{/css/commons.css}" rel="stylesheet">
+
+ 	<style>
+	.dashmenu-content {
+	    
+	    background-color: rgba(255, 255, 255, 1);
+	    font-size: 1.25rem;
+	    width: 100%;
+	  }
+	  
+	  .dashmenu-content .menu-li {
+	    
+	    background-color: rgba(255, 255, 255, 1);
+	    cursor:pointer;
+	  }
+	  
+	  .dashmenu-content .menu-li:hover {
+	    
+	    background-color: rgba(231, 231, 231, 1);
+	  }
+	  
+	  .dashmenu-content .menu-li {
+	    border-radius: 10px;
+	    margin-top: 0.375rem;
+	    margin-bottom: 0.375rem;
+	    padding-top: 1rem;
+	    padding-bottom: 1rem;
+	    padding-left: 1.5rem;
+	    padding-right: 1.5rem;
+	  }
+	  
+	  .dashmenu-content .menu-li.on {
+	    
+	    background-color: rgba(242, 242, 242, 1);
+	  }
+	
+	  .min-w-max{min-width:-webkit-max-content;min-width:-moz-max-content;min-width:max-content}
+	
+	  .w-80{width:20rem}
+	  .min-h-screen{min-height:100vh}
+	
+	  .wp-card{background-color:rgba(242, 242, 242, 0.719);border-radius:10px;display:inline-block;margin-bottom:1.25rem;padding:2rem;position:relative;width:100%}
+	  	  
+	  .wp-card:hover{background-color:rgba(164, 210, 218, 0.363);}	 
+		
+	  /* Toggle Button */
+	.cm-toggle {
+		-webkit-appearance: none;
+		-webkit-tap-highlight-color: transparent;
+		position: relative;
+		border: 0;
+		outline: 0;
+		cursor: pointer;
+		margin: 10px;
+	}
+	
+	/* To create surface of toggle button */
+	.cm-toggle:after {
+		content: '';
+		width: 60px;
+		height: 28px;
+		display: inline-block;
+		background: rgba(196, 195, 195, 0.55);
+		border-radius: 18px;
+		clear: both;
+	}
+	
+	/* Contents before checkbox to create toggle handle */
+	.cm-toggle:before {
+		content: '';
+		width: 32px;
+		height: 32px;
+		display: block;
+		position: absolute;
+		left: 0;
+		top: -3px;
+		border-radius: 50%;
+		background: rgb(255, 255, 255);
+		box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+	}
+	
+	/* Shift the handle to left on check event */
+	.cm-toggle:checked:before {
+		left: 32px;
+		box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
+	}
+	/* Background color when toggle button will be active */
+	.cm-toggle:checked:after {
+		background: #45c96670;
+	} 	
+	
+    .pagination > li > a { color: #272727; font-weight: bold;}
+
+    .pagination > li > a:focus,
+    .pagination > li > a:hover,
+    .pagination > li > span:focus,
+    .pagination > li > span:hover
+    { color: #272727; background-color: #eee; border-color: #686868; box-shadow: 0 0 1px #272727 !important;}
+
+    .pagination > .active > a { color: white; background-color: #272727 !Important; border: solid 1px #272727 !Important; box-shadow: 0 0 1px #272727 !important;}
+
+    .pagination > .active > a:hover {background-color: #272727 !Important; border: solid 1px #272727; box-shadow: 0 0 1px #272727 !important;}
+    
+       .searchbar-frame-m {
+        background-image: -moz-linear-gradient(right, #000000cc, #7c23237c); /* FF3.6 */
+        background-image: -webkit-gradient(linear,left top,right bottom,color-stop(0, #000000cc),color-stop(1, #7c23237c)); /* Saf4+, Chrome */
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300'); /* IE6,IE7 */
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300')"; /* IE8 */
+        background-image: -ms-linear-gradient(right, #000000cc 0%, #7c23237c 100%); /* IE10 */
+
+        border-radius: 9999px;
+        cursor: pointer;
+        padding: 0.2rem;
+        position: static;
+    }
+
+    .searchbar-frame-m:hover {
+        background-image: -moz-linear-gradient(right, #000000f1, #aa0808b6); /* FF3.6 */
+        background-image: -webkit-gradient(linear,left top,right bottom,color-stop(0, #000000f1),color-stop(1, #aa0808b6)); /* Saf4+, Chrome */
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300'); /* IE6,IE7 */
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300')"; /* IE8 */
+        background-image: -ms-linear-gradient(right, #000000f1 0%, #aa0808b6 100%); /* IE10 */
+
+        border-radius: 9999px;
+        cursor: pointer;
+        padding: 0.2rem;
+        position: static;
+    }
+
+    .searchmain-inner-m {
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 9999px;
+        cursor: pointer;
+        height: 2.25rem;
+        line-height: 2.5rem;
+        padding: 0.5px;
+        padding-left: 1rem;
+        padding-right: 0.25rem;
+        position: relative;
+        width: 100%;
+    }
+
+    .searchmain-text-m {
+        border-width:0;
+        font-size:1rem;
+        font-weight: bold;
+        line-height:0.5;
+        margin-top:0;
+        margin-left:1rem;
+        padding:0;        
+        }
+        
+	.project-money {
+        font-family: 'Futura', sans-serif;
+        font-weight: 550;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0;
+    }    
+    	    
+    .border-box-top-divider {border-top: 2px solid rgba(138, 137, 137, 0.596);}
+    
+    .group-btns {
+        display: inline-block;
+        margin-bottom: 0.625rem;
+    }    
+    
+    .btn-medium {
+    display: inline-block;
+    text-align: center;
+    margin:3px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    }              
+        
+    .btn-cl-dred{
+        background-color: #ffffff;
+      
+        border-color: #999898;
+        border-width: 2px;
+        border-style: solid;
+        
+        color: #6b6b6b;
+    }
+    
+	.btn-cf-dred{  background-color: rgba(238, 24, 24, 0.815);  color: rgb(255, 255, 255); }    
+    
+    .btn-cf-dpink{  background-color: rgba(202, 186, 44, 0.815);  color: rgba(255, 255, 255, 0.904); }
+    
+    .etext-h2{ font-size: 1.5rem; font-weight: 600;}
+    .eblank-h2{ margin-top: 5rem; margin-bottom: 0.625rem;}    
+    .etext-p{ font-size: 1rem;}
+    
+    .modal-row {
+    	padding-left: 1rem;
+    	padding-right: 1rem;
+    	height: 100%;
+    }    
+    
+    #modal-dialog {
+    	pointer-events: auto;
+    	overflow-y: auto !important;
+    	overflow-x: hidden;
+    	
+    	border-radius: 5px;
+    	border : 1px solid white;
+    }  
+    
+	#load { 
+        width: 100%; 
+        height: 100%; 
+        top: 0; left: 0; 
+        position: fixed; 
+        display:none;
+        opacity: 0.6; 
+        background: white; 
+        z-index: 99999; 
+        text-align: center;
+    }
+    
+	.btn-pwChange {
+	    display: inline-block;
+	    text-align: center;
+	    margin:3px;
+	    border-radius: 99999px;
+	    font-weight: 400;
+	    font-size: .8rem;
+	    padding-top: 0.5rem;
+	    padding-bottom: 0.5rem;
+	    padding-left: 1rem;
+	    padding-right: 1rem;
+	    background-color: rgba(255, 160, 71, 0.924);
+	    color: white;
+    }     
+    
+    .info-border-l{border-left:2px solid #444; padding-left:.6rem; padding-top:0; padding-bottom: 0; margin-top:.5rem}
+    
+     #load.show { display:block }
+    
+    #load > img { position: absolute; top: 35%; left: 45%; z-index: 100; }
+
+        	
+ 	</style>
+	
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		var sessionBizUser =  /*[[ ${session.sessionBizUser} ]]*/;
+		/*]]*/
+		const sessionUser = null;
+		
+		var detailtModal = null;
+		var pwModal = null;
+		
+		var searchKeyword = "";
+		var pageNum = 1;
+		var startPage = 1;
+		var endPage = 1;
+		var currentPage = 1;
+		var totalPage = 1;
+		var project_state = "ALL";				
+		
+		var pwCorrect = false;
+		var confirm_pw = false;
+		var confirm_pw2 = false;		
+		
+		var confirm_email = true;
+		var confirm_emailDomain = true;		
+		
+		window.addEventListener("DOMContentLoaded" , function(){
+			var modalRoot = document.getElementById('detailModal');
+    		detailModal = new bootstrap.Modal(modalRoot); 
+    		
+    		var pwModalRoot = document.querySelector("#pwModal");
+    		pwModal = new bootstrap.Modal(pwModalRoot);    		
+			
+			loadMyProjectData(true);			
+		});				
+		
+		
+		function selectMenu(obj) {
+			
+			for(var e of document.querySelectorAll(".menu-li.on")) {
+				e.classList.remove("on");
+			}
+			
+			obj.classList.add("on");
+			
+			if(obj.id == "manageProject") {								
+				loadMyProjectData(true);
+			} else if(obj.id == "projectStatus") {
+				loadProjectStatus();
+			} else if(obj.id == "profile"){
+				loadProfileData();
+			}
+			
+		}
+		
+		function loadMyProjectData(isInit=false) {
+			var xhr = new XMLHttpRequest();
+			
+			if(isInit) {
+				searchKeyword = "";
+				pageNum = 1;
+				startPage = 1;
+				endPage = 1;
+				currentPage = 1;
+				totalPage = 1;
+				project_state = "ALL";					
+			}
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+					
+					createProjectBox(data.totalCount, data.projectList);
+					
+					startPage = data.startPage;
+					endPage = data.endPage;
+					currentPage = data.currentPage;
+					totalPage = data.totalPage;
+					
+					createPagination();
+				}
+			};
+			
+			xhr.open("get", "./getMyProjectList?member_no=" + sessionBizUser.member_no + 
+					"&pageNum=" + pageNum + "&searchKeyword=" + searchKeyword + "&project_state=" + project_state, false);
+			xhr.send();
+		}
+		
+		function loadProjectStatus() {
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+
+					createProjectStatusBox(data);
+				}
+			};
+			
+			xhr.open("get", "../biz/getMyProjectStatus?member_no=" + sessionBizUser.member_no, true);
+			xhr.send();
+		}
+		
+		function loadProfileData() {
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+
+					createProfileBox(data.memberInfo);
+				}
+			};
+			
+			xhr.open("get", "./getProfile?member_no=" + sessionBizUser.member_no + "&member_type=B", true);
+			xhr.send();
+		}
+		
+		function createProjectBox(totalCount, projectList) {
+			var root = document.querySelector("#rootContainer");
+			root.innerHTML = "";
+			
+			var countRow = document.createElement("div");
+			countRow.setAttribute("class", "row mb-2");
+			var countBlank = document.createElement("div");
+			countBlank.setAttribute("class", "col");
+			var count = document.createElement("div");
+			count.setAttribute("class", "col-3 text-fs-13 pl-8");
+			count.innerText = totalCount + "건이 검색되었습니다";
+			countRow.appendChild(countBlank);
+			countRow.appendChild(count);
+			
+			var searchContinaer = document.createElement("div");
+			searchContinaer.setAttribute("class", "row mb-5");
+			var searchCol = document.createElement("div");
+			searchCol.setAttribute("class", "col");
+			var searchFrame = document.createElement("div");
+			searchFrame.setAttribute("class", "searchbar-frame-m");
+			var searchMain = document.createElement("div");
+			searchMain.setAttribute("class", "searchmain-inner-m");
+			var searchInput = document.createElement("input");
+			searchInput.setAttribute("class", "etext-base searchmain-text-m w-10_12 items-center");
+			searchInput.setAttribute("id", "searchBar");
+			searchInput.setAttribute("type", "text");
+			searchInput.setAttribute("placeholder", "내 프로젝트 간편 검색");
+			searchInput.setAttribute("onKeypress", "javascript:if(event.keyCode==13) {search()}");
+			searchInput.setAttribute("value", searchKeyword);
+			var searchBtn = document.createElement("button");
+			searchBtn.setAttribute("class", "btn-border-none absolute ms-2");
+			searchBtn.setAttribute("onclick", "search()");
+			var searchI = document.createElement("i");
+			searchI.setAttribute("class", "bi bi-search text-fs-20");
+			searchI.setAttribute("style", "color: #291d44;");
+			searchBtn.appendChild(searchI);
+			searchMain.appendChild(searchInput);
+			searchMain.appendChild(searchBtn);
+			searchFrame.appendChild(searchMain);
+			searchCol.appendChild(searchFrame);
+			searchContinaer.appendChild(searchCol);
+			
+			root.appendChild(countRow);
+			root.appendChild(searchContinaer);
+			
+			var stateBox = document.createElement("div");
+			stateBox.setAttribute("class", "row");
+			var stateBlank = document.createElement("div");
+			stateBlank.setAttribute("class", "col");
+			var state = document.createElement("div");
+			state.setAttribute("class", "col-2 text-fs-13 bold text-gray-c_3c ms-3 relative");
+			var stateCheck = document.createElement("input");
+			stateCheck.setAttribute("type", "checkbox");
+			stateCheck.setAttribute("name", "stateBox");
+			stateCheck.setAttribute("onchange", "checkState(this)");
+			if(project_state == "Y") {
+				stateCheck.checked = true;
+			} else {
+				stateCheck.checked = false;
+			}
+			var stateSpan = document.createElement("div");
+			stateSpan.setAttribute("class", "absolute");
+			stateSpan.setAttribute("style", "top:-8%; left:23%");
+			stateSpan.innerText = " 모집마감 제외";
+			state.appendChild(stateCheck);
+			state.appendChild(stateSpan);
+			stateBox.appendChild(stateBlank)
+			stateBox.appendChild(state)
+			root.appendChild(stateBox);
+			
+			for(var project of projectList) {
+				var projectContainer = document.createElement("div");
+				projectContainer.setAttribute("class", "row projectBox cursor-pointer");
+				projectContainer.setAttribute("id", "project_" + project.projectVo.project_no);
+				projectContainer.setAttribute("onclick", "loadModalData(" + project.projectVo.project_no + ")");
+				var wpCard = document.createElement("div");
+				wpCard.setAttribute("class", "col wp-card");
+				
+				var dateBox = document.createElement("div");
+				dateBox.setAttribute("class", "row");
+				var dateBlank = document.createElement("div");
+				dateBlank.setAttribute("class", "col");
+				var date = document.createElement("div");
+				date.setAttribute("class", "col-3 text-fs-13 text-gray-c_8c pl-12");
+				dateBox.appendChild(dateBlank);
+				dateBox.appendChild(date);				
+				wpCard.appendChild(dateBox);
+				
+				var titleBox = document.createElement("div");
+				titleBox.setAttribute("class", "row");
+				var title = document.createElement("div");
+				title.setAttribute("class", "col text-h2 text-gray-c_25");
+				title.innerText = project.projectVo.project_name;
+				var projectNo = document.createElement("input");
+				projectNo.setAttribute("type", "hidden");
+				projectNo.setAttribute("value", project.projectVo.project_no);
+				titleBox.appendChild(title);
+				wpCard.appendChild(titleBox);
+				
+				var badgeBox = document.createElement("div");
+				badgeBox.setAttribute("class", "row");
+				var badgeCol = document.createElement("div");
+				badgeCol.setAttribute("class", "col");
+				for(var job of project.jobVoList) {
+					var jobSpan = document.createElement("span");
+					jobSpan.setAttribute("class", "btn-small btn-cf-blue");
+					jobSpan.innerText = job.job_name;
+					badgeCol.appendChild(jobSpan);
+				}
+				var localSpan = document.createElement("span");
+				localSpan.setAttribute("class", "btn-small btn-cf-blue");
+				localSpan.innerText = project.localVo.local_name;
+				var periodSpan = document.createElement("span");
+				periodSpan.setAttribute("class", "btn-small btn-cf-blue");
+				periodSpan.innerText = project.projectVo.project_period;
+				var priceSpan = document.createElement("span");
+				priceSpan.setAttribute("class", "btn-small btn-cf-blue");
+				priceSpan.innerText = project.projectVo.project_price;
+				badgeCol.appendChild(localSpan);
+				badgeCol.appendChild(periodSpan);
+				badgeCol.appendChild(priceSpan);
+				if(project.isAd) {
+					var adSpan = document.createElement("span");
+					adSpan.setAttribute("class", "btn-small btn-cf-dred bold text-fs-13");
+					adSpan.innerText = "📢광고 사용 중";
+					badgeCol.appendChild(adSpan);
+				}		
+				badgeBox.appendChild(badgeCol);				
+				wpCard.appendChild(badgeBox);
+		
+				var botContainer = document.createElement("div");
+				botContainer.setAttribute("class", "row");
+				
+				var col1 = document.createElement("div");
+				col1.setAttribute("class", "col");
+				var toggleBox = document.createElement("div");
+				toggleBox.setAttribute("class", "row w-full mt-3");
+				var toggleCol = document.createElement("div");
+				toggleCol.setAttribute("class", "col text-fs-13 relative");
+				var completeSpan = document.createElement("span");
+				completeSpan.setAttribute("class", "text-gray-c_3c bold absolute");
+				completeSpan.setAttribute("style", "top:55%");				
+				completeSpan.innerText = "마감";
+				var toggle = document.createElement("input");
+				toggle.setAttribute("class", "cm-toggle absolute");
+				toggle.setAttribute("style", "top:30%; left:6%");
+				toggle.setAttribute("type", "checkbox");
+				toggle.setAttribute("name", "checkbox");
+				toggle.setAttribute("onclick", "modifyProjectState(event, this, " + project.projectVo.project_no + ")");
+				if(project.projectVo.project_state == "Y") {
+					toggle.checked = true;
+				} else {
+					toggle.checked = false;
+				}
+				var ingSpan = document.createElement("span");
+				ingSpan.setAttribute("class", "text-green-dsoft bold absolute");
+				ingSpan.setAttribute("style", "top:55%; left:27%");				
+				ingSpan.innerText = "진행 중";
+				toggleCol.appendChild(completeSpan);
+				toggleCol.appendChild(toggle);
+				toggleCol.appendChild(ingSpan);
+				toggleBox.appendChild(toggleCol);				
+				col1.appendChild(toggleBox);
+				botContainer.appendChild(col1);
+				
+				var col2 = document.createElement("div");
+				col2.setAttribute("class", "col-4");
+				
+				var readBox = document.createElement("div");
+				readBox.setAttribute("class", "row pt-6");
+				var readCol = document.createElement("div");
+				readCol.setAttribute("class", "col");
+				var read1 = document.createElement("span");
+				read1.setAttribute("class", "float-right bold text-gray-c_3c text-fs-14 me-1");
+				read1.innerText = "💗 총 ";
+				var readCount = document.createElement("span");
+				readCount.setAttribute("class", "float-right bold text-red-soft text-fs-14");
+				readCount.innerText = " " + project.projectVo.project_readCount + "명";
+				var read2 = document.createElement("span");
+				read2.setAttribute("class", "float-right bold text-gray-c_3c text-fs-14");
+				read2.innerText = "이 조회했어요";
+				readCol.appendChild(read2);
+				readCol.appendChild(readCount);
+				readCol.appendChild(read1);				
+				
+				readBox.appendChild(readCol);
+				var scrapBox = document.createElement("div");
+				scrapBox.setAttribute("class", "row");
+				var scrapCol = document.createElement("div");
+				scrapCol.setAttribute("class", "col");
+				var scrap1 = document.createElement("span");
+				scrap1.setAttribute("class", "float-right bold text-gray-c_3c text-fs-14 me-1");
+				scrap1.innerText = "⭐ 총 ";
+				var scrapCount = document.createElement("span");
+				scrapCount.setAttribute("class", "float-right bold text-red-soft text-fs-14");
+				scrapCount.innerText = " " + project.scrapCount + "명";
+				var scrap2 = document.createElement("span");
+				scrap2.setAttribute("class", "float-right bold text-gray-c_3c text-fs-14");
+				scrap2.innerText = "의 관심을 받고 있어요";
+				
+				scrapCol.appendChild(scrap2);
+				scrapCol.appendChild(scrapCount);
+				scrapCol.appendChild(scrap1);
+				
+				scrapBox.appendChild(scrapCol);
+				col2.appendChild(readBox);
+				col2.appendChild(scrapBox);
+				botContainer.appendChild(col2);
+				wpCard.appendChild(botContainer);
+				
+				projectContainer.appendChild(wpCard);
+				root.appendChild(projectContainer);
+			}					
+		}
+		
+		function createPagination() {
+
+			var row = document.createElement("div");
+			row.setAttribute("class", "row");
+			var col = document.createElement("div");
+			col.setAttribute("class", "col");
+			var nav = document.createElement("nav");
+			nav.setAttribute("aria-label", "Page navigation example");
+			
+			var root = document.createElement("ul");
+			root.setAttribute("class", "pagination justify-center")
+			
+			var lt = document.createElement("li");
+			if(startPage <= 1) {
+				lt.setAttribute("class", "page-item disabled");
+			} else {
+				lt.setAttribute("class", "page-item cursor-pointer");
+				lt.setAttribute("onclick", "movePage(this)");
+			}
+			var lt_a = document.createElement("a");
+			lt_a.setAttribute("class", "page-link");
+			lt_a.innerText = "<"
+			lt.appendChild(lt_a);
+			root.appendChild(lt);
+			
+			for(var i=startPage;i<=endPage;i++) {
+				var li = document.createElement("li");
+				li.setAttribute("class", "page-item cursor-pointer")
+				if(i == currentPage) {
+					li.classList.add("active");
+				}
+				li.setAttribute("onclick", "movePage(this)");
+				var a = document.createElement("a");
+				a.setAttribute("class", "page-link");
+				a.innerText = i;
+				
+				li.appendChild(a);
+				root.appendChild(li);
+			}
+			
+			var gt = document.createElement("li");
+			if(endPage >= totalPage) {
+				gt.setAttribute("class", "page-item disabled");
+			} else {
+				gt.setAttribute("class", "page-item cursor-pointer");
+				gt.setAttribute("onclick", "movePage(this)");
+			}
+			var gt_a = document.createElement("a");
+			gt_a.setAttribute("class", "page-link");
+			gt_a.innerText = ">"
+			gt.appendChild(gt_a);
+			root.appendChild(gt);
+			window.scrollTo(0,0);
+
+			nav.appendChild(root);
+			col.appendChild(nav);
+			row.appendChild(col);
+			document.querySelector("#rootContainer").appendChild(row);
+			
+			var blank = document.createElement("div");
+			blank.setAttribute("style", "height: 150px");
+			document.querySelector("#rootContainer").appendChild(blank);
+			
+		}
+		
+		function createProjectStatusBox(data) {
+			var root = document.querySelector("#rootContainer");
+			root.innerHTML = "";
+			
+			var scrapRow = document.createElement("div");
+			scrapRow.setAttribute("class", "row mb-3");
+			var scrapBlank1 = document.createElement("div");
+			scrapBlank1.setAttribute("class", "col-3");
+			var scrapTitle = document.createElement("div");
+			scrapTitle.setAttribute("class", "col rounded-10 bg-gray-c_e1t p-6 text-center bold text-fs-23 py-3 text-gray-c_25");
+			scrapTitle.innerText = "📈 일별 스크랩 수 (최근 일주일)";
+			var scrapBlank2 = document.createElement("div");
+			scrapBlank2.setAttribute("class", "col-3");
+			scrapRow.appendChild(scrapBlank1);
+			scrapRow.appendChild(scrapTitle);
+			scrapRow.appendChild(scrapBlank2);
+			
+			var scrapChartMain = document.createElement("div");
+			scrapChartMain.setAttribute("style", "width: 736px;height:500px;");
+			
+			root.appendChild(scrapRow);
+			root.appendChild(scrapChartMain);
+			
+			var scrapChart = echarts.init(scrapChartMain);
+			var seriesList = [];
+			var legendList = [];
+			for (var scrapCount of data.scrapCountList) {
+				var seriesMap = {};
+				
+				var project_name = scrapCount.project_name;
+				if(project_name.length > 6) {
+					project_name = project_name.slice(0, 6) + "..";
+				}
+				seriesMap["name"] = project_name;
+				seriesMap["type"] = "line";
+				var dataList = [];
+				for(var countMap of scrapCount.scrapCountList) {
+					dataList.push(countMap.cnt);
+				}
+				seriesMap["data"] = dataList;
+				
+				seriesList.push(seriesMap);
+				legendList.push(project_name);				
+			}			
+			
+			option =  {
+				tooltip: { trigger: 'axis'},
+				legend: {data: legendList},
+				grid: {left: '3%', right:'4%', bottom: '3%', containLabel:true},
+				toolbox: {feature: {saveAsImage: {}}},
+				xAxis: {type: 'category', boundaryGap: false, 
+					data: data.weekList},
+				yAxis: {type: 'value'},
+				series: seriesList
+			};
+			
+			scrapChart.setOption(option);
+			
+			var blank = document.createElement("div")
+			blank.setAttribute("style", "height:50px;")
+			root.appendChild(blank);
+			
+			var readCountRow = document.createElement("div");
+			readCountRow.setAttribute("class", "row mt-5 mb-3");
+			var readCountBlank1 = document.createElement("div");
+			readCountBlank1.setAttribute("class", "col-3");
+			var readCountTitle = document.createElement("div");
+			readCountTitle.setAttribute("class", "col rounded-10 bg-gray-c_e1t p-6 text-center bold text-fs-23 py-3 text-gray-c_25");
+			readCountTitle.innerText = "📊 누적 조회수";
+			var readCountBlank2 = document.createElement("div");
+			readCountBlank2.setAttribute("class", "col-3");
+			readCountRow.appendChild(readCountBlank1);
+			readCountRow.appendChild(readCountTitle);
+			readCountRow.appendChild(readCountBlank2);			
+			
+			var readCountChartMain = document.createElement("div");
+			readCountChartMain.setAttribute("style", "width: 736px;height:500px;");
+            
+            root.appendChild(readCountRow);
+            root.appendChild(readCountChartMain);
+			
+            var readCountChart = echarts.init(readCountChartMain);
+            
+            var readCountX = [];
+            var readCountData = [];
+            for(var project of data.projectList) { 
+            	var project_name = project.projectVo.project_name;
+            	if(project_name.length > 6) {
+            		project_name = project_name.slice(0, 6) + "...";
+            	}
+            	readCountX.push(project_name);
+            	if(project.isAd) {
+            		var adMap = {};
+            		adMap["value"] = project.projectVo.project_readCount;
+            		adMap["itemStyle"] = {color: "#a90000"};
+            		readCountData.push(adMap);
+            	} else {
+            		readCountData.push(project.projectVo.project_readCount);	
+            	}            	
+            }                                  
+            
+            option = {
+            	title: {
+                    text: "🟥 광고신청 프로젝트"
+                },            		
+          		tooltip: {
+          		    trigger: 'axis',
+          			axisPointer: {
+          			    type: 'cross',
+          			    crossStyle: {
+          			        color: '#999'
+          			    }
+          			}
+          		},            		
+          		toolbox: {feature: {saveAsImage: {}}},	
+         		xAxis: {
+         		    type: 'category',
+         		    data: readCountX
+        		},
+         		yAxis: {
+         		    type: 'value'
+         		},
+         		series: [
+         		    {
+         		      data: readCountData,
+         		      type: 'bar'
+         		    }
+         		]
+            };
+
+            readCountChart.setOption(option);
+            
+			var blank2 = document.createElement("div")
+			blank2.setAttribute("style", "height:150px;")
+			root.appendChild(blank2);            
+		}
+		
+		function createProfileBox(memberInfo) {
+			var root = document.querySelector("#rootContainer");
+			root.innerHTML = "";
+			
+			var container = document.createElement("div");
+			container.setAttribute("class", "row");		
+			var containerCol = document.createElement("div");
+			containerCol.setAttribute("class", "col");
+			
+			var frm = document.createElement("form");		
+			frm.setAttribute("id", "frm");		
+			var frmContainer = document.createElement("div");
+			frmContainer.setAttribute("class", "row mt-3 bg-gray-c_e2 rounded-10 ms-5 px-8");		
+			var info = document.createElement("div");
+			info.setAttribute("class", "col");
+			var frame1 = document.createElement("div");
+			frame1.setAttribute("class", "row");
+			
+			var frame1_col1 = document.createElement("div");
+			frame1_col1.setAttribute("class", "col-7 pr-0");			
+			
+			var pwContainer = document.createElement("div");
+			pwContainer.setAttribute("class", "row mt-5 text-fs-14");
+			var pwCol = document.createElement("div");
+			pwCol.setAttribute("class", "col");	
+			var pw1 = document.createElement("div");
+			pw1.setAttribute("class", "row");
+			var pwText = document.createElement("div");
+			pwText.setAttribute("class", "col-3");	
+			var pwP = document.createElement("p");
+			pwP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			pwP.innerText = "비밀번호";
+			var star = document.createElement("span");
+			star.setAttribute("class", "text-red-soft");
+			star.innerText = "*";		
+			
+			pwP.appendChild(star);
+			pwText.appendChild(pwP);			
+			pw1.appendChild(pwText);		
+			
+			var pwInputBox = document.createElement("div");	
+			pwInputBox.setAttribute("class", "col ml-2");
+			pwInputBox.setAttribute("id", "changePw");					
+			var changeBtn = document.createElement("div");
+			changeBtn.setAttribute("class", "btn-pwChange cursor-pointer");
+			changeBtn.setAttribute("onclick", "changePassword()");
+			changeBtn.innerText = "비밀번호 변경";			
+			pwInputBox.appendChild(changeBtn);			
+			
+			pw1.appendChild(pwInputBox);
+			pwCol.appendChild(pw1);
+			pwContainer.appendChild(pwCol);
+			frame1_col1.appendChild(pwContainer);		
+			
+			
+			var nameContainer = document.createElement("div");
+			nameContainer.setAttribute("class", "row mt-3 text-fs-14");
+			var nameCol = document.createElement("div");
+			nameCol.setAttribute("class", "col");	
+			var name1 = document.createElement("div");
+			name1.setAttribute("class", "row");
+			var nameText = document.createElement("div");
+			nameText.setAttribute("class", "col-3 pr-0");	
+			var nameP = document.createElement("p");
+			nameP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			nameP.innerText = "회사명";
+			var star = document.createElement("span");
+			star.setAttribute("class", "text-red-soft");
+			star.innerText = "*";
+			
+			var nameInputBox = document.createElement("div");
+			nameInputBox.setAttribute("class", "col ml-2");
+			var nameInput = document.createElement("input");
+			nameInput.setAttribute("class", "form-control text-fs-14");		
+			nameInput.setAttribute("id", "inputName");
+			nameInput.setAttribute("name", "member_name");
+			nameInput.setAttribute("type", "text");
+			nameInput.setAttribute("placeholder", "회사명을 입력해주세요");
+			nameInput.value = sessionBizUser.member_name;
+
+			nameP.appendChild(star);
+			nameText.appendChild(nameP);
+			nameInputBox.appendChild(nameInput);		
+			name1.appendChild(nameText);
+			name1.appendChild(nameInputBox);		
+			nameCol.appendChild(name1);		
+			nameContainer.appendChild(nameCol);
+			frame1_col1.appendChild(nameContainer);					
+			
+			var managerContainer = document.createElement("div");
+			managerContainer.setAttribute("class", "row mt-3 text-fs-14");
+			var managerCol = document.createElement("div");
+			managerCol.setAttribute("class", "col");	
+			var manager1 = document.createElement("div");
+			manager1.setAttribute("class", "row");
+			var managerText = document.createElement("div");
+			managerText.setAttribute("class", "col-3 pr-0");	
+			var managerP = document.createElement("p");
+			managerP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			managerP.innerText = "담당자명";
+			var star = document.createElement("span");
+			star.setAttribute("class", "text-red-soft");
+			star.innerText = "*";
+			
+			var managerInputBox = document.createElement("div");
+			managerInputBox.setAttribute("class", "col ml-2");
+			var managerInput = document.createElement("input");
+			managerInput.setAttribute("class", "form-control text-fs-14");		
+			managerInput.setAttribute("id", "inputManager");
+			managerInput.setAttribute("name", "company_manager");
+			managerInput.setAttribute("type", "text");
+			managerInput.setAttribute("placeholder", "담당자명(한글)을 입력해주세요");
+			managerInput.setAttribute("onkeypress", "onlyKorean(event)");
+			managerInput.setAttribute("oninput", "slice(this)");
+			managerInput.setAttribute("maxlength", 5);
+			managerInput.value = memberInfo.company_manager;
+			
+			managerP.appendChild(star);
+			managerText.appendChild(managerP);
+			managerInputBox.appendChild(managerInput);		
+			manager1.appendChild(managerText);
+			manager1.appendChild(managerInputBox);		
+			managerCol.appendChild(manager1);		
+			managerContainer.appendChild(managerCol);
+			frame1_col1.appendChild(managerContainer);		
+			
+			
+			var phoneContainer = document.createElement("div");
+			phoneContainer.setAttribute("class", "row mt-3 text-fs-14");
+			var phoneText = document.createElement("div");
+			phoneText.setAttribute("class", "col-3 pr-0");	
+			var phoneP = document.createElement("p");
+			phoneP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			phoneP.innerText = "담당자 번호";
+			var star = document.createElement("span");
+			star.setAttribute("class", "text-red-soft");
+			star.innerText = "*";		
+			
+			var splitPhone = sessionBizUser.member_phone.split("-");
+			var phoneFirst = document.createElement("div");
+			phoneFirst.setAttribute("class", "col-3 pr-1 ml-2");
+			phoneFirst.setAttribute("style", "width:90px;");
+			var inputFirst = document.createElement("input");
+			inputFirst.setAttribute("class", "form-control text-fs-14");		
+			inputFirst.setAttribute("id", "inputPhone");
+			inputFirst.setAttribute("type", "text");
+			inputFirst.setAttribute("placeholder", "010");
+			inputFirst.setAttribute("oninput", "onlyNumber(this)");
+			inputFirst.setAttribute("maxlength", 3);
+			inputFirst.value = splitPhone[0];
+			var phoneInput = document.createElement("input");
+			phoneInput.setAttribute("type", "hidden");	
+			phoneInput.setAttribute("name", "member_phone");
+			var phoneSecond = document.createElement("div");
+			phoneSecond.setAttribute("class", "col-3 pr-1 pl-1");
+			phoneSecond.setAttribute("style", "width:90px;");
+			var inputSecond = document.createElement("input");
+			inputSecond.setAttribute("class", "form-control text-fs-14");		
+			inputSecond.setAttribute("id", "inputPhone2");
+			inputSecond.setAttribute("type", "text");
+			inputSecond.setAttribute("placeholder", "1111");
+			inputSecond.setAttribute("oninput", "onlyNumber(this)");
+			inputSecond.setAttribute("maxlength", 4);
+			inputSecond.value = splitPhone[1];
+			var phoneThird = document.createElement("div");
+			phoneThird.setAttribute("class", "col-3 pr-1 pl-1");
+			phoneThird.setAttribute("style", "width:90px;");
+			var inputThird = document.createElement("input");
+			inputThird.setAttribute("class", "form-control text-fs-14");		
+			inputThird.setAttribute("id", "inputPhone3");
+			inputThird.setAttribute("type", "text");
+			inputThird.setAttribute("placeholder", "2222");
+			inputThird.setAttribute("oninput", "onlyNumber(this)");
+			inputThird.setAttribute("maxlength", 4);
+			inputThird.value = splitPhone[2];
+			
+			phoneP.appendChild(star);
+			phoneText.appendChild(phoneP);
+			phoneFirst.appendChild(inputFirst);
+			phoneFirst.appendChild(phoneInput);
+			phoneSecond.appendChild(inputSecond);
+			phoneThird.appendChild(inputThird);
+			phoneContainer.appendChild(phoneText);
+			phoneContainer.appendChild(phoneFirst);
+			phoneContainer.appendChild(phoneSecond);
+			phoneContainer.appendChild(phoneThird);
+			frame1_col1.appendChild(phoneContainer);
+			
+			var frame1_col2 = document.createElement("div");
+			frame1_col2.setAttribute("class", "col mt-5 p-0");	
+			var profileBox = document.createElement("div");
+			profileBox.setAttribute("class", "border mt-3");
+			profileBox.setAttribute("id", "profile_thumbnail");
+			profileBox.setAttribute("style", "width:150px; height:180px; margin-left:5rem;");
+			var img = document.createElement("img");
+			img.setAttribute("class", "img-fluid");	
+			if(sessionBizUser.member_profile != null) {
+				img.setAttribute("src", "/profileImage/" + sessionBizUser.member_profile);
+			} else {
+				img.setAttribute("src", "../img/basic_profile.png");	
+			}			
+			img.setAttribute("style", "width:100%; height:100%;");
+			
+			profileBox.appendChild(img);
+			frame1_col2.appendChild(profileBox);
+			
+			frame1.appendChild(frame1_col1);
+			frame1.appendChild(frame1_col2);
+						
+			var bizNumContainer = document.createElement("div");
+			bizNumContainer.setAttribute("class", "row mt-3 text-fs-14");
+			var bizNumText = document.createElement("div");
+			bizNumText.setAttribute("class", "col-2 pr-0");	
+			var bizNumP = document.createElement("p");
+			bizNumP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			bizNumP.innerText = "사업자 번호";
+			var star = document.createElement("span");
+			star.setAttribute("class", "text-red-soft");
+			star.innerText = "*";		
+			
+			var bizNumInputBox = document.createElement("div");
+			bizNumInputBox.setAttribute("class", "col-5");
+			var inputBizNum = document.createElement("input");
+			inputBizNum.setAttribute("class", "form-control text-fs-14");		
+			inputBizNum.setAttribute("id", "inputBizNum");
+			inputBizNum.setAttribute("name", "company_license_number");
+			inputBizNum.setAttribute("type", "text");
+			inputBizNum.setAttribute("oninput", "inputBizNumber(this)");
+			inputBizNum.setAttribute("maxlength", 12);
+			inputBizNum.value = memberInfo.company_license_number;
+					
+			bizNumP.appendChild(star);
+			bizNumText.appendChild(bizNumP);
+			bizNumInputBox.appendChild(inputBizNum);
+			bizNumContainer.appendChild(bizNumText);
+			bizNumContainer.appendChild(bizNumInputBox);			
+
+			
+			var bizImgContainer = document.createElement("div");
+			bizImgContainer.setAttribute("class", "row mt-3 text-fs-14");
+			var bizImgText = document.createElement("div");
+			bizImgText.setAttribute("class", "col-2 pr-0");	
+			var bizImgP = document.createElement("p");
+			bizImgP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			bizImgP.innerText = "사업자 등록증";		
+			var bizImgInputBox = document.createElement("div");
+			bizImgInputBox.setAttribute("class", "col-4 pt-1");
+			var star = document.createElement("span");
+			star.setAttribute("class", "text-red-soft");
+			star.innerText = "*";		
+			
+			var inputbizImg = document.createElement("input");
+			inputbizImg.setAttribute("class", "form-control form-control-sm");		
+			inputbizImg.setAttribute("id", "inputBizImg");
+			inputbizImg.setAttribute("type", "file");
+			inputbizImg.setAttribute("name", "uploadFileBizImg");
+			inputbizImg.setAttribute("accept", "image/*");
+			bizImgInputBox.appendChild(inputbizImg);			
+				
+			var bizImgPreviewCol = document.createElement("div");
+			bizImgPreviewCol.setAttribute("class", "col mt-1 px-0");
+			bizImgPreviewCol.setAttribute("style", "padding-top:.3rem");
+			var bizImgPreview = document.createElement("a");
+			bizImgPreview.setAttribute("onclick", "openUrl('/profileImage/" + memberInfo.company_license_img + "')");
+			bizImgPreview.setAttribute("style", "text-decoration:underline;");
+			bizImgPreview.setAttribute("class", "text-blue cursor-pointer");			
+			bizImgPreview.innerText = "등록된 파일";
+			var bizImgHidden = document.createElement("input");
+			bizImgHidden.setAttribute("type", "hidden");
+			bizImgHidden.setAttribute("name", "old_license_img");
+			bizImgHidden.value = memberInfo.company_license_img;
+			bizImgPreviewCol.appendChild(bizImgPreview);
+			bizImgPreviewCol.appendChild(bizImgHidden);
+			
+			bizImgP.appendChild(star);
+			bizImgText.appendChild(bizImgP);								
+			bizImgContainer.appendChild(bizImgText);
+			bizImgContainer.appendChild(bizImgInputBox);
+			bizImgContainer.appendChild(bizImgPreviewCol);			
+			
+			
+			var emailContainer = document.createElement("div");
+			emailContainer.setAttribute("class", "row mt-3 text-fs-14");
+			var emailCol = document.createElement("div");
+			emailCol.setAttribute("class", "col");	
+			var email1 = document.createElement("div");
+			email1.setAttribute("class", "row");
+			var emailText = document.createElement("div");
+			emailText.setAttribute("class", "col-2 pr-0");	
+			var emailP = document.createElement("p");
+			emailP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			emailP.innerText = "이메일";
+			var star = document.createElement("span");
+			star.setAttribute("class", "text-red-soft");
+			star.innerText = "*";	
+			emailP.appendChild(star);
+			emailText.appendChild(emailP);
+			email1.appendChild(emailText);
+			
+
+			var emailId = document.createElement("div");
+			emailId.setAttribute("class", "col-3");
+			var splitEmail = sessionBizUser.member_email.split("@");
+			var inputEmailId = document.createElement("input");
+			inputEmailId.setAttribute("class", "form-control text-fs-14");		
+			inputEmailId.setAttribute("id", "inputEmail");
+			inputEmailId.setAttribute("type", "text");		
+			inputEmailId.setAttribute("onblur", "confirmEmail()");
+			inputEmailId.setAttribute("style", "padding-right:1px;");
+			inputEmailId.value = splitEmail[0];
+			var emailInput = document.createElement("input");
+			emailInput.setAttribute("type", "hidden");	
+			emailInput.setAttribute("name", "member_email");			
+			var at = document.createElement("div");
+			at.setAttribute("class", "center");
+			at.setAttribute("style", "width:1px; padding-bottom:15px; padding-right:12px; padding-left:0px; padding-top:8px;");
+			at.innerText = "@";
+			var emailDomain = document.createElement("div");
+			emailDomain.setAttribute("class", "col-3");
+			var inputEmailDomain = document.createElement("input");
+			inputEmailDomain.setAttribute("class", "form-control text-fs-14");		
+			inputEmailDomain.setAttribute("id", "inputEmailDomain");
+			inputEmailDomain.setAttribute("type", "text");		
+			inputEmailDomain.setAttribute("onblur", "confirmEmailDomain()");
+			inputEmailDomain.value = splitEmail[1];
+			var emailSelectBox = document.createElement("div");
+			emailSelectBox.setAttribute("class", "col-3 p-0");		
+			var selectEmailDomain = document.createElement("select");
+			selectEmailDomain.setAttribute("onchange", "setEmailDomain(this.value);return false;");
+			selectEmailDomain.setAttribute("class", "form-control text-fs-14");
+			var domain_list = ["직접입력", "naver.com", "gmail.com", "daum.net", "hotmail.com", "korea.com", "nate.com", "yahoo.com"];
+			for(var domain of domain_list) {
+				var option = document.createElement("option");
+				option.value = domain;
+				option.innerText = domain;
+				selectEmailDomain.appendChild(option);
+			}
+			
+			var email2 = document.createElement("div");
+			email2.setAttribute("class", "row");
+			var emailBlank = document.createElement("div");
+			emailBlank.setAttribute("class", "col-2");	
+			var emailConfirmBox = document.createElement("div");
+			emailConfirmBox.setAttribute("class", "col");
+			var emailConfirm = document.createElement("div");
+			emailConfirm.setAttribute("id", "emailConfirmPwAlertBox");
+			emailConfirm.setAttribute("style", "font-size: small;");		
+			
+
+			emailId.appendChild(inputEmailId);
+			emailId.appendChild(emailInput);
+			emailDomain.appendChild(inputEmailDomain);
+			emailSelectBox.appendChild(selectEmailDomain);
+
+			email1.appendChild(emailId);
+			email1.appendChild(at);
+			email1.appendChild(emailDomain);
+			email1.appendChild(emailSelectBox);
+			emailConfirmBox.appendChild(emailConfirm);
+			email2.appendChild(emailBlank);
+			email2.appendChild(emailConfirmBox);		
+			
+			emailCol.appendChild(email1);
+			emailCol.appendChild(email2);			
+			
+					
+			emailContainer.appendChild(emailCol);		
+			
+			var profileContainer = document.createElement("div");
+			profileContainer.setAttribute("class", "row mt-3 text-fs-14");
+			var profileText = document.createElement("div");
+			profileText.setAttribute("class", "col-2 pr-0");	
+			var profileP = document.createElement("p");
+			profileP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			profileP.innerText = "회사 로고";	
+			
+			var profileInputBox = document.createElement("div");
+			profileInputBox.setAttribute("class", "col-4");
+			
+
+			var inputProfile = document.createElement("input");
+			inputProfile.setAttribute("class", "form-control form-control-sm mt-1");		
+			inputProfile.setAttribute("id", "formFileSm");
+			inputProfile.setAttribute("type", "file");
+			inputProfile.setAttribute("name", "uploadFileThumbnail");
+			inputProfile.setAttribute("accept", "image/*");
+			inputProfile.setAttribute("onchange", "setThumbnail(event)");
+			profileInputBox.appendChild(inputProfile);			
+		
+			
+			var profileBlank = document.createElement("div");
+			profileBlank.setAttribute("class", "col"); 
+					
+			profileText.appendChild(profileP);								
+			profileContainer.appendChild(profileText);
+			profileContainer.appendChild(profileInputBox);
+			profileContainer.appendChild(profileBlank);	
+			
+			
+			var addrContainer = document.createElement("div");
+			addrContainer.setAttribute("class", "row mt-3 text-fs-14");
+			var addrCol = document.createElement("div");
+			addrCol.setAttribute("class", "col");	
+			var addr1 = document.createElement("div");
+			addr1.setAttribute("class", "row");
+			var addrText = document.createElement("div");
+			addrText.setAttribute("class", "col-2 pr-0");	
+			var addrP = document.createElement("p");
+			addrP.setAttribute("class", "info-border-l font-medium2 text-gray-c_25");
+			addrP.innerText = "주소";
+			var addrInputBox = document.createElement("div");
+			addrInputBox.setAttribute("class", "col-8");
+			
+			var inputFirstAddr = document.createElement("input");
+			inputFirstAddr.setAttribute("id", "inputAddress");
+			inputFirstAddr.setAttribute("type", "text");
+			inputFirstAddr.setAttribute("class", "form-control text-fs-14");
+			inputFirstAddr.setAttribute("readonly", true);
+			
+			var inputAddr = document.createElement("input");
+			inputAddr.setAttribute("name", "member_address");
+			inputAddr.setAttribute("type", "hidden");
+			var btnBox = document.createElement("div");
+			btnBox.setAttribute("class", "col");
+			var addrBtn = document.createElement("button");
+			addrBtn.setAttribute("type", "button");
+			addrBtn.setAttribute("class", "btn btn-outline-dark");
+			addrBtn.setAttribute("onclick", "findAddr()");
+			addrBtn.innerText = "주소찾기";
+			
+			var addr2 = document.createElement("div");
+			addr2.setAttribute("class", "row text-fs-14");
+			var addrText2 = document.createElement("div");
+			addrText2.setAttribute("class", "col-2 pr-0");	
+			var addrP2 = document.createElement("p");
+			addrP2.setAttribute("class", "pl-3 mt-1");
+			addrP2.innerText = "상세주소";
+			var addrInputBox2 = document.createElement("div");
+			addrInputBox2.setAttribute("class", "col-7");	
+			var inputSecondAddr2 = document.createElement("input");
+			inputSecondAddr2.setAttribute("id", "inputDetailAddress");
+			inputSecondAddr2.setAttribute("type", "text");
+			inputSecondAddr2.setAttribute("class", "form-control text-fs-14");
+			
+			if(sessionBizUser.member_address != null && sessionBizUser.member_address != "") {
+				var splitAddr = sessionBizUser.member_address.split(", ");
+				inputFirstAddr.value = splitAddr[0];
+				if(splitAddr[1] != undefined) {
+					inputSecondAddr2.value = splitAddr[1];	
+				}								
+			}
+			
+			addrText.appendChild(addrP);
+			addrInputBox.appendChild(inputFirstAddr);
+			addrInputBox.appendChild(inputAddr);
+			btnBox.appendChild(addrBtn);
+			addr1.appendChild(addrText);
+			addr1.appendChild(addrInputBox);
+			addr1.appendChild(btnBox);		
+			addrText2.appendChild(addrP2);
+			addrInputBox2.appendChild(inputSecondAddr2);
+			addr2.appendChild(addrText2);
+			addr2.appendChild(addrInputBox2);
+			addrCol.appendChild(addr1);
+			addrCol.appendChild(addr2);
+			addrContainer.appendChild(addrCol);
+
+			
+			var btnContainer = document.createElement("div");
+			btnContainer.setAttribute("class", "row mt-5");
+			var btnBlank1 = document.createElement("div");
+			btnBlank1.setAttribute("class", "col");
+			var btnBox = document.createElement("div");
+			btnBox.setAttribute("class", "col-4 d-grid");
+			var submitBtn = document.createElement("div");
+			submitBtn.setAttribute("class", "btn btn-dark");
+			submitBtn.setAttribute("onclick", "modifyBizMemberValidCheck(event)");
+			submitBtn.innerText = "수정 완료";
+			var btnBlank2 = document.createElement("div");
+			btnBlank2.setAttribute("class", "col");
+			
+			btnBox.appendChild(submitBtn);
+			btnContainer.appendChild(btnBlank1);
+			btnContainer.appendChild(btnBox);
+			btnContainer.appendChild(btnBlank2);
+			
+			var botBlank = document.createElement("div");
+			botBlank.setAttribute("class", "row mt-2 mb-5");
+			
+			info.appendChild(frame1);
+			info.appendChild(bizNumContainer);
+			info.appendChild(bizImgContainer);
+			info.appendChild(emailContainer);
+			info.appendChild(profileContainer);
+			info.appendChild(addrContainer);
+			info.appendChild(btnContainer);
+			info.appendChild(botBlank);			
+			
+			frmContainer.appendChild(info);
+
+			frm.appendChild(frmContainer);
+			
+			var botBlank = document.createElement("div");
+			botBlank.setAttribute("class", "row");
+			botBlank.setAttribute("style", "padding:100px;");
+						
+			containerCol.appendChild(frm);
+			containerCol.appendChild(botBlank);
+			container.appendChild(containerCol);
+			root.appendChild(container);
+					
+		}
+		
+		function loadModalData(project_no) {
+			
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+					
+					createProjectModal(data);
+					
+					detailModal.show();   
+				}
+			};
+			
+			xhr.open("get", "getProjectDetail?project_no=" + project_no, false);
+			xhr.send();				
+			
+		}
+		
+		function modifyProjectState(event, obj, project_no) {
+		
+			event.stopImmediatePropagation();									
+			
+			var newState = (obj.checked) ? "Y" : "N";
+			
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+					
+					/*if(newState == "N" && project_state == "Y") {
+						obj.closest(".projectBox").remove();
+					}*/
+					
+					if(document.querySelectorAll(".projectBox").length <= 1 && newState == "N" && project_state == "Y") {
+						pageNum--;
+					}
+					
+					loadMyProjectData();
+					
+				}
+			};
+			
+			xhr.open("get", "modifyProjectState?project_no=" + project_no + "&project_state=" + newState, true);
+			xhr.send();	
+
+		}
+		
+	    function createProjectModal(data) {    	
+	    	var modalRoot = document.querySelector("#detailModal");
+	    	modalRoot.innerHTML = "";    	
+	    	
+			var modal = document.createElement("div");
+			modal.setAttribute("id", "modal-dialog");
+			modal.setAttribute("class", "modal-dialog modal-lg modal-dialog-scrollable");		
+			modal.setAttribute("style", "background-color: white;");
+			
+			var row = document.createElement("div");
+			row.setAttribute("class", "modal-row row");					
+			
+			var col = document.createElement("div");
+			col.setAttribute("class", "col");
+			
+			var eframe = document.createElement("div");
+			eframe.setAttribute("class", "eframe-width py-6 mt-4 mx-auto");
+			
+			var scrapCountDiv = document.createElement("div");
+			scrapCountDiv.setAttribute("class", "inline-block float-right text-fs-15 bold text-gray-c_3c pl-15");
+			var scrapCountSpan = document.createElement("span");
+			scrapCountSpan.setAttribute("class", "text-red-soft");
+			scrapCountSpan.innerText = data.scrapCount + "명";
+			var scrapCountSpan2 = document.createElement("span");
+			scrapCountSpan2.innerText = "의 관심을 받고 있어요";
+			scrapCountDiv.appendChild(scrapCountSpan);
+			scrapCountDiv.appendChild(scrapCountSpan2);
+			
+			var projectName = document.createElement("div");
+			projectName.setAttribute("class", "mb-4 text-fs-40 font-extrabold inline-block");
+			projectName.innerText = data.data.projectBoardVo.project_name;
+			
+			var projectMoney = document.createElement("div");
+			projectMoney.setAttribute("class", "project-money");
+			projectMoney.innerText = data.data.projectBoardVo.project_price;
+			
+			var btnGroup1 = document.createElement("span");
+			btnGroup1.setAttribute("class", "group-btns w-full mt-10");
+			var btn1_1 = document.createElement("span");
+			btn1_1.setAttribute("class", "btn-medium btn-cl-dred");
+			btn1_1.innerText = data.data.projectBoardVo.project_period;
+			btnGroup1.appendChild(btn1_1);
+			if(data.data.projectBoardVo.workType_no != 4) {
+				var btn1_2 = document.createElement("span");
+				btn1_2.setAttribute("class", "btn-medium btn-cl-dred");
+				btn1_2.innerText = data.data.localCategoryVo.local_name;
+				btnGroup1.appendChild(btn1_2);
+			}
+			for(var jobVo of data.data.jobCategoryVoList) {
+				var btn1_3 = document.createElement("span");
+				btn1_3.setAttribute("class", "btn-medium btn-cl-dred");
+				btn1_3.innerText = jobVo.job_name;
+				btnGroup1.appendChild(btn1_3);
+			}
+			
+			var btnGroup2 = document.createElement("span");
+			btnGroup1.setAttribute("class", "group-btns w-full");
+			var btn2_1 = document.createElement("span");
+			btn2_1.setAttribute("class", "btn-medium btn-cf-dpink");
+			btn2_1.innerText = data.data.workTypeCategoryVo.workType_name;		
+			var btn2_2 = document.createElement("span");
+			btn2_2.setAttribute("class", "btn-medium btn-cf-dpink");
+			if(data.data.projectBoardVo.cooperation_no == 1) {
+				btn2_2.innerText = data.data.memberVo.member_name;
+			} else {
+				btn2_2.innerText = data.data.cooperationCategoryVo.cooperation_name;
+			}
+			var btn2_3 = document.createElement("span");
+			btn2_3.setAttribute("class", "btn-medium btn-cf-dred");
+			btn2_3.innerText = (data.data.projectBoardVo.project_state == 'Y') ? "접수 중" : "마감";
+			
+			btnGroup2.appendChild(btn2_1);
+			btnGroup2.appendChild(btn2_2);
+			btnGroup2.appendChild(btn2_3);
+			
+			var project_content1 = document.createElement("div");
+			project_content1.setAttribute("class", "etext-h2 eblank-h2 border-box-top-divider mt-4 pt-12");
+			project_content1.innerText = "프로젝트 내용";
+			
+			var project_content2 = document.createElement("div");
+			project_content2.setAttribute("class", "etext-p leading-relaxed bold mt-4 text-gray-c_3c");
+			project_content2.innerText = data.data.projectBoardVo.project_content.replaceAll("<br>", "\n").replaceAll("&nbsp;", " ");
+			
+			var project_more = document.createElement("div");
+			project_more.setAttribute("class", "row mt-3");
+			
+			var botBlank = document.createElement("div");
+			botBlank.setAttribute("class", "col");
+			
+			var botCol = document.createElement("div");
+			botCol.setAttribute("class", "col-3 mt-5");
+			var modifyBtn = document.createElement("button");
+			modifyBtn.setAttribute("class", "btn btn-outline-dark bold text-fs-13 me-3 ms-5");
+			modifyBtn.setAttribute("onclick", "modifyProjectPage(" + data.data.projectBoardVo.project_no + ")");
+			modifyBtn.innerText = "수정";			
+			botCol.appendChild(modifyBtn);
+			var deleteBtn = document.createElement("button");
+			deleteBtn.setAttribute("class", "btn btn-dark bold text-fs-13");
+			deleteBtn.setAttribute("onclick", "deleteProject(" + data.data.projectBoardVo.project_no + ")");
+			deleteBtn.innerText = "삭제";			
+			botCol.appendChild(deleteBtn);
+			
+			project_more.appendChild(botBlank);
+			project_more.appendChild(botCol);
+			
+			eframe.appendChild(scrapCountDiv);
+			eframe.appendChild(projectName);
+			eframe.appendChild(projectMoney);
+			eframe.appendChild(btnGroup1);
+			eframe.appendChild(btnGroup2);
+
+			eframe.appendChild(project_content1);
+			eframe.appendChild(project_content2);
+			eframe.appendChild(project_more);
+			col.appendChild(eframe);
+			row.appendChild(col);
+			modal.appendChild(row);
+			modalRoot.appendChild(modal);
+			
+			detailModal._dialog = modal;		
+
+	    }		
+		
+		function search() {			
+			
+			searchKeyword = document.querySelector("#searchBar").value;
+			pageNum = 1;
+			
+			loadMyProjectData();
+		}		
+		
+		function movePage(obj) {
+			pageNum = obj.innerText;
+			
+			if(pageNum == "<") {
+				pageNum = parseInt(startPage) - 1;
+			} else if(pageNum == ">") {
+				pageNum = parseInt(endPage) + 1;
+			}
+
+			loadMyProjectData();
+		}	
+
+		function checkState(obj) {
+			if(obj.checked) {
+				project_state = "Y";
+				
+				var pBoxes = document.querySelectorAll(".projectBox ");
+				var currentPageNum = pageNum;
+
+				if(pBoxes.length == 1 && !pBoxes[0].getElementsByClassName("cm-toggle")[0].checked) {
+					pageNum = currentPageNum - 1;
+				}
+				
+			} else {
+				project_state = "ALL";
+			}						
+			
+			if(pageNum <= 0) {
+				pageNum = 1;
+			}
+			loadMyProjectData();
+		}
+		
+		function deleteProject(project_no) {
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+					
+					detailModal.hide();  
+					
+					var pBoxes = document.querySelectorAll(".projectBox ");
+					if(pBoxes.length == 1) {
+						pageNum--;
+					}
+					
+					loadMyProjectData();
+				}
+			};
+			
+			xhr.open("get", "../biz/deleteProject?project_no=" + project_no, false);
+			xhr.send();				
+		}
+		
+		function modifyProjectPage(project_no) {
+			
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+					
+					createModifyModal(data.data, data.jobCategoryList, data.localCategoryList, data.workTypeCategoryList,
+							data.recruitTypeCategoryList, data.adVo);
+				}
+			};
+			
+			xhr.open("get", "../biz/modifyProjectPage?project_no=" + project_no, true);
+			xhr.send();	
+		}
+		
+		function createModifyModal(data, jobCategoryList, localCategoryList, workTypeCategoryList,
+				recruitTypeCategoryList, adVo) {
+			var modalRoot = document.querySelector("#detailModal");
+	    	modalRoot.innerHTML = "";    	
+	    	
+			var modal = document.createElement("div");
+			modal.setAttribute("id", "modal-dialog");
+			modal.setAttribute("class", "modal-dialog modal-lg modal-dialog-scrollable");		
+			
+			var form = document.createElement("form");
+			form.setAttribute("id", "modifyFrm");
+			var container = document.createElement("div");
+			container.setAttribute("class", "modal-row row");			
+			container.setAttribute("style", "background-color: white;");		
+			
+			var mainCol = document.createElement("div");
+			mainCol.setAttribute("class", "col rounded-10 px-20 pt-10 pb-10");			
+			
+			var titleRow = document.createElement("div");
+			titleRow.setAttribute("class", "row mt-4");
+			var title = document.createElement("div");
+			title.setAttribute("class", "col bold text-fs-30 mb-3 pl-5 text-gray-c_25");
+			title.setAttribute("style", "border-left:3px solid black;");
+			title.innerText = "프로젝트 수정 ✍ ";
+			titleRow.appendChild(title);
+			mainCol.appendChild(titleRow);
+			
+			var contentRow = document.createElement("div");
+			contentRow.setAttribute("class", "row mt-5");
+			var contentCol = document.createElement("div");
+			contentCol.setAttribute("class", "col");
+			
+			var nameRow = document.createElement("div");
+			nameRow.setAttribute("class", "row");
+			var nameCol1 = document.createElement("div");
+			nameCol1.setAttribute("class", "col-2 bold pt-2");
+			nameCol1.innerText = "프로젝트명";
+			var nameCol2 = document.createElement("div");
+			nameCol2.setAttribute("class", "col");
+			var nameInput = document.createElement("input");
+			nameInput.setAttribute("class", "form-control");
+			nameInput.setAttribute("id", "nameBox");
+			nameInput.setAttribute("type", "text");
+			nameInput.setAttribute("name", "project_name");
+			nameInput.value = data.projectBoardVo.project_name;
+			nameCol2.appendChild(nameInput);
+			nameRow.appendChild(nameCol1);
+			nameRow.appendChild(nameCol2);
+			contentCol.appendChild(nameRow);
+			
+			var clsRow = document.createElement("div");
+			clsRow.setAttribute("class", "row mt-3");
+			var clsCol1 = document.createElement("div");
+			clsCol1.setAttribute("class", "col-2 pt-2 bold");
+			clsCol1.innerText = "분야";
+			var clsCol2 = document.createElement("div");
+			clsCol2.setAttribute("class", "col");
+			var recruitSelect = document.createElement("select");
+			recruitSelect.setAttribute("class", "form-control");
+			recruitSelect.setAttribute("name", "recruitType_no");
+			var defaultOption = document.createElement("option");
+			defaultOption.setAttribute("id", "invalidRecruitType");
+			//defaultOption.selected = true;
+			defaultOption.value = 0;
+			defaultOption.innerText = "구분선택";
+			recruitSelect.appendChild(defaultOption);
+			for(var recruitType of recruitTypeCategoryList) {
+				var option = document.createElement("option");			
+				option.value = recruitType.recruitType_no;
+				option.innerText = recruitType.recruitType_name;
+				if(data.projectBoardVo.recruitType_no == recruitType.recruitType_no) {
+					option.selected = true;
+				}
+				recruitSelect.appendChild(option);
+			}
+			clsCol2.appendChild(recruitSelect);
+			var clsCol3 = document.createElement("div");
+			clsCol3.setAttribute("class", "col");
+			var jobSelect = document.createElement("select");
+			jobSelect.setAttribute("class", "form-control");
+			jobSelect.setAttribute("id", "jobCategory");
+			jobSelect.setAttribute("name", "job_no_list");
+			var defaultOption = document.createElement("option");
+			defaultOption.setAttribute("id", "invalidJob");
+			//defaultOption.selected = true;
+			defaultOption.value = 0;
+			defaultOption.innerText = "2차 구분선택";
+			jobSelect.appendChild(defaultOption);
+			for(var job of jobCategoryList) {
+				var option = document.createElement("option");			
+				option.value = job.job_no;
+				option.innerText = job.job_name;
+				if(data.jobCategoryVoList[0].job_no == job.job_no) {
+					option.selected = true;
+				}
+				jobSelect.appendChild(option);
+			}
+			clsCol3.appendChild(jobSelect);
+			clsRow.appendChild(clsCol1);
+			clsRow.appendChild(clsCol2);
+			clsRow.appendChild(clsCol3);
+			contentCol.appendChild(clsRow);
+			
+			var localRow = document.createElement("div");
+			localRow.setAttribute("class", "row mt-3");
+			var localCol1 = document.createElement("div");
+			localCol1.setAttribute("class", "col-2 pt-2 bold");
+			localCol1.innerText = "지역";
+			var localCol2 = document.createElement("div");
+			localCol2.setAttribute("class", "col");
+			var localSelect = document.createElement("select");
+			localSelect.setAttribute("class", "form-control");
+			localSelect.setAttribute("name", "local_no_list");
+			localSelect.setAttribute("id", "localBox");
+			var defaultOption = document.createElement("option");
+			defaultOption.setAttribute("id", "invalidLocalType");
+			//defaultOption.selected = true;
+			defaultOption.value = 0;
+			defaultOption.innerText = "지역선택";
+			localSelect.appendChild(defaultOption);
+			for(var local of localCategoryList) {
+				var option = document.createElement("option");			
+				option.value = local.local_no;
+				option.innerText = local.local_name;
+				if(data.localCategoryVo.local_no == local.local_no) {
+					option.selected = true;
+				}
+				localSelect.appendChild(option);
+			}
+			localCol2.appendChild(localSelect);
+			localRow.appendChild(localCol1);
+			localRow.appendChild(localCol2);
+			contentCol.appendChild(localRow);
+			
+			var periodRow = document.createElement("div");
+			periodRow.setAttribute("class", "row mt-3");
+			var periodCol1 = document.createElement("div");
+			periodCol1.setAttribute("class", "col-2 pt-2 bold");
+			periodCol1.innerText = "기간";
+			var periodCol2 = document.createElement("div");
+			periodCol2.setAttribute("class", "col pr-1");
+			var startInput = document.createElement("input");
+			startInput.setAttribute("class", "form-control");
+			startInput.setAttribute("id", "start_date");
+			startInput.setAttribute("type", "date");
+			var startDate = makeDate(data.projectBoardVo.project_period.split("~")[0]);
+			startInput.value = startDate;
+			periodCol2.appendChild(startInput);									
+			var periodCol3 = document.createElement("div");
+			periodCol3.setAttribute("class", "col-1 pt-2 text-center");
+			periodCol3.setAttribute("style", "width:1px;");
+			periodCol3.innerText = "~";
+			var periodCol4 = document.createElement("div");
+			periodCol4.setAttribute("class", "col");
+			var endInput = document.createElement("input");
+			endInput.setAttribute("class", "form-control");
+			endInput.setAttribute("id", "end_date");
+			endInput.setAttribute("type", "date");
+			var endDate = makeDate(data.projectBoardVo.project_period.split("~")[1]);
+			endInput.value = endDate;
+			periodCol4.appendChild(endInput);
+			var periodCol5 = document.createElement("div");
+			periodCol5.setAttribute("class", "col-1 pt-2 pl-1");
+			periodCol5.innerText = "까지";
+			var periodInput = document.createElement("input");
+			periodInput.setAttribute("type", "hidden");
+			periodInput.setAttribute("id", "period");
+			periodInput.setAttribute("name", "project_period");
+			periodRow.appendChild(periodCol1);
+			periodRow.appendChild(periodCol2);
+			periodRow.appendChild(periodCol3);
+			periodRow.appendChild(periodCol4);
+			periodRow.appendChild(periodCol5);
+			periodRow.appendChild(periodInput);
+			contentCol.appendChild(periodRow);
+			
+			var priceRow = document.createElement("div");
+			priceRow.setAttribute("class", "row mt-3");
+			var priceCol1 = document.createElement("div");
+			priceCol1.setAttribute("class", "col-2 pt-2 bold");
+			priceCol1.innerText = "비용";
+			var priceCol2 = document.createElement("div");
+			priceCol2.setAttribute("class", "col");
+			var priceInput = document.createElement("input");
+			priceInput.setAttribute("class", "form-control");
+			priceInput.setAttribute("id", "priceBox");
+			priceInput.setAttribute("type", "text");
+			priceInput.setAttribute("name", "project_price");
+			priceInput.value = data.projectBoardVo.project_price;
+			priceCol2.appendChild(priceInput);
+			priceRow.appendChild(priceCol1);
+			priceRow.appendChild(priceCol2);
+			contentCol.appendChild(priceRow);
+			
+			var workTypeRow = document.createElement("div");
+			workTypeRow.setAttribute("class", "row mt-3");
+			var workTypeCol1 = document.createElement("div");
+			workTypeCol1.setAttribute("class", "col-2 pt-2 bold");
+			workTypeCol1.innerText = "형태";
+			var workTypeCol2 = document.createElement("div");
+			workTypeCol2.setAttribute("class", "col");
+			var workTypeSelect = document.createElement("select");
+			workTypeSelect.setAttribute("class", "form-control");
+			workTypeSelect.setAttribute("name", "workType_no");
+			workTypeSelect.setAttribute("id", "workTypeBox");
+			var defaultOption = document.createElement("option");
+			defaultOption.setAttribute("id", "invalidWorkType");
+			//defaultOption.selected = true;
+			defaultOption.value = 0;
+			defaultOption.innerText = "구분선택";
+			workTypeSelect.appendChild(defaultOption);
+			for(var workType of workTypeCategoryList) {
+				var option = document.createElement("option");			
+				option.value = workType.workType_no;
+				option.innerText = workType.workType_name;
+				if(data.projectBoardVo.workType_no == workType.workType_no) {
+					option.selected = true;
+				}
+				workTypeSelect.appendChild(option);
+			}
+			workTypeCol2.appendChild(workTypeSelect);
+			workTypeRow.appendChild(workTypeCol1);
+			workTypeRow.appendChild(workTypeCol2);
+			contentCol.appendChild(workTypeRow);
+			
+			var writerStateRow = document.createElement("div");
+			writerStateRow.setAttribute("class", "row mt-3");
+			var writerStateCol1 = document.createElement("div");
+			writerStateCol1.setAttribute("class", "col");
+			var writerRow = document.createElement("div");
+			writerRow.setAttribute("class", "row pt-2");
+			var writerCol1 = document.createElement("div");
+			writerCol1.setAttribute("class", "col-4 bold");			
+			writerCol1.innerText = "작성자";
+			var writerCol2 = document.createElement("div");
+			writerCol2.setAttribute("class", "col pl-4");			
+			writerCol2.innerText = sessionBizUser.member_name;
+			writerRow.appendChild(writerCol1);
+			writerRow.appendChild(writerCol2);
+			writerStateCol1.appendChild(writerRow);
+			var writerStateCol2 = document.createElement("div");
+			writerStateCol2.setAttribute("class", "col");
+			var stateRow = document.createElement("div");
+			stateRow.setAttribute("class", "row pt-2");
+			var stateCol1 = document.createElement("div");
+			stateCol1.setAttribute("class", "col-4 bold");			
+			stateCol1.innerText = "진행상태";
+			var stateCol2 = document.createElement("div");
+			stateCol2.setAttribute("class", "col");
+			var ingInput = document.createElement("input");
+			ingInput.setAttribute("type", "radio");
+			ingInput.setAttribute("name", "project_state");	
+			ingInput.setAttribute("style", "height:48%");
+			ingInput.value = "Y";
+			if(data.projectBoardVo.project_state == "Y") {
+				ingInput.checked = true;
+			}
+			var ingSpan = document.createElement("span");
+			ingSpan.setAttribute("class", "ml-1 mr-4")
+			ingSpan.innerText = "진행 중";
+			var doneInput = document.createElement("input");
+			doneInput.setAttribute("type", "radio");
+			doneInput.setAttribute("name", "project_state");
+			doneInput.setAttribute("style", "height:48%");
+			doneInput.value = "N";
+			if(data.projectBoardVo.project_state == "N") {
+				doneInput.checked = true;
+			}
+			var doneSpan = document.createElement("span");
+			doneSpan.setAttribute("class", "ml-1")			
+			doneSpan.innerText = "마감";
+			stateCol2.appendChild(ingInput);
+			stateCol2.appendChild(ingSpan);
+			stateCol2.appendChild(doneInput);
+			stateCol2.appendChild(doneSpan);
+			stateRow.appendChild(stateCol1);
+			stateRow.appendChild(stateCol2);
+			writerStateCol2.appendChild(stateRow);
+			writerStateRow.appendChild(writerStateCol1);
+			writerStateRow.appendChild(writerStateCol2);
+			contentCol.appendChild(writerStateRow);
+			
+			var adRow = document.createElement("div");
+			adRow.setAttribute("class", "row mt-3 pt-2");
+			var adCol1 = document.createElement("div");
+			adCol1.setAttribute("class", "col-2 bold");
+			adCol1.innerText = "광고신청";
+			var adCol2 = document.createElement("div");
+			adCol2.setAttribute("class", "col");
+			if(adVo == null) {
+				var adInput = document.createElement("input");
+				adInput.setAttribute("type", "checkbox");
+				adInput.setAttribute("name", "subAd"); 
+				adInput.value = "Y";
+				var adSpan = document.createElement("span");
+				adSpan.innerText = " 신청하기";
+				adInput.appendChild(adSpan);
+				var adSpan2 = document.createElement("span");
+				adSpan2.setAttribute("class", "ms-2");
+				var payImg = document.createElement("img");
+				payImg.setAttribute("src", "../img/kakaopay.png");
+				payImg.setAttribute("style", "height:60%");
+				adSpan2.appendChild(payImg);
+				var i = document.createElement("i");
+				i.setAttribute("class", "bi bi-info-circle text-gray-c_8c cursor-pointer ms-1");
+				i.setAttribute("data-bs-toggle", "popover");
+				i.setAttribute("title", "📢 FreeNext 광고(7일, 50,000원)");
+				i.setAttribute("data-bs-content", "광고 기간동안 프로젝트 리스트, 일반회원 추천 알람 공고 페이지에  노출 및 추천 메일에 함께 발송됩니다");
+				adCol2.appendChild(adInput);
+				adCol2.appendChild(adSpan2);
+				adCol2.appendChild(i);
+			} else {
+				var adSpan = document.createElement("span");
+				adSpan.setAttribute("class", "btn-small btn-cf-dred bold text-fs-13");
+				adSpan.innerText = "📢광고 사용 중";
+				var endDateSpan = document.createElement("span");
+				endDateSpan.setAttribute("class", "text-fs-13 ms-2");
+				endDateSpan.innerText = makeDate(adVo.ad_endDate) + " 만료";
+				adCol2.appendChild(adSpan);
+				adCol2.appendChild(endDateSpan);
+			}
+			adRow.appendChild(adCol1);
+			adRow.appendChild(adCol2);
+			contentCol.appendChild(adRow);
+			
+			var contentsRow = document.createElement("div");
+			contentsRow.setAttribute("class", "row mt-3");
+			var contentCol1 = document.createElement("div");
+			contentCol1.setAttribute("class", "col-2 bold");
+			contentCol1.innerText = "내용";
+			var contentCol2 = document.createElement("div");
+			contentCol2.setAttribute("class", "col");
+			var textArea = document.createElement("textarea");
+			textArea.setAttribute("id", "contentBox");
+			textArea.setAttribute("class", "form-control");
+			textArea.setAttribute("rows", 10);
+			textArea.setAttribute("name", "project_content");
+			textArea.value = data.projectBoardVo.project_content;
+			var cooperationInput = document.createElement("input");
+			cooperationInput.setAttribute("type", "hidden");
+			cooperationInput.setAttribute("name", "cooperation_no");
+			cooperationInput.value = 1;
+			var projectNoInput = document.createElement("input");
+			projectNoInput.setAttribute("type", "hidden");
+			projectNoInput.setAttribute("name", "project_no");
+			projectNoInput.value = data.projectBoardVo.project_no;
+			
+			contentCol2.appendChild(textArea);
+			contentCol2.appendChild(cooperationInput);
+			contentCol2.appendChild(projectNoInput);
+			contentsRow.appendChild(contentCol1);
+			contentsRow.appendChild(contentCol2);
+			contentCol.appendChild(contentsRow);
+			
+			contentRow.appendChild(contentCol);
+			mainCol.appendChild(contentRow);
+			
+			var btnRow = document.createElement("div");
+			btnRow.setAttribute("class", "row mt-5 mb-4");
+			var btnCol1 = document.createElement("div");
+			btnCol1.setAttribute("class", "col-8");			
+			var btnCol2 = document.createElement("div");
+			btnCol2.setAttribute("class", "col d-grid");
+			var submitBtn = document.createElement("button");
+			submitBtn.setAttribute("class", "btn btn-dark");
+			submitBtn.setAttribute("type", "button");
+			submitBtn.setAttribute("onclick", "sendData()");
+			submitBtn.innerText = "확인";
+			btnCol2.appendChild(submitBtn);
+
+			btnRow.appendChild(btnCol1);
+			btnRow.appendChild(btnCol2);
+			mainCol.appendChild(btnRow);
+
+			container.appendChild(mainCol);
+			form.appendChild(container);
+
+			modal.appendChild(form);
+			modalRoot.appendChild(modal);
+			
+			detailModal._dialog = modal;		
+			
+		}
+		
+		function makeDate(target) {
+			var date = new Date(target);
+			
+			var yyyy = date.getFullYear();
+			var mm = date.getMonth()+1 > 9 ?(date.getMonth()+1) : '0' + (date.getMonth()+1);
+			var dd = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
+ 
+			return yyyy + "-" + mm + "-" + dd;
+		}
+		
+		function openUrl(project_url) {    	
+	    	window.open(project_url, "_blank", "width=500, height=500");
+	    }		
+		
+		function sendData() {
+			var frm = document.querySelector("#modifyFrm");			
+			
+			var nameBox = document.querySelector("#nameBox");
+			if(nameBox.value == "") {
+				alert("프로젝트 제목을 입력해주세요");
+				nameBox.focus();
+				return;
+			}
+			
+			var recruitType_box = document.getElementsByName("recruitType_no")[0];
+			
+			if(recruitType_box.value == 0) {
+				alert("프로젝트 분야를 선택해주세요");
+				return;
+			}			
+			
+			if(document.querySelector("#jobCategory").value == 0) {
+				alert("2차 구분을 선택해주세요");
+				return;
+			}
+			
+			var localBox = document.querySelector("#localBox");
+			if(localBox.value == 0) {
+				alert("지역을 선택해주세요");
+				localBox.focus();				
+				return;
+			}
+			
+			var today = new Date();
+			var start_date = document.querySelector("#start_date").value;
+			var end_date = document.querySelector("#end_date").value;			
+			
+			if(new Date(start_date) >  new Date(end_date)) {
+				alert("시작일이 마감일보다 클 수 없습니다")
+				return;
+			}			
+			
+			if(today > new Date(end_date)) {
+				alert("마감일은 오늘 날짜보다 커야합니다");
+				return;
+			}
+			
+			document.querySelector("#period").value = start_date + "~" + end_date;
+			
+			var priceBox = document.querySelector("#priceBox");
+			
+			if(priceBox.value == "") {
+				alert("비용을 입력해주세요(만원 단위)");
+				priceBox.focus();
+				return;
+			}
+			
+			var workTypeBox = document.querySelector("#workTypeBox");
+			if(workTypeBox.value == 0) {
+				alert("근무형태를 선택해주세요");
+				workTypeBox.focus();
+				return;
+			}						
+			
+			 var contentBox = document.querySelector("#contentBox");
+			 if(contentBox.value == "") {
+				 alert("내용을 입력해주세요");
+				 contentBox.focus();
+				 return;
+			 }			
+						
+			var subAdBox = document.getElementsByName("subAd");
+			
+			if(subAdBox.length != 0 && subAdBox[0].checked) {
+				var result = kakaoPay(50000);
+			} else {
+				modifySubmit();	
+			}											
+		}
+		
+		function modifySubmit() {
+			var xhr = new XMLHttpRequest();				
+			
+			var formData = new FormData(document.getElementById("modifyFrm"));
+			var sendData = {
+					"project_name" : formData.get("project_name"),
+					"recruitType_no" : formData.get("recruitType_no"),
+					"job_no_list" : formData.get("job_no_list"),
+					"local_no_list" : formData.get("local_no_list"),
+					"project_period" : formData.get("project_period"),
+					"project_price" : formData.get("project_price"),
+					"workType_no" : formData.get("workType_no"),
+					"project_state" : formData.get("project_state"),
+					"subAd" : formData.get("subAd"),
+					"project_content" : formData.get("project_content"),
+					"cooperation_no" : formData.get("cooperation_no"),
+					"project_no" : formData.get("project_no")
+			};
+			
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);				
+
+					loadMyProjectData();
+					loadModalData(data.project_no);
+					
+				}
+			};
+			
+			xhr.open("post", "../biz/modifyProjectProcess", true);
+			xhr.setRequestHeader("Content-type","application/json");
+			xhr.send(JSON.stringify(sendData));			
+		}
+		
+		function kakaoPay(total_amount) {
+			var xhr = new XMLHttpRequest();	
+			
+			var quantity = 1;			
+			
+			var item_name = "FreeNext 광고(7일)";			
+		
+			var newWindow;
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);				
+
+					newWindow = window.open(data.next_redirect_pc_url, "_blank", "width=500, height=600");
+					document.querySelector("#load").classList.add("show");
+				}
+			};
+			
+			xhr.open("post", "../biz/payToKakao", true);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xhr.send("item_name=" + item_name + "&quantity=" + quantity + "&total_amount=" + total_amount);
+		}		
+		
+		function sendMeData(data) {
+			document.querySelector("#load").classList.remove("show");
+			
+			if(data == 200) {
+				modifySubmit();
+			} else {
+				alert(data);
+				return;
+			}
+		}		 
+		
+		
+		function changePassword() {
+			createPwModal();
+			var modalRoot = document.querySelector("#pwModal");		
+			
+			pwModal.show();
+		}
+		
+		function createPwModal() {
+
+			var root = document.querySelector("#pwModal");
+			root.innerHTML = "";
+			pwCorrect = false;
+			confirm_pw = false;
+			confirm_pw2 = false;
+				
+			var dialog = document.createElement("div");
+			dialog.setAttribute("class", "modal-dialog modal-dialog-centered");
+			var content = document.createElement("div");
+			content.setAttribute("class", "modal-content bg-gray-c_3c text-gray-c_ff");
+			var header = document.createElement("div");
+			header.setAttribute("class", "modal-header");
+			var title = document.createElement("h5");
+			title.setAttribute("class", "modal-title bold");
+			title.innerText = "🔑 비밀번호 변경";
+			header.appendChild(title);
+			
+			var body = document.createElement("div");
+			body.setAttribute("class", "modal-body");
+			var container = document.createElement("div");
+			container.setAttribute("class", "row");
+			var container_col = document.createElement("div");
+			container_col.setAttribute("class", "col");
+			
+			var beforeRow = document.createElement("div");
+			beforeRow.setAttribute("class", "row");
+			var beforeCol = document.createElement("div");
+			beforeCol.setAttribute("class", "col");
+			var inputRow = document.createElement("div");
+			inputRow.setAttribute("class", "row");
+			var beforeText = document.createElement("div");
+			beforeText.setAttribute("class", "col-3 pr-0 pt-2 font-slim");
+			beforeText.innerText = "이전 비밀번호";
+			var inputCol = document.createElement("div");
+			inputCol.setAttribute("class", "col-5");
+			var beforeInput = document.createElement("input");
+			beforeInput.setAttribute("type", "password");
+			beforeInput.setAttribute("id", "oldPw");
+			beforeInput.setAttribute("class", "form-control");
+			beforeInput.setAttribute("onblur", "isCorrect(this)");
+			var confirmCol = document.createElement("div");
+			confirmCol.setAttribute("id", "beforeCorrect");
+			confirmCol.setAttribute("class", "confirm col text-fs-12 px-0");
+			confirmCol.setAttribute("style", "padding-top:.625rem; font-weight:600");
+			inputCol.appendChild(beforeInput);
+			inputRow.appendChild(beforeText);
+			inputRow.appendChild(inputCol);
+			inputRow.appendChild(confirmCol);
+			beforeCol.appendChild(inputRow);
+			beforeRow.appendChild(beforeCol);
+			
+			var afterRow = document.createElement("div");
+			afterRow.setAttribute("class", "row mt-3");
+			var aftereCol = document.createElement("div");
+			aftereCol.setAttribute("class", "col");
+			var inputAfterRow = document.createElement("div");
+			inputAfterRow.setAttribute("class", "row");
+			var afterText = document.createElement("div");
+			afterText.setAttribute("class", "col-3 pr-0 pt-2 font-slim");
+			afterText.innerText = "변경 비밀번호";
+			var inputAfterCol = document.createElement("div");
+			inputAfterCol.setAttribute("class", "col-5");
+			var afterInput = document.createElement("input");
+			afterInput.setAttribute("type", "password");
+			afterInput.setAttribute("class", "form-control");
+			afterInput.setAttribute("id", "newPw");
+			afterInput.setAttribute("onblur", "confirmPw(this)");
+			var confirmAfterCol = document.createElement("div");
+			confirmAfterCol.setAttribute("id", "afterReg");
+			confirmAfterCol.setAttribute("class", "confirm col text-fs-12 px-0 font-medium2");
+			confirmAfterCol.setAttribute("style", "font-weight:600; padding-top:.625rem;");
+			inputAfterCol.appendChild(afterInput);
+			inputAfterRow.appendChild(afterText);
+			inputAfterRow.appendChild(inputAfterCol);
+			inputAfterRow.appendChild(confirmAfterCol);
+			aftereCol.appendChild(inputAfterRow);
+			afterRow.appendChild(aftereCol);		  
+			
+			container_col.appendChild(beforeRow);
+			container_col.appendChild(afterRow);
+			container.appendChild(container_col);
+			body.appendChild(container);
+			
+			var afterRow2 = document.createElement("div");
+			afterRow2.setAttribute("class", "row mt-3");
+			var aftereCol2 = document.createElement("div");
+			aftereCol2.setAttribute("class", "col");
+			var inputAfterRow2 = document.createElement("div");
+			inputAfterRow2.setAttribute("class", "row");
+			var afterText2 = document.createElement("div");
+			afterText2.setAttribute("class", "col-3 pr-0 pt-2 font-slim");
+			afterText2.innerText = "비밀번호 확인";
+			var inputAfterCol2 = document.createElement("div");
+			inputAfterCol2.setAttribute("class", "col-5");
+			var afterInput2 = document.createElement("input");
+			afterInput2.setAttribute("type", "password");
+			afterInput2.setAttribute("id", "confirmPw");
+			afterInput2.setAttribute("class", "form-control");
+			afterInput2.setAttribute("onblur", "reConfirmPw(this)");
+			var confirmAfterCol2 = document.createElement("div");
+			confirmAfterCol2.setAttribute("id", "afterConfirm");
+			confirmAfterCol2.setAttribute("class", "confirm col text-fs-12 px-0 font-medium2");
+			confirmAfterCol2.setAttribute("style", "padding-top:.625rem; font-weight:600");
+			inputAfterCol2.appendChild(afterInput2);
+			inputAfterRow2.appendChild(afterText2);
+			inputAfterRow2.appendChild(inputAfterCol2);
+			inputAfterRow2.appendChild(confirmAfterCol2);
+			aftereCol2.appendChild(inputAfterRow2);
+			afterRow2.appendChild(aftereCol2);		  
+			
+			container_col.appendChild(beforeRow);
+			container_col.appendChild(afterRow);
+			container_col.appendChild(afterRow2);
+			container.appendChild(container_col);
+			body.appendChild(container);		  
+			
+			
+			var footer = document.createElement("div");
+			footer.setAttribute("class", "modal-footer");
+			var changeBtn = document.createElement("button");
+			changeBtn.setAttribute("class", "btn btn-light");
+			changeBtn.setAttribute("type", "button");
+			changeBtn.setAttribute("onclick", "changePw()");
+			changeBtn.innerText = "변경";
+			var closeBtn = document.createElement("button");
+			closeBtn.setAttribute("class", "btn btn-outline-light");
+			//closeBtn.setAttribute("data-bs-dismiss", "modal");
+			closeBtn.setAttribute("onclick", "closePw()");
+			closeBtn.innerText = "취소";
+			footer.appendChild(changeBtn);
+			footer.appendChild(closeBtn);
+			
+			content.appendChild(header);
+			content.appendChild(body);
+			content.appendChild(footer);
+			dialog.appendChild(content);
+			
+			root.appendChild(dialog);
+			
+			pwModal._dialog = dialog;
+		}
+		
+		function closePw() {
+			pwModal.hide();
+			
+			var patch = document.querySelector(".bi-patch-check-fill");
+			if(patch != null) {
+				patch.remove();	
+			}			
+		}
+		
+		function isCorrect(obj) {
+			var beforeCorrect = document.querySelector("#beforeCorrect");
+
+			if(obj.value == sessionBizUser.member_pw) {
+				pwCorrect = true;
+				beforeCorrect.innerText = "비밀번호 일치";
+				beforeCorrect.classList.remove("text-red-soft");
+				beforeCorrect.classList.add("text-green-soft");
+			} else {
+				pwCorrect = false;		
+				beforeCorrect.innerText = "비밀번호 불일치";
+				beforeCorrect.classList.add("text-red-soft");
+				beforeCorrect.classList.remove("text-green-soft");
+			}
+		}
+		
+
+		
+		function changePw() {
+			if(!pwCorrect) {
+				document.querySelector("#oldPw").focus();
+				return;
+			}
+			
+			if(!confirm_pw) {
+				document.querySelector("#newPw").focus();
+				return;
+			}
+			
+			if(!confirm_pw2) {
+				document.querySelector("#confirmPw").focus();
+				return;
+			}
+			
+			var sendData = {
+				"member_no" : sessionBizUser.member_no,
+				"member_pw" : document.querySelector("#newPw").value
+			};
+			
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+					
+					sessionBizUser = data.sessionBizUser;
+					
+					var check = document.createElement("i");
+					check.setAttribute("class", "ms-1 bi bi-patch-check-fill text-green-soft");
+					check.setAttribute("style", "font-size:1.05rem;")
+					document.querySelector("#changePw").appendChild(check);
+					
+					pwModal.hide();
+				}
+			};
+			
+			xhr.open("post", "../member/changePassword", true);
+			xhr.setRequestHeader("Content-type","application/json");
+			xhr.send(JSON.stringify(sendData));
+		}
+		
+		
+		function modifyBizMemberValidCheck(e){
+			
+			e.preventDefault();
+			
+			//입력 유무 체크
+			
+			if($("#inputName").val() == ""){
+				alert("회사명을 입력해주세요.");
+				$("#inputName").focus();
+				return;
+			}
+			
+			if($("#inputManager").val() == ""){
+				alert("담당자명을 입력해주세요.");
+				$("#inputManager").focus();
+				return;
+			}		
+			
+			if($("#inputPhone").val() == "" || $("#inputPhone2").val() == "" || $("#inputPhone3").val() == ""){
+				alert("담당자 휴대폰번호를 입력해주세요.");
+				$("#inputPhone").focus();
+				return;
+			}
+			
+			if($("#inputBizNum").val() == ""){
+				alert("사업자 번호를 입력해주세요.");
+				$("#inputBizNum").focus();
+				return;
+			}
+
+			if($("#inputEmail").val() == ""){
+				alert("이메일을 입력해주세요.");
+				$("#inputEmail").focus();
+				return;
+			}
+			
+			if($("#inputEmailDomain").val() == ""){
+				alert("이메일 도메인을 입력해주세요.");
+				$("#inputEmailDomain").focus();
+				return;
+			}
+			
+			if(!confirm_email) {
+				alert("이메일을 확인해주세요.");
+				$("#inputEmail").focus();
+				return;			
+			}
+			
+			if(!confirm_emailDomain) {
+				alert("이메일 도메인을 확인해주세요.");
+				$("#inputEmailDomain").focus();
+				return;			
+			}
+			
+			var inputEmail = document.getElementById("inputEmail");
+			var inputEmailDomain = document.getElementById("inputEmailDomain");		
+			document.getElementsByName("member_email")[0].value = inputEmail.value + "@" + inputEmailDomain.value;	
+	
+			
+			//휴대폰번호 합치기
+			var inputPhone = document.getElementById("inputPhone");
+			var inputPhone2 = document.getElementById("inputPhone2");
+			var inputPhone3 = document.getElementById("inputPhone3");
+			document.getElementsByName("member_phone")[0].value = inputPhone.value + "-" + inputPhone2.value + "-" + inputPhone3.value;
+						
+			
+			// 상세주소 입력양식 찾기
+			var inputDetailAddress = document.getElementById("inputDetailAddress");
+			var inputAddress = document.getElementById("inputAddress");
+			// 상세주소가 입력된게 있다면 주소찾기를 통해 찾은 주소와 합치기
+			if(inputDetailAddress.value != "") {
+				document.getElementsByName("member_address")[0].value = inputAddress.value + ", " + inputDetailAddress.value;
+			}		
+			
+			var frm = document.getElementById("frm");
+
+			//submit 실행
+			
+			modifyCompany(frm);
+			
+		}
+		
+		
+		function modifyCompany(frm) {
+			
+			var xhr = new XMLHttpRequest();
+			
+			var sendData = new FormData(frm);
+			
+			sendData.append("member_no", sessionBizUser.member_no);
+			sendData.enctype='multipart/form-data';
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+					
+					sessionBizUser = data.sessionBizUser;
+					
+					alert("수정 완료");
+					
+					loadProfileData();
+				}
+			};
+			
+			xhr.open("post", "../member/modifyCompanyrProcess", true);
+			xhr.send(sendData);
+			
+		}
+		
+		/*window.addEventListener("DOMContentLoaded" , function(){
+			var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+			var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+			  return new bootstrap.Popover(popoverTriggerEl)
+			})
+		});*/
+
+		
+	</script>
+
+</head>
+<body>
+<div style="width: 1200px; margin:0 auto;">
+  <div class="container-fluid">
+  
+  <th:block th:include="commons/normal_navbar"></th:block>
+
+    <div class="row mt-5">
+        <div class="col">
+            <div id="mainContainer" class="eframe-width w-full mx-auto">
+            	<div class="row relative">
+	            	<div class="col-3 px-0 flex mx-auto bold">
+                        <div class="row min-w-max w-80 min-h-screen">
+                            <div class="dashmenu-content relative">
+                                <ul class="sticky-top" style="z-index:100">
+                                    <li id="manageProject" class="menu-li on" onclick="selectMenu(this)">프로젝트 관리</li>
+                                    <li id="projectStatus" class="menu-li" onclick="selectMenu(this)">프로젝트 현황</li>
+                                    <li id= "profile" class="menu-li" onclick="selectMenu(this)">회원정보 수정</li>
+                                    <li class="mt-5"><img src="../img/aespa_banner.PNG" style="width:220px;"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="rootContainer" class="col ms-2">
+                    
+                    </div>
+            	</div>				           	            
+            </div>
+        </div>
+    </div>
+
+  </div> 
+</div>
+<div id="load"><img src="../img/loading.gif" alt="loading"></div>
+<div id="detailModal" class="modal fade" tabindex="-1" role="dialog">
+	
+</div>
+<div class="modal fade" id="pwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+</div>
+
+<th:block th:include="commons/footer"></th:block>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

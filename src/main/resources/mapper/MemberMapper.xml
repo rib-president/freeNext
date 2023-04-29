@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamb.freenext.member.mapper.MemberMapper">
+	<select id="selectMemberByNo" resultType="com.teamb.freenext.vo.MemberVo">
+		select *
+		from fn_member
+		where member_no = #{member_no}
+	</select>
+
+
+	<insert id="insertMember">
+		INSERT INTO FN_Member
+		(member_type, member_id, member_pw, member_name,
+		member_phone, member_email, member_address, member_profile, member_joindate)values(
+			#{member_type},
+			#{member_id},
+			#{member_pw},
+			#{member_name},
+			#{member_phone},
+			#{member_email},
+			#{member_address},
+			#{member_profile},
+			NOW()
+		)
+	</insert>
+	
+	<select id="getLastPK" resultType="int">
+		SELECT last_insert_id()	
+	</select>
+
+	<select id="getCountDuplicationMember" resultType="int">
+		select count(*)
+		from FN_Member
+		where member_name = #{member_name} and member_phone = #{member_phone}
+	</select>
+
+	<insert id="insertMemberCustomerInfo">
+		insert into FN_Member_Customer (
+			member_no, 
+			customer_birth, 
+			customer_kakao)
+		values (
+			last_insert_id(), 
+			#{customer_birth}, 
+			#{customer_kakao})
+	</insert>
+	
+	<!-- 이메일인증 관련 -->
+	<insert id="insertMailAuth">
+		insert into FN_MailAuth(
+			member_no,
+			mailauth_key,
+			mailauth_complete,
+			mailauth_date
+		) VALUES (
+			#{member_no},
+			#{mailauth_key},
+			'N',
+			NULL
+		)
+	</insert>
+	
+	<!-- 이메일인증 업데이트 -->
+	<update id="updateMailAuthComplete">
+		UPDATE FN_MailAuth
+		SET mailauth_complete = 'Y' , mailauth_date = now()
+		WHERE mailauth_key = #{authKey}
+	</update>	
+	
+	<!-- 아아디로 멤버 찾기 -->
+	<select id="selectMemberById" resultType="com.teamb.freenext.vo.MemberVo">
+		select *
+		from fn_member
+		where member_id = #{member_id}
+	</select>
+	
+	<!-- 카카오 로그인용 키 -->
+	<select id="selectJSKey" resultType="string">
+		select js_key
+		from kakao
+		where kakao_no = 1
+	</select>
+	
+	<!-- 아이디 중복확인 -->
+	<select id="getCountById" resultType="int">
+		SELECT COUNT(*) FROM FN_Member WHERE member_id = #{member_id}
+	</select>	
+	
+	<insert id="insertCustomerJob">
+		insert into FN_Customer_Job (customer_no, job_no) 
+		values ( #{customer_no}, #{job_no} )
+	</insert>
+	
+	<insert id="insertCustomerLocal">
+		insert into FN_Customer_Local (customer_no, local_no) 
+		values ( #{customer_no}, #{local_no} )
+	</insert>	
+	
+	<!-- 로그인 -->
+	<select id="loginByIdAndPw" resultType="com.teamb.freenext.vo.MemberVo">
+		SELECT * 
+		FROM FN_Member
+		WHERE member_id = #{member_id} AND member_pw = #{member_pw}	
+	</select>
+		
+	<!-- 직종, 희망지역 카테고리 리스트 -->
+	<select id="getJobCategoryList" resultType="com.teamb.freenext.vo.JobCategoryVo">
+		select * from FN_Job_Category order by job_no asc
+	</select>
+	
+	<select id="getLocalCategoryList" resultType="com.teamb.freenext.vo.LocalCategoryVo">
+		select * from FN_Local_Category order by local_no asc
+	</select>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="updatePw">
+		update FN_Member
+		set member_pw = #{member_pw}
+		where member_no = #{member_no}
+	</update>
+	
+	<!-- 회원정보 수정 -->
+	<update id="updateMemberInfo">
+		update FN_Member
+		set member_name = #{member_name}, member_phone = #{member_phone}, member_email = #{member_email},
+		member_profile = #{member_profile}, member_address = #{member_address}
+		where member_no = #{member_no}
+	</update>
+
+	<update id="updateCustomerInfo">
+		update FN_Member_Customer
+		set customer_birth = #{customer_birth}
+		where member_no = #{member_no}
+	</update>
+	
+	<update id="updateCompanyInfo">
+		update FN_Member_Company
+		set company_manager = #{company_manager},
+		company_license_number = #{company_license_number},
+		company_license_img = #{company_license_img}
+		where member_no = #{member_no}
+	</update>		
+
+	<!-- 희망직종/지역 변경 -->
+	<select id="selectCustomerNo" resultType="int">
+		select customer_no
+		from fn_member_customer
+		where member_no = #{member_no}
+	</select>
+	
+	<delete id="deleteDesiredJob">
+		delete from FN_Customer_Job
+		where customer_no = #{customer_no}
+		and job_no = #{job_no}
+	</delete>
+	
+	<delete id="deleteDesiredJobAll">
+		delete from FN_Customer_Job
+		where customer_no = #{customer_no}
+	</delete>
+	
+	<delete id="deleteJobAlarm">
+		delete from fn_alarm 
+		where member_no = #{member_no}
+		and project_no in (
+			select fp.project_no
+			from fn_projectboard fp, fn_project_job fj
+			where fp.project_no = fj.project_no 
+			and fj.job_no = #{job_no}
+		)	
+	</delete>
+	
+	<delete id="deleteJobAlarmAll">
+		delete from fn_alarm 
+		where member_no = #{member_no}
+	</delete>		
+	
+	<delete id="deleteDesiredLocal">
+		delete from FN_Customer_Local
+		where customer_no = #{customer_no}
+		and local_no = #{local_no}
+	</delete>
+	
+	<delete id="deleteDesiredLocalAll">
+		delete from FN_Customer_Local
+		where customer_no = #{customer_no}
+	</delete>	
+	
+	<delete id="deleteLocalAlarm">
+		delete from fn_alarm 
+		where member_no = #{member_no}
+		and project_no in (
+			select fp.project_no
+			from fn_projectboard fp, fn_project_local fj
+			where fp.project_no = fj.project_no 
+			and fj.local_no = #{local_no}
+		)	
+	</delete>
+	
+	<delete id="deleteLocalAlarmAll">
+		delete from fn_alarm 
+		where member_no = #{member_no}
+		and project_no in (
+			select fp.project_no
+			from fn_projectboard fp, fn_project_local fj
+			where fp.project_no = fj.project_no 
+			and fj.local_no in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+		)	
+	</delete>	
+	
+	<!-- 메일인증 확인 -->
+	<select id="checkMailAuthByMemberNo" resultType="int">
+		select count(*)
+		from FN_MailAuth
+		where member_no = #{member_no} and mailauth_complete = 'Y'
+	</select>
+	
+	<!-- 이름, 핸드폰번호로 아이디 찾기 -->
+	<select id="findIdByNameAndPhone" resultType="com.teamb.freenext.vo.MemberVo">
+		select * 
+		from FN_member 
+		where member_name = #{member_name} and member_phone = #{member_phone}
+	</select>
+		
+	<!-- 찾은 아이디 갯수 -->	
+	<select id="getCountFindId" resultType="int">
+		select count(*)
+		from FN_member 
+		where member_name = #{member_name} and member_phone = #{member_phone}
+	</select>
+	
+	<!-- Pw찾기 관련 -->
+	
+	<select id="findPwByIdAndNameAndPhone" resultType="com.teamb.freenext.vo.MemberVo">
+		select *
+		from FN_member 
+		where member_id = #{member_id} and member_name = #{member_name} and member_phone = #{member_phone}
+	</select>
+	
+	<update id="changeToTemporaryPw">
+		UPDATE FN_member
+		SET member_pw = #{member_pw}
+		WHERE member_id = #{member_id} and member_name = #{member_name} and member_phone = #{member_phone}
+	</update>
+	
+	<select id="getMemberInfoByIdAndNameAndPhone" resultType="com.teamb.freenext.vo.MemberVo">
+		select * 
+		from FN_member 
+		where member_id = #{member_id} and member_name = #{member_name} and member_phone = #{member_phone}
+	</select>	
+	
+	<select id="getCustomerInfoByMemberNo" resultType="com.teamb.freenext.vo.MemberCustomerVo">
+		select * from FN_Member_Customer where member_no = #{member_no}
+	</select>
+	
+	<!-- 기업회원 쿼리 -->
+	<insert id="insertBizMember">
+		INSERT INTO FN_Member_Company 
+		(member_no, company_manager, company_license_number,
+		company_license_img)VALUES(
+			last_insert_id(),
+			#{company_manager},
+			#{company_license_number},
+			#{company_license_img}
+		)	
+	</insert>	
+	
+	<select id="getBizIdCheck" resultType="com.teamb.freenext.vo.MemberVo">
+		SELECT * FROM FN_Member
+		WHERE member_name = #{member_name} 
+		AND member_phone = #{member_phone} 
+	</select>
+	
+	<select id="getBizPwCheck" resultType="com.teamb.freenext.vo.MemberVo">
+		SELECT * FROM FN_Member
+		WHERE member_id= #{member_id}
+		AND member_name = #{member_name}
+		AND member_phone = #{member_phone}	
+	</select>
+
+	<update id="bizNewPw">
+		UPDATE FN_Member SET member_pw = #{member_pw}
+		WHERE member_no = #{member_no}
+	</update>			
+</mapper>

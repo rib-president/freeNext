@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
+    <script src="/js/nav.js"></script>
+	<link th:href="@{/css/commons.css}" rel="stylesheet">
+	<link th:href="@{/css/universe.css}" rel="stylesheet">
+	<link th:href="@{/css/entrance.css}" rel="stylesheet">
+	<link th:href="@{/css/cat.css}" rel="stylesheet">
+	
+	<style>
+	body {overflow-x: hidden;}
+	
+    .heart { position: absolute; bottom: -60px; width: 50px; height: 50px; background : url('../img/heart.png') no-repeat; background-size: cover; }
+    .heart:first-of-type { left: 10px; animation: bubble 2s 2s linear infinite }
+    .heart:nth-of-type(2) { left: 50%; animation: bubble 10s 1s linear infinite }
+    .heart:nth-of-type(3) { left: 150px; animation: bubble 8s 1s linear infinite }
+    .heart:nth-of-type(4) { right: 100px; animation: bubble 3.5s 1s linear infinite }
+    .heart:nth-of-type(5) { right: 10px; animation: bubble 3s 1s linear infinite }
+    .heart:nth-of-type(8) { right: 30px; animation: bubble 5s 1s linear infinite }
+    .heart:nth-of-type(9) { right: 55px; animation: bubble 7s 1s linear infinite }
+    .heart:nth-of-type(10) { right: 50%; animation: bubble 9s 1s linear infinite }
+    .heart:nth-of-type(11) { right: 70%; animation: bubble 3s 1s linear infinite }
+    .heart:nth-of-type(12) { right: 10%; animation: bubble 2.5s 1s linear infinite }
+    
+    .star { position: absolute; bottom: -60px; width: 50px; height: 50px; background : url('../img/star.png') no-repeat; background-size: cover; }
+    .star:first-of-type { left: 10px; animation: bubble 2s 2s linear infinite }
+    .star:nth-of-type(2) { left: 50%; animation: bubble 10s 1s linear infinite }
+    .star:nth-of-type(3) { left: 150px; animation: bubble 8s 1s linear infinite }
+    .star:nth-of-type(4) { right: 100px; animation: bubble 3.5s 1s linear infinite }
+    .star:nth-of-type(5) { right: 10px; animation: bubble 3s 1s linear infinite }
+    .star:nth-of-type(8) { right: 30px; animation: bubble 5s 1s linear infinite }
+    .star:nth-of-type(9) { right: 55px; animation: bubble 7s 1s linear infinite }
+    .star:nth-of-type(10) { right: 50%; animation: bubble 9s 1s linear infinite }
+    .star:nth-of-type(11) { right: 70%; animation: bubble 3s 1s linear infinite }
+    .star:nth-of-type(12) { right: 10%; animation: bubble 2.5s 1s linear infinite }    
+
+	@keyframes bubble {
+     0% { bottom: 0px; opacity: 1 }
+        50% { opacity: 0 } 
+    to { bottom: 100%; opacity: 0 }
+ 	}
+
+	.heart-icon {
+	   position: absolute;
+	   margin: auto;
+	   top: 0;
+	   right: 30;
+	   bottom: 0;
+	   left: 0;
+	   background-color: rgb(216, 65, 90);
+	   height: 50px;
+	   width: 50px;
+	   transform: rotate(-45deg);
+	   animation-name: beat;
+	   animation-duration: 2s;
+	   animation-iteration-count: infinite;
+	   margin-left: 1.5rem;
+	 }
+	 .heart-icon:after {
+	   background-color: rgb(216, 65, 90);
+	   content: "";
+	   border-radius: 50%;
+	   position: absolute;
+	   width: 50px;
+	   height: 50px;
+	   top: 0px;
+	   left: 25px;
+	 }
+	 
+	 .heart-icon:before {
+	   background-color: rgb(216, 65, 90);
+	   content: "";
+	   border-radius: 50%;
+	   position: absolute;
+	   width: 50px;
+	   height: 50px;
+	   top: -25px;
+	   left: 0px;
+	 }
+
+	@keyframes backdiv {
+	  50% {
+	    background: #ffe6f2;
+	  }
+	}
+	
+	@keyframes beat {
+	  0% {
+	    transform: scale(1) rotate(-45deg);
+	  }
+	  50% {
+	    transform: scale(0.8) rotate(-45deg);
+	  }
+	}
+
+
+	.star-icon {
+	   position: absolute;
+	   margin: auto;
+	   top: 0;
+	   right: 30;
+	   bottom: 0;
+	   left: 0;
+	   height: 90px;
+	   width: 90px;
+	   margin-left: 0.25rem;
+	   opacity: 0.9;
+	   animation: pulsate-bck 1.5s ease-in-out infinite both;
+	 }
+	 
+	@keyframes pulsate-bck {
+	  0% {
+	    -webkit-transform: scale(1);
+	            transform: scale(1);
+	  }
+	  50% {
+	    -webkit-transform: scale(0.9);
+	            transform: scale(0.9);
+	  }
+	  100% {
+	    -webkit-transform: scale(1);
+	            transform: scale(1);
+	  }
+	}	 
+
+    div.typing-txt{
+        display: none;
+    }
+
+    .typing {  
+    animation-name: cursor; 
+    animation-duration: 0.3s; 
+    animation-iteration-count: infinite; 
+    } 
+
+    div.typing-txt2{
+        display: none;
+    }
+
+    .typing2 {  
+    animation-name: cursor; 
+    animation-duration: 0.3s; 
+    animation-iteration-count: infinite; 
+    } 
+
+    @keyframes cursor{ 
+    0%{border-right: 1px solid #fff} 
+    50%{border-right: 1px solid #000} 
+    100%{border-right: 1px solid #fff} 
+    }
+
+    .blank {height:3rem;}	
+    
+    .eblock-buttons{ 
+        display: inline-block; 
+        margin-bottom: 1rem; 
+        width: 100%;
+    }
+
+    .ebtn-round {
+        display: inline-block;
+        cursor: pointer;
+        white-space: nowrap;
+        text-align: center;
+        border-radius: 9999px;
+        border-width: 2px;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+    
+    .ebtn-r-gray{  background-color: rgba(255, 255, 255, 1); border-color: rgba(0, 0, 0, 1); }
+    .ebtn-r-gray:hover {  
+    	background-color: rgba(231, 231, 231, 1);  border-color: rgba(0, 0, 0, 1);
+        animation: vibrate-3 1s linear infinite both;    	
+    }
+    
+	@keyframes vibrate-3 {
+	  0% {
+	    -webkit-transform: translate(0);
+	            transform: translate(0);
+	  }
+	  10% {
+	    -webkit-transform: translate(-2px, -2px);
+	            transform: translate(-2px, -2px);
+	  }
+	  20% {
+	    -webkit-transform: translate(2px, -2px);
+	            transform: translate(2px, -2px);
+	  }
+	  30% {
+	    -webkit-transform: translate(-2px, 2px);
+	            transform: translate(-2px, 2px);
+	  }
+	  40% {
+	    -webkit-transform: translate(2px, 2px);
+	            transform: translate(2px, 2px);
+	  }
+	  50% {
+	    -webkit-transform: translate(-2px, -2px);
+	            transform: translate(-2px, -2px);
+	  }
+	  60% {
+	    -webkit-transform: translate(2px, -2px);
+	            transform: translate(2px, -2px);
+	  }
+	  70% {
+	    -webkit-transform: translate(-2px, 2px);
+	            transform: translate(-2px, 2px);
+	  }
+	  80% {
+	    -webkit-transform: translate(-2px, -2px);
+	            transform: translate(-2px, -2px);
+	  }
+	  90% {
+	    -webkit-transform: translate(2px, -2px);
+	            transform: translate(2px, -2px);
+	  }
+	  100% {
+	    -webkit-transform: translate(0);
+	            transform: translate(0);
+	  }
+	}    
+    
+    .ebtn-r-gray.on {  border-width: 4px; background-color: rgba(231, 231, 231, 1); border-color: rgba(0, 0, 0, 1); } 
+    
+    .up-down {transition: all 0.2s ease-out;}
+    .up-down:hover{
+        transform: translateY(-10px);
+        opacity: 0.8;
+    }
+    
+    .shadow { box-shadow : 1px 1px 5px rgb(42, 42, 42);}	    
+    .etext-title{ float: left; font-weight: 600; font-size: 2rem;}
+    
+
+    .etext-h2{ font-size: 1.5rem; font-weight: 600;}
+    .eblank-h2{ margin-top: 5rem; margin-bottom: 0.625rem;}    
+    .etext-p{ font-size: 1rem;}
+    
+    .btn-cf-white{  background-color: rgba(255, 255, 255, 1);  color: rgba(0, 0, 0, 1); }
+    .btn-cf-dpink{  background-color: rgba(243, 220, 11, 0.815);  color: rgb(255, 255, 255); }    
+    .btn-cf-dgray{  background-color: rgba(60, 60, 60, 1);  border-color: rgba(60, 60, 60, 1); border-width: 1px;  color: rgba(255, 255, 255, 1); }
+    .btn-cf-dred{  background-color: rgba(238, 24, 24, 0.815);  color: rgb(255, 255, 255); }    
+    .btn-cl-dred{
+        background-color: #ffffff;
+      
+        border-color: #999898;
+        border-width: 2px;
+        border-style: solid;
+        
+        color: #6b6b6b;
+    }
+    .btn-cf-dorange{  background-color: rgba(255, 130, 13, 0.815);  border-color: rgba(60, 60, 60, 1); border-width: 1px;  color: rgba(255, 255, 255, 1); }
+    .btn-cf-dgreen{  background-color: rgba(70, 168, 96, 0.944);  border-color: rgba(60, 60, 60, 1); border-width: 1px;  color: rgba(255, 255, 255, 1); }
+    
+    .group-btns {
+        display: inline-block;
+        margin-bottom: 0.625rem;
+    }    
+    
+    .btn-medium {
+    display: inline-block;
+    text-align: center;
+    margin:3px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    }   
+    
+    .btn-large {
+    display: inline-block;
+    text-align: center;
+    margin:3px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 1.25rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    }             
+    
+    #modal-dialog {
+    	pointer-events: auto;
+    	overflow-y: auto !important;
+    	overflow-x: hidden;
+    	
+    	border-radius: 5px;
+    	border : 1px solid white;
+    }
+    
+    .modal-row {
+    	padding-left: 1rem;
+    	padding-right: 1rem;
+    }
+    
+	.project-money {
+        font-family: 'Futura', sans-serif;
+        font-weight: 550;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0;
+    }    
+    	    
+    .border-box-top-divider {border-top: 2px solid rgba(138, 137, 137, 0.596);}
+    
+    .project-scrap-box {
+        border:2px solid rgba(225, 225, 225, 0.89);
+        border-radius: 20px;
+        padding-bottom: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 1.25rem;
+    }
+    
+    .project-scrap-box:hover {
+        border:2px solid rgba(0, 0, 0, 0.89);
+    }    
+
+    .project-scrap-box.on {
+        border:2px solid rgba(0, 0, 0, 0.89);
+        background-color: rgba(225,225,225,1);
+    }
+    .collapse-box {
+        border:2px solid rgba(0, 0, 0, 0.89);
+        border-radius: 20px;
+        padding-bottom: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 1.25rem;
+        height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;       
+    }
+
+    .collapse-box::-webkit-scrollbar {
+    	width: 30px;
+    }
+    .collapse-box::-webkit-scrollbar-thumb {
+	    background-color: rgba(22, 22, 22, 0.897);
+	    border-radius: 30px;
+	    background-clip: padding-box;
+	    border: 4px solid transparent;
+    }
+    .collapse-box::-webkit-scrollbar-track {
+	    background-color: rgba(224, 224, 224, 0.74);
+	    border-radius: 30px;
+	    box-shadow: inset 0px 0px 5px white;
+	    border: 4px solid transparent;
+	}
+	
+	
+	.slide-in-left {
+		animation: slide-in-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	}	
+	
+	@keyframes slide-in-left {
+	  0% {
+	    -webkit-transform: translateX(-1000px);
+	            transform: translateX(-1000px);
+	    opacity: 0;
+	  }
+	  100% {
+	    -webkit-transform: translateX(0);
+	            transform: translateX(0);
+	    opacity: 1;
+	  }
+	}
+	
+	
+	</style>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		const sessionUser =  /*[[ ${session.sessionUser} ]]*/;
+		/*]]*/		
+		
+    	var typingBool = false; 
+    	var typingIdx=0;
+   	 	// 타이핑될 텍스트를 가져온다 
+    	var typingTxt = $(".typing-txt").text();
+	    var length = typingTxt.length;
+    	var typeClass= ".typing";
+     	var tyInt = "";
+     	
+     	var pageNum = 1;
+     	var totalPage = 1;
+     	
+     	var category = "all";
+     	var tag_no = 0;
+     	
+     	var detailtModal = null;
+		var collapse_list = [];
+     	
+    	window.addEventListener("DOMContentLoaded" , function(){
+    		createReadAllTag();
+    		
+    		$(".typing-txt").text("항상 반가운 " + sessionUser.member_name + "님을 위해");
+    		$(".typing-txt2").text("준비했어요");
+    		
+            typingTxt = $(".typing-txt").text();
+            length = typingTxt.length;
+
+            typingTxt=typingTxt.split(""); // 한글자씩 자른다. 
+            typing();
+
+            tyInt = setInterval(typing,100); // 반복동작     
+
+            loadDesiredData();
+            loadAlarmData();   
+                        
+            var modalRoot = document.getElementById('detailModal');
+    		detailModal = new bootstrap.Modal(modalRoot);        
+            
+    	});     	
+    
+	function createReadAllTag() {
+		
+		var allBox = document.querySelector("#allBox");
+		
+		var a = document.createElement("a");
+		a.setAttribute("class", "ps-4 text-fs-20 cursor-pointer");
+		a.setAttribute("onclick", "readAlarm(this, 0)");
+		a.setAttribute("style", "text-decoration: underline;");
+		a.innerText = " 💌 전체 읽기 ";
+		
+		allBox.appendChild(a);		
+	}
+	
+	function createUnScrapAllTag() {
+		
+		var allBox = document.querySelector("#allBox");
+		
+		var a = document.createElement("a");
+		a.setAttribute("class", "ps-4 text-fs-20 cursor-pointer");
+		a.setAttribute("onclick", "unScrap(this, 0)");
+		a.setAttribute("style", "text-decoration: underline;");
+		a.innerText = " 🔓 전체 해제 ";
+		
+		allBox.appendChild(a);		
+	} 	
+    	
+    function typing(){ 
+        if(typingIdx<length){ 
+            // 타이핑될 텍스트 길이만큼 반복 
+
+            $(typeClass).append(typingTxt[typingIdx]);
+
+            // 한글자씩 이어준다. 
+            typingIdx++; 
+        } else {
+            clearInterval(tyInt);
+            if(!typingBool) {     
+                document.querySelector(".typing").classList.remove("typing");
+                document.querySelector(".blank").classList.remove("blank");
+                typingTxt = $(".typing-txt2").text();
+                length = typingTxt.length;
+                typingIdx = 0;
+                typingTxt = typingTxt.split("");
+                typeClass = ".typing2";
+                typingBool = true;
+                typing();
+                tyInt = setInterval(typing,100);                                
+            }
+        }
+    }
+    
+    function selectMenu(obj, menu) {
+    	
+    	for(var btn of document.querySelectorAll(".on")) {
+    		if(btn.classList.contains("on")) {
+    			btn.classList.remove("on");
+    		}
+    	}
+    	if(obj != null) {
+    		obj.classList.add("on");	
+    	} else {
+    		document.querySelector("#profileBtn").classList.add("on");	
+    	}
+    	
+    	
+    	if(menu == "recommand") {
+    		goRecommand();
+    		
+    	} else if(menu == "scrap") {
+    		goMyScrap();
+    		
+    	} else if(menu == "profile") {
+    		goMyProfile();
+    	}    	
+    }
+    
+    function goRecommand() {
+    	window.removeEventListener('scroll', scrapScrollListener);	
+    	window.addEventListener('scroll', alarmScrollListener);
+    	
+		for(var dropIcon of document.querySelectorAll(".drop-icon")) {
+			dropIcon.classList.remove("star");
+			dropIcon.classList.add("heart");
+		}
+		
+		var bigIconBox = document.querySelector("#bigIconBox");
+		bigIconBox.classList.remove("star-icon");
+		bigIconBox.innerHTML = "";
+		bigIconBox.classList.add("heart-icon");		
+		
+    	typingBool = false; 
+    	typingIdx=0;
+   	 	// 타이핑될 텍스트를 가져온다 
+    	typeClass= ".typing";
+     	tyInt = "";		
+		
+     	var typingBox = document.querySelector("#typingBox");
+     	typingBox.innerText = "";
+     	typingBox.classList.add("typing");
+     	
+     	document.querySelector("#blankBox").classList.add("blank");
+     	
+     	document.querySelector(".typing2").innerText = "";
+
+     	$(".typing-txt").text("항상 반가운 " + sessionUser.member_name + "님을 위해");
+		$(".typing-txt2").text("준비했어요");
+		
+        typingTxt = $(".typing-txt").text();
+        length = typingTxt.length;
+
+        typingTxt=typingTxt.split(""); // 한글자씩 자른다. 
+        typing();
+
+        tyInt = setInterval(typing,100); // 반복동작
+        
+        document.querySelector("#keyBox").innerHTML = "";
+        document.querySelector("#allBox").innerHTML = "";
+        var cardContainer = document.querySelector("#cardContainer");
+        cardContainer.setAttribute("class", "row row-cols-2 row-cols-md-3 g-4");
+        cardContainer.innerHTML = "";    	
+    	
+        createReadAllTag();
+        loadDesiredData();
+		
+        pollUnRead();
+        
+		category = "all";
+		tag_no = 0;
+		pageNum = 1;
+		totalPage = 1;
+        loadAlarmData(); 
+        
+        
+    }
+    
+    function goMyScrap() {
+    	window.removeEventListener('scroll', alarmScrollListener);
+    	window.addEventListener('scroll', scrapScrollListener);	
+    	
+		for(var dropIcon of document.querySelectorAll(".drop-icon")) {
+			dropIcon.classList.remove("heart");
+			dropIcon.classList.add("star");
+		}
+		
+		var bigIconBox = document.querySelector("#bigIconBox");
+		bigIconBox.classList.remove("heart-icon");
+		var img = document.createElement("img");
+		img.setAttribute("src", "../img/star-icon.png");
+		img.setAttribute("class", "star-icon");
+		bigIconBox.appendChild(img);
+		
+		
+    	typingBool = false; 
+    	typingIdx=0;
+   	 	// 타이핑될 텍스트를 가져온다 
+    	typeClass= ".typing";
+     	tyInt = "";		
+		
+     	var typingBox = document.querySelector("#typingBox");
+     	typingBox.innerText = "";
+     	typingBox.classList.add("typing");
+     	
+     	document.querySelector("#blankBox").classList.add("blank");
+     	
+     	document.querySelector(".typing2").innerText = "";
+
+     	$(".typing-txt").text("부지런한 " + sessionUser.member_name + "님이 찜한 ");
+		$(".typing-txt2").text("목록이예요");
+		
+        typingTxt = $(".typing-txt").text();
+        length = typingTxt.length;
+
+        typingTxt=typingTxt.split(""); // 한글자씩 자른다. 
+        typing();
+
+        tyInt = setInterval(typing,100); // 반복동작
+        
+        document.querySelector("#keyBox").innerHTML = "";
+        document.querySelector("#allBox").innerHTML = "";
+        var cardContainer = document.querySelector("#cardContainer");
+        cardContainer.setAttribute("class", "");
+        cardContainer.innerHTML = "";   
+		
+        createUnScrapAllTag();
+        
+        totalPage = 1;
+        pageNum = 1;
+        collapse_list = [];
+        
+        loadScrapData();                        
+        
+    }
+    
+    function goMyProfile() {
+    	window.removeEventListener('scroll', alarmScrollListener);
+    	window.removeEventListener('scroll', scrapScrollListener);
+    	
+    	loadlProfileInfo();
+    	
+    }
+    
+    function selectTag(tagCategory, tagTag_no) {
+    	pageNum = 1;
+    	
+    	category = tagCategory;
+    	tag_no = tagTag_no;
+    	
+    	loadAlarmData(true);
+    }
+    
+    var colorCnt = 0;
+    function loadAlarmData(doClear=false) {
+    	colorCnt = 0;
+    	
+    	var entranceList = ["rotate-vert-center", "rotate-center", "swirl-in-bl-fwd", "slide-in-elliptic-right-fwd",
+    						"swing-in-top-fwd", "roll-in-right", "rotate-in-2-bck-ccw", "roll-in-top",
+    						"swing-in-left-bck", "swirl-in-fwd", "scale-in-center", "fade-in-top"];
+    	
+    	entranceList.sort(() => Math.random() - 0.5);
+    	    	
+    	if(pageNum > totalPage) return;
+    	
+    	var xhr = new XMLHttpRequest();
+    	
+    	xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				
+				if(doClear) {
+					document.querySelector("#cardContainer").innerHTML = "";	
+				}				
+								
+				var data = JSON.parse(xhr.responseText);
+				
+				totalPage = (data.totalPage < 1) ? 1 : data.totalPage;
+				
+				if(data.alarmData == "") {
+					createNoResultBox();
+					return;
+				}
+				
+    			var shuffle = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    			shuffle.sort(() => Math.random() - 0.5);
+    			shuffle = shuffle.slice(0, 3);				
+				
+    			var cnt = 0;
+				for(alarm of data.alarmData) {
+					createAlarmBox(alarm, entranceList.shift());
+					if(data.adData != "" && shuffle.includes(cnt)) {
+						createAlarmBox(data.adData.shift(), entranceList.shift(), true);
+					}
+					cnt++;
+				}
+			}				
+		};
+
+
+		xhr.open("get", "./getAlarmList?category=" + category + "&tag_no=" + tag_no + "&member_no=" + sessionUser.member_no
+					+ "&pageNum=" + pageNum, false);
+		xhr.send();
+    }
+    
+    function loadDesiredData() {
+    	var xhr = new XMLHttpRequest();
+    	
+    	xhr.onreadystatechange = function() {
+    		if(xhr.readyState == 4 && xhr.status == 200) {
+    			var data = JSON.parse(xhr.responseText);    			
+    			
+    			var keyBox = document.querySelector("#keyBox");
+    			
+    			if(data.desired.jobVo == "" && data.desired.localVo == "") {
+    				var span = document.createElement("span");
+    				span.innerText = "#희망직종 #없음 #희망지역 #없음 ";
+    				keyBox.appendChild(span);
+    				var span2 = document.createElement("span");
+    				span2.setAttribute("class", "cursor-pointer");
+    				span2.setAttribute("onclick", "selectMenu(null, 'profile')");
+    				span2.innerText = "#회원정보수정 ";
+    				keyBox.appendChild(span2);
+    				var span3 = document.createElement("span");
+    				span3.innerText = "#추가";
+    				keyBox.appendChild(span3);    				
+    			}    			
+    			
+    			for(var job of data.desired.jobVo) {
+    				var span = document.createElement("span");
+    				span.setAttribute("class", "cursor-pointer");
+    				span.innerText = "#" + job.job_name + " ";
+    				span.setAttribute("onclick", "selectTag('job', " + job.job_no + ")")
+    				keyBox.appendChild(span);
+    			}
+    			
+    			for(var local of data.desired.localVo) {
+    				var span = document.createElement("span");
+    				span.setAttribute("class", "cursor-pointer");
+    				span.innerText = "#" + local.local_name + " ";
+    				span.setAttribute("onclick", "selectTag('local', " + local.local_no + ")")
+    				keyBox.appendChild(span);
+    			}    			
+    		}
+    	};
+    	
+    	xhr.open("get", "./getDesired?member_no=" + sessionUser.member_no, true);
+    	xhr.send();
+    }
+    
+    
+    function loadScrapData() {
+    	var xhr = new XMLHttpRequest();
+    	
+    	if(pageNum > totalPage) return;
+    	
+    	xhr.onreadystatechange = function() {
+    		if(xhr.readyState == 4 && xhr.status == 200) {
+    			var data = JSON.parse(xhr.responseText);
+    			
+    			if(data.scrapList == "") {
+    				createNoScrapBox();
+    				return;
+    			}
+    			
+    			totalPage = (data.totalPage < 1) ? 1 : data.totalPage;
+    			
+    			var delayCnt = 0;
+    			for (var scrap of data.scrapList) {
+
+    				createScrapBox(scrap, delayCnt);
+    				delayCnt++;
+    			}
+    			
+    			collapse_list = [].slice.call(document.querySelectorAll('.collapse'));
+    		}
+    	};
+    	
+    	xhr.open("get", "./getScrapProjectList?member_no=" + sessionUser.member_no + "&pageNum=" + pageNum, true);
+    	xhr.send();
+    }
+    
+    
+    function readAlarm(obj, project_no) {
+    	var xhr = new XMLHttpRequest();
+    	
+    	xhr.onreadystatechange = function() {
+    		if(xhr.readyState == 4 && xhr.status == 200) {
+    			var data = JSON.parse(xhr.responseText);
+    			
+    			pollUnRead();
+    			
+    			if(obj.classList.contains("card")) {
+    				var badge = obj.closest(".up-down").querySelector(".bg-warning");
+    				if(badge != null) {
+    					badge.remove();
+    				}
+    			} else {
+    				pageNum = 1;
+    				loadAlarmData(true);
+    			}    			
+    		}
+    	};
+    	
+    	xhr.open("get", "./readAlarm?member_no=" + sessionUser.member_no + "&project_no=" + project_no, true);
+    	xhr.send();
+    }
+    
+    function createAlarmBox(data, entrance, isHot=false) {
+
+    	var bigCol = document.createElement("div");
+    	bigCol.setAttribute("class", "up-down col relative");    	
+    	
+    	var card = document.createElement("div");
+    	if(colorCnt % 2 == 0) {
+    		card.setAttribute("class", "card text-white bg-dark h-100 cursor-pointer");	
+    	} else {
+    		card.setAttribute("class", "card text-dark bg-light h-100 cursor-pointer");	
+    	}
+    	card.classList.add(entrance);
+    	card.style.animationDelay = ((colorCnt/10.0)+0.1) + "s";
+    	if(isHot) {
+    		card.setAttribute("onclick", "loadModal(this, " + data.projectVo.project_no + ")");
+    	} else {
+    		card.setAttribute("onclick", "loadModal(this, " + data.project_no + ")");	
+    	}    	
+    	
+    	var cardBody = document.createElement("div");
+    	cardBody.setAttribute("class", "card-body");
+    	
+    	var cardTitle = document.createElement("h5");
+    	cardTitle.setAttribute("class", "card-title bold h-18");
+    	if(isHot) {
+    		cardTitle.innerText = data.projectVo.project_name;
+    	} else {
+    		cardTitle.innerText = data.project_name;	
+    	}    	    	
+    	var row = document.createElement("div");
+    	row.setAttribute("class", "row pt-6");
+    	
+    	var col = document.createElement("div");
+    	col.setAttribute("class", "col");
+    	
+    	var p = document.createElement("p");
+    	p.setAttribute("class", "card-text h-20");
+    	
+    	var priceSpan = document.createElement("span");
+    	priceSpan.setAttribute("class", "inline-block me-1 text-blue-light bold");
+    	if(isHot) {
+    		priceSpan.innerText = "#" + data.projectVo.project_price;	
+    	} else {
+    		priceSpan.innerText = "#" + data.project_price;
+    	}
+    	
+    	p.appendChild(priceSpan);
+    	
+    	for(jobVo of data.jobVoList) {
+    		var jobSpan = document.createElement("span");
+    		jobSpan.setAttribute("class", "inline-block me-1 text-blue-light bold");
+    		jobSpan.innerText = "#" + jobVo.job_name;
+    		
+    		p.appendChild(jobSpan);
+    	}
+    	
+    	if(data.workType_no != 4) {
+    		var localSpan = document.createElement("span");
+    		localSpan.setAttribute("class", "inline-block me-1 text-blue-light bold");
+    		var category = "local";
+    		localSpan.innerText = "#" + data.localVo.local_name;
+    		
+    		p.appendChild(localSpan);
+    	}
+    	
+    	var periodSpan = document.createElement("span");
+    	periodSpan.setAttribute("class", "inline-block me-1 text-blue-light bold");
+    	if(isHot) {
+    		periodSpan.innerText = "#" + data.projectVo.project_period;
+    	} else {
+    		periodSpan.innerText = "#" + data.project_period;	
+    	}    	
+    	p.appendChild(periodSpan);
+    	
+    	var workTypeSpan = document.createElement("span");
+    	workTypeSpan.setAttribute("class", "inline-block me-1 text-blue-light bold");
+    	workTypeSpan.innerText = "#" + data.workTypeVo.workType_name;
+    	p.appendChild(workTypeSpan);
+    	
+    	var cardFooter = document.createElement("div");
+    	cardFooter.setAttribute("class", "card-footer");
+    	var small = document.createElement("small");
+    	small.setAttribute("class", "text-muted");
+    	if(isHot) {
+    		var project_date = new Date(data.projectVo.project_date)
+    	} else {
+    		var project_date = new Date(data.project_date)
+    	}
+    	var ms = new Date().getTime() - project_date.getTime();
+    	var day = ms / (1000*60*60*24);    	
+    	small.innerText = "Last upload " + Math.round(day, 1) + " days ago";
+    	cardFooter.appendChild(small);
+    	
+    	col.appendChild(p);
+    	row.appendChild(col);
+    	cardBody.appendChild(cardTitle);
+    	cardBody.appendChild(row);    	
+    	card.appendChild(cardBody);
+    	card.appendChild(cardFooter);   	
+    	
+    	bigCol.appendChild(card);
+    	
+    	if(data.alarm_read == 'N') {
+    		var notation = document.createElement("span");
+    		notation.setAttribute("class", "position-absolute top-1 translate-middle p-2 badge rounded-pill bg-warning");
+    		notation.innerText = "new";
+    		notation.style.right = "-0.75rem";
+    		bigCol.appendChild(notation);
+    	}
+    	
+    	if(isHot) {
+    		var notation = document.createElement("span");
+    		notation.setAttribute("class", "position-absolute top-1 translate-middle p-2 badge rounded-pill bg-danger");
+    		notation.innerText = "AD";
+    		notation.style.right = "-0.75rem";
+    		bigCol.appendChild(notation);    		
+    	}
+    	
+    	document.querySelector("#cardContainer").appendChild(bigCol);
+    	colorCnt++;
+    }
+
+    function createNoResultBox() {
+
+		var universe = document.createElement("div");
+      	universe.setAttribute("class", "universe mt-4");
+      
+    	var root = document.createElement("div");
+		root.setAttribute("class", "universe__part");
+		
+    	for(var i=0;i<6;i++) {
+    		var bubble = document.createElement("div");
+    		bubble.setAttribute("class", "universe__bubble");
+    		root.appendChild(bubble);
+    	}
+    	
+    	var planet = document.createElement("div");
+    	planet.setAttribute("class", "universe__planet");
+		root.appendChild(planet);  
+		
+    	var hills = document.createElement("div");
+    	hills.setAttribute("class", "universe__hills");
+		root.appendChild(hills);
+		
+    	var rocket = document.createElement("div");
+    	rocket.setAttribute("class", "universe__rocket");		
+    	var rocket_window = document.createElement("div");
+    	rocket_window.setAttribute("class", "universe__rocket-window");    		
+    	var rocket_light = document.createElement("div");
+    	rocket_light.setAttribute("class", "universe__rocket-light");
+    	rocket.appendChild(rocket_window);
+    	rocket.appendChild(rocket_light);
+    	root.appendChild(rocket);
+    	
+    	var sattelite = document.createElement("div");
+    	sattelite.setAttribute("class", "universe__sattelite");
+		root.appendChild(sattelite);
+		
+		for(var i=0;i<5;i++) {
+    		var star = document.createElement("div");
+    		star.setAttribute("class", "universe__star");
+    		root.appendChild(star);			
+		}		
+		
+		universe.appendChild(root);
+		
+		var text1 = document.createElement("div");
+		text1.setAttribute("class", "noResultText absolute text-fs-60 bold text-gray-c_ff");
+		text1.setAttribute("style", "top: 40%; left: 15%;")
+		text1.innerText = "더 열심히 ";
+		var text2 = document.createElement("div");
+		text2.setAttribute("class", "noResultText absolute text-fs-60 bold text-gray-c_ff");
+		text2.setAttribute("style", "top: 40%; right: 13%;")
+		text2.innerText = "찾아볼게요";
+		var text3 = document.createElement("div");
+		text3.setAttribute("class", "sad-emoji noResultText absolute text-fs-60 bold");
+		text3.setAttribute("style", "top: 40%; right: 5%;")
+		text3.innerText = "😥";		
+		universe.appendChild(text1);
+		universe.appendChild(text2);
+		universe.appendChild(text3);
+		
+		document.querySelector("#cardContainer").appendChild(universe);
+		universe.style.background = "#181743";
+    }
+    
+    function loadModal(obj, project_no) {
+    	var xhr = new XMLHttpRequest();
+    	
+    	xhr.onreadystatechange = function() {
+    		if(xhr.readyState == 4 && xhr.status == 200) {
+    			var data = JSON.parse(xhr.responseText);
+    			
+    			readAlarm(obj, data.data.projectBoardVo.project_no);
+    			
+    			createProjectModal(data);
+    			   			
+    			detailModal.show();    			
+    		
+    		}
+    	};
+    	
+    	xhr.open("get", "getProjectDetail?project_no=" + project_no, false);
+    	xhr.send();
+
+    }
+    
+    function createProjectModal(data) {    	
+    	var modalRoot = document.querySelector("#detailModal");
+    	modalRoot.innerHTML = "";    	
+    	
+		var modal = document.createElement("div");
+		modal.setAttribute("id", "modal-dialog");
+		modal.setAttribute("class", "modal-dialog modal-lg modal-dialog-scrollable");		
+		
+		var row = document.createElement("div");
+		row.setAttribute("class", "modal-row row");
+		row.setAttribute("style", "background-color: white;");			
+		
+		var col = document.createElement("div");
+		col.setAttribute("class", "col");
+		
+		var eframe = document.createElement("div");
+		eframe.setAttribute("class", "eframe-width py-6 mt-4 mx-auto");
+		
+		var scrapCountDiv = document.createElement("div");
+		scrapCountDiv.setAttribute("class", "inline-block float-right text-fs-15 bold text-gray-c_3c pl-15");
+		var scrapCountSpan = document.createElement("span");
+		scrapCountSpan.setAttribute("class", "text-red-soft");
+		scrapCountSpan.innerText = data.scrapCount + "명";
+		var scrapCountSpan2 = document.createElement("span");
+		scrapCountSpan2.innerText = "의 관심을 받고 있어요";
+		scrapCountDiv.appendChild(scrapCountSpan);
+		scrapCountDiv.appendChild(scrapCountSpan2);
+		
+		var projectName = document.createElement("div");
+		projectName.setAttribute("class", "mb-4 text-fs-40 font-extrabold inline-block");
+		projectName.innerText = data.data.projectBoardVo.project_name;
+		
+		var projectMoney = document.createElement("div");
+		projectMoney.setAttribute("class", "project-money");
+		projectMoney.innerText = data.data.projectBoardVo.project_price;
+		
+		var btnGroup1 = document.createElement("span");
+		btnGroup1.setAttribute("class", "group-btns w-full mt-10");
+		var btn1_1 = document.createElement("span");
+		btn1_1.setAttribute("class", "btn-medium btn-cl-dred");
+		btn1_1.innerText = data.data.projectBoardVo.project_period;
+		btnGroup1.appendChild(btn1_1);
+		if(data.data.projectBoardVo.workType_no != 4) {
+			var btn1_2 = document.createElement("span");
+			btn1_2.setAttribute("class", "btn-medium btn-cl-dred");
+			btn1_2.innerText = data.data.localCategoryVo.local_name;
+			btnGroup1.appendChild(btn1_2);
+		}
+		for(var jobVo of data.data.jobCategoryVoList) {
+			var btn1_3 = document.createElement("span");
+			btn1_3.setAttribute("class", "btn-medium btn-cl-dred");
+			btn1_3.innerText = jobVo.job_name;
+			btnGroup1.appendChild(btn1_3);
+		}
+		
+		var btnGroup2 = document.createElement("span");
+		btnGroup1.setAttribute("class", "group-btns w-full");
+		var btn2_1 = document.createElement("span");
+		btn2_1.setAttribute("class", "btn-medium btn-cf-dpink");
+		btn2_1.innerText = data.data.workTypeCategoryVo.workType_name;		
+		var btn2_2 = document.createElement("span");
+		btn2_2.setAttribute("class", "btn-medium btn-cf-dpink");
+		if(data.data.projectBoardVo.cooperation_no == 1) {
+			btn2_2.innerText = data.data.memberVo.member_name;
+		} else {
+			btn2_2.innerText = data.data.cooperationCategoryVo.cooperation_name;
+		}
+		var btn2_3 = document.createElement("span");
+		btn2_3.setAttribute("class", "btn-medium btn-cf-dred");
+		btn2_3.innerText = (data.data.projectBoardVo.project_state == 'Y') ? "접수 중" : "마감";
+		var btn2_4 = document.createElement("span");
+		btn2_4.setAttribute("class", "float-right border rounded-full me-3 pt-1");
+		var i = document.createElement("i");
+		i.setAttribute("onclick", "doScrap(event, this, " +  data.data.projectBoardVo.project_no +")");
+		if(data.myScrap > 0) {
+			i.setAttribute("class", "cursor-pointer bi bi-star-fill text-fs-24 px-2");			
+			i.style.color = "rgb(255, 219, 17)";
+		} else {
+			i.setAttribute("class", "cursor-pointer bi bi-star text-fs-24 px-2");
+			i.style.color = "black";
+		}
+		btn2_4.appendChild(i);
+		btnGroup2.appendChild(btn2_1);
+		btnGroup2.appendChild(btn2_2);
+		btnGroup2.appendChild(btn2_3);
+		btnGroup2.appendChild(btn2_4);
+
+		var project_content1 = document.createElement("div");
+		project_content1.setAttribute("class", "etext-h2 eblank-h2 border-box-top-divider mt-4 pt-12");
+		project_content1.innerText = "프로젝트 내용";
+		
+		var project_content2 = document.createElement("div");
+		project_content2.setAttribute("class", "etext-p leading-relaxed bold mt-4 text-gray-c_3c");
+		project_content2.innerText = data.data.projectBoardVo.project_content.replaceAll("<br>", "\n").replaceAll("&nbsp;", " ");
+		
+		var project_more = document.createElement("div");
+		project_more.setAttribute("class", "row mt-3");
+
+		var detailCol = document.createElement("div");
+		detailCol.setAttribute("class", "col d-grid mt-5");
+		if(data.data.projectBoardVo.cooperation_no != 1) {
+			var detailBtn = document.createElement("button");
+			detailBtn.setAttribute("class", "btn btn-dark");
+			var url = data.data.projectBoardVo.project_url;
+			detailBtn.setAttribute("onclick", "openUrl('" + data.data.projectBoardVo.project_url +"')");
+			detailBtn.innerText = "프로젝트 상세보기";
+			detailCol.appendChild(detailBtn);
+		}
+		project_more.appendChild(detailCol);
+
+		
+		
+		eframe.appendChild(scrapCountDiv);
+		eframe.appendChild(projectName);
+		eframe.appendChild(projectMoney);
+		eframe.appendChild(btnGroup1);
+		eframe.appendChild(btnGroup2);
+		//eframe.appendChild(shadow);
+		eframe.appendChild(project_content1);
+		eframe.appendChild(project_content2);
+		eframe.appendChild(project_more);
+		col.appendChild(eframe);
+		row.appendChild(col);
+		modal.appendChild(row);
+		modalRoot.appendChild(modal);
+		
+		detailModal._dialog = modal;		
+
+    }
+    
+    function createScrapBox(data, delayCnt) {
+    	
+    	var projectScrapBox = document.createElement("div");
+    	projectScrapBox.setAttribute("class", "project-scrap-box row mt-3 cursor-pointer relative slide-in-left");
+    	projectScrapBox.setAttribute("onclick", "showScrap(this)");
+    	projectScrapBox.style.animationDelay = ((delayCnt/10.0)+0.1) + "s";
+    	var projectName = document.createElement("div");
+    	projectName.setAttribute("class", "project-name col bold text-fs-20");
+    	projectName.setAttribute("data-bs-toggle", "collapse");
+    	projectName.setAttribute("data-bs-target", "#project_" + data.projectVo.project_no);
+    	projectName.setAttribute("aria-expanded", "false");
+    	projectName.setAttribute("aria-controls", "project_" + data.projectVo.project_no);
+    	projectName.innerText = data.projectVo.project_name;
+    	var starBox = document.createElement("div");
+    	starBox.setAttribute("class", "col-1 pl-10");
+    	var i = document.createElement("i");
+    	i.setAttribute("class", "bi bi-star-fill text-fs-23 cursor-pointer");
+    	i.setAttribute("style", "color:rgb(255, 219, 17);");
+    	i.setAttribute("onclick", "unScrap(this, " + data.projectVo.project_no +")");
+    	starBox.appendChild(i);
+    	projectScrapBox.appendChild(projectName);
+    	projectScrapBox.appendChild(starBox);
+    	
+    	var row1 = document.createElement("div");
+    	row1.setAttribute("class", "row collapse-container");
+    	var col1 = document.createElement("div");
+    	col1.setAttribute("class", "col");
+    	var collapseContainer = document.createElement("div");
+    	collapseContainer.setAttribute("class", "collapse multi-collapse");
+    	collapseContainer.setAttribute("id", "project_" + data.projectVo.project_no);
+    	var collapseBox = document.createElement("div");
+    	collapseBox.setAttribute("class", "card card-body mt-2 collapse-box");
+    	var row2 = document.createElement("div");
+    	row2.setAttribute("class", "row");
+    	row2.setAttribute("style", "height: 300px;");
+    	
+    	var col2 = document.createElement("div");
+    	col2.setAttribute("class", "col");
+    	var col2_row = document.createElement("div");
+    	col2_row.setAttribute("class", "row sticky-top");
+    	var priceBox = document.createElement("div");
+    	priceBox.setAttribute("class", "row");
+    	var priceCol = document.createElement("div");
+    	priceCol.setAttribute("class", "col text-center");    	
+    	var priceSpan = document.createElement("span");
+    	priceSpan.setAttribute("class", "btn-large btn-cf-dgray")
+    	priceSpan.setAttribute("style", "font-size:1.25rem;");
+    	priceSpan.innerText = data.projectVo.project_price;
+    	priceCol.appendChild(priceSpan);
+    	priceBox.appendChild(priceCol);
+    	var badgeBox1 = document.createElement("div");
+    	badgeBox1.setAttribute("class", "row mt-2");
+    	var badgeCol1 = document.createElement("div");
+    	badgeCol1.setAttribute("class", "col group-btns w-full text-center");    	
+    	for(var jobVo of data.jobVoList) {
+    		var jobSpan = document.createElement("span");
+    		jobSpan.setAttribute("class", "btn-medium btn-cf-dorange");
+    		jobSpan.innerText = jobVo.job_name;
+    		badgeCol1.appendChild(jobSpan);
+    	}    	
+    	if(data.projectVo.workType_no != 4) {
+        	var localSpan = document.createElement("span");
+        	localSpan.setAttribute("class", "btn-medium btn-cf-dpink");
+        	localSpan.innerText = data.localVo.local_name;  
+        	badgeCol1.appendChild(localSpan);
+    	}    	
+    	var periodSpan = document.createElement("span");
+    	periodSpan.setAttribute("class", "btn-medium btn-cf-dgreen");
+    	periodSpan.innerText = data.projectVo.project_period;
+    	badgeCol1.appendChild(periodSpan);    	
+    	
+
+    	var wtSpan = document.createElement("span");
+    	wtSpan.setAttribute("class", "btn-medium btn-cl-dred");
+    	wtSpan.innerText = data.workTypeVo.workType_name;
+    	var coSpan = document.createElement("span");
+    	coSpan.setAttribute("class", "btn-medium btn-cl-dred");
+    	if(data.cooperationVo.cooperation_no != 1) {
+    		coSpan.innerText = data.cooperationVo.cooperation_name;
+    	} else {
+    		coSpan.innerText = data.memberVo.member_name;
+    	}    	
+    	var rtSpan = document.createElement("span");
+    	rtSpan.setAttribute("class", "btn-medium btn-cl-dred");
+    	rtSpan.innerText = data.recruitTypeVo.recruitType_name;
+    	
+    	var stateSpan = document.createElement("span");
+    	stateSpan.setAttribute("class", "btn-medium btn-cf-dred");
+    	stateSpan.innerText = (data.projectVo.project_state == "Y") ? "접수 중" : "마감";
+    	badgeCol1.appendChild(wtSpan);
+    	badgeCol1.appendChild(coSpan);
+    	badgeCol1.appendChild(rtSpan);
+    	badgeCol1.appendChild(stateSpan);    	
+    	badgeBox1.appendChild(badgeCol1);
+    	col2_row.appendChild(priceBox);
+    	col2_row.appendChild(badgeBox1);    
+    	col2.appendChild(col2_row);
+    	row2.appendChild(col2);
+    	
+    	var col3 = document.createElement("div");
+    	col3.setAttribute("class", "col");
+    	var contentBox = document.createElement("p");
+    	contentBox.setAttribute("class", "etext-p leading-relaxed bold mt-4 text-gray-c_3c text-center text-fs-30");
+    	contentBox.innerText = data.projectVo.project_content;
+	
+    	var btnBox = document.createElement("div");
+    	btnBox.setAttribute("class", "row mb-3");
+    	var btnCol = document.createElement("div");
+    	btnCol.setAttribute("class", "col text-center");
+    	var btn = document.createElement("button");
+    	btn.setAttribute("class", "btn btn-warning mt-3 bold");
+    	btn.setAttribute("onclick", "openUrl('" + data.projectVo.project_url +"')");
+    	btn.innerText = "프로젝트 상세보기";
+    	btnCol.appendChild(btn);
+    	btnBox.appendChild(btnCol);
+    	    	
+
+    	col3.appendChild(contentBox);
+    	col3.appendChild(btnBox);
+    	
+    	row2.appendChild(col3);
+    	collapseBox.appendChild(row2);
+    	collapseContainer.appendChild(collapseBox);
+    	col1.appendChild(collapseContainer);
+    	row1.appendChild(col1);
+    	
+    	
+    	var root = document.querySelector("#cardContainer");
+    	root.appendChild(projectScrapBox);
+    	root.appendChild(row1);
+    }
+    
+    function showScrap(obj) {
+    	
+    	for(var collapse of collapse_list) {
+    		collapse.classList.remove("show");
+    	}
+    	
+    	var id = obj.closest(".project-scrap-box").querySelector(".project-name").getAttribute("aria-controls");
+		var myCollapse = document.querySelector("#" + id)    	
+    	
+    	for(var scrap of document.querySelectorAll(".project-scrap-box")) {
+    		if(scrap == obj) {
+    			if(obj.classList.contains("on")) {
+    				obj.classList.remove("on");
+    			} else {
+    				obj.classList.add("on");
+    				myCollapse.classList.add("show");
+    			}
+    		} else {
+    			scrap.classList.remove("on");
+    		}
+    	}
+    }
+    
+    function createNoScrapBox() {
+    	
+    	var wrapper = document.createElement("div");
+    	wrapper.setAttribute("class", "relative");
+    	wrapper.setAttribute("style", "height: 500px");
+    	
+    	var theContainer = document.createElement("div");
+    	theContainer.setAttribute("class", "the-container");
+    	
+    	var toggle = document.createElement("input");
+    	toggle.setAttribute("type", "checkbox");
+    	toggle.setAttribute("id", "toggle");
+    	var label = document.createElement("label");
+    	label.setAttribute("for", "toggle");
+    	
+    	var dayNight = document.createElement("div");
+    	dayNight.setAttribute("class", "day-night-cont");
+    	var sun = document.createElement("span");
+    	sun.setAttribute("class", "the-sun");
+    	var moon = document.createElement("div");
+    	moon.setAttribute("class", "the-moon");
+    	var moonInside = document.createElement("span");
+    	moonInside.setAttribute("class", "moon-inside");
+    	moon.appendChild(moonInside);
+    	dayNight.appendChild(sun);
+    	dayNight.appendChild(moon);
+    	
+    	var swi = document.createElement("div");
+    	swi.setAttribute("class", "switch");
+    	var button = document.createElement("div");
+    	button.setAttribute("class", "button");
+    	var bInside = document.createElement("div");
+    	bInside.setAttribute("class", "b-inside");
+    	button.appendChild(bInside);
+    	swi.appendChild(button);
+    	
+    	var cWindow = document.createElement("div");
+    	cWindow.setAttribute("class", "c-window");
+    	var theSun = document.createElement("span");
+    	theSun.setAttribute("class", "the-sun");
+    	var theMoon = document.createElement("span");
+    	theMoon.setAttribute("class", "the-moon");
+    	var cat = document.createElement("div");
+    	cat.setAttribute("class", "the-cat");
+    	var catFace = document.createElement("div");
+    	catFace.setAttribute("class", "cat-face");
+    	var eyeLeft = document.createElement("section");
+    	eyeLeft.setAttribute("class", "eyes left");
+    	var pupil1 = document.createElement("span");
+    	pupil1.setAttribute("class", "pupil");
+    	eyeLeft.appendChild(pupil1);
+    	var eyeRight = document.createElement("section");
+    	eyeRight.setAttribute("class", "eyes right");
+    	var pupil2 = document.createElement("span");
+    	pupil2.setAttribute("class", "pupil");
+    	eyeRight.appendChild(pupil2);
+    	var nose = document.createElement("span");
+    	nose.setAttribute("class", "nose");
+    	catFace.appendChild(eyeLeft);
+    	catFace.appendChild(eyeRight);
+    	catFace.appendChild(nose);
+    	cat.appendChild(catFace);
+    	cWindow.appendChild(theSun);
+    	cWindow.appendChild(theMoon);
+    	cWindow.appendChild(cat);
+    	
+    	theContainer.appendChild(toggle);
+    	theContainer.appendChild(label);
+    	theContainer.appendChild(dayNight);
+    	theContainer.appendChild(swi);
+    	theContainer.appendChild(cWindow);
+    	wrapper.appendChild(theContainer);
+    	
+		var text1 = document.createElement("div");
+		text1.setAttribute("class", "noResultText absolute text-fs-40 bold text-gray-c_ff");
+		text1.setAttribute("style", "top: 45%; left: 10%;")
+		text1.innerText = "스크랩이 없으면";
+		var text2 = document.createElement("div");
+		text2.setAttribute("class", "noResultText absolute text-fs-40 bold text-gray-c_ff");
+		text2.setAttribute("style", "top: 45%; right: 7%;")
+		text2.innerText = "고양이가 나타나요";	
+		wrapper.appendChild(text1);
+		wrapper.appendChild(text2);   	
+    	
+    	document.querySelector("#cardContainer").appendChild(wrapper);
+    }
+    
+    function openUrl(project_url) {    	
+    	window.open(project_url, "_blank");
+    }
+    
+	function doScrap(event, starBox, project_no){
+
+		event.stopPropagation();
+		
+		project_no = parseInt(project_no);
+		//AJAX...호출...
+		var xhr = new XMLHttpRequest();
+		
+		//응답 받을때...
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				var data = JSON.parse(xhr.responseText);
+				
+				if(data.result == "success") {
+					refreshStar(starBox, project_no);
+					getStarCount(project_no);
+				} else {
+					alert(data.reason);
+					return;
+				}
+			}				
+		};
+		
+		xhr.open("POST", "/normal/doScrap", true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xhr.send("project_no=" + project_no);
+		
+	}
+	
+	function unScrap(obj, project_no) {
+		var xhr = new XMLHttpRequest();
+		
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				var data = JSON.parse(xhr.responseText);
+				
+				/*document.querySelector("#cardContainer").innerHTML = "";
+				
+				if(project_no == 0) pageNum = 1;
+				var oldPageNum = pageNum;
+				for(var i=1;i<=oldPageNum;i++) {
+					pageNum = i;
+					loadScrapData();	
+				}*/
+				
+				
+				
+				if(obj.closest(".project-scrap-box") != null) {
+					var id = obj.closest(".project-scrap-box").querySelector(".project-name").getAttribute("aria-controls");
+					console.log(id);
+					document.querySelector("#" + id).closest(".collapse-container").remove();
+					obj.closest(".project-scrap-box").remove();
+					
+					if(document.querySelector(".project-scrap-box") == null) {
+						createNoScrapBox();
+					}
+					
+				} else {
+					for(var e of document.querySelectorAll(".project-scrap-box")) {
+						e.remove();
+					}
+					for(var e of document.querySelectorAll(".collapse-container")) {
+						e.remove();
+					}
+					
+					createNoScrapBox();
+				}
+								
+			}
+			
+		};
+		
+		xhr.open("get" , "./unScrap?member_no=" + sessionUser.member_no + "&project_no=" + project_no, true);
+		xhr.send();				
+	}
+	
+	function refreshStar(starBox, project_no){
+		//AJAX...호출...
+		var xhr = new XMLHttpRequest();
+		
+		//응답 받을때...
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				var data = JSON.parse(xhr.responseText);
+				
+				if(data.result == 'error'){
+					alert(data.reason);
+					return;
+				}
+				
+				if(data.state == 'scrap'){
+					starBox.setAttribute("class","cursor-pointer bi bi-star-fill text-fs-24 px-2");
+					starBox.setAttribute("style", "color: rgb(255, 219, 17);");
+				}else{
+					starBox.setAttribute("class","cursor-pointer bi bi-star text-fs-24 px-2");
+					starBox.setAttribute("style", "color: black;");
+				}
+				
+			}
+			
+		};
+		
+		xhr.open("get" , "/normal/getMyScrapState?project_no="+project_no , true);
+		xhr.send();		
+	}
+	
+	function getStarCount(project_no) {
+		var xhr = new XMLHttpRequest();
+		
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState == 4 && xhr.status == 200) {
+				var data = JSON.parse(xhr.responseText);
+				
+				document.querySelector(".text-red-soft").innerText = data.totalScrapCount + "명";
+			}
+		}
+		
+		xhr.open("get", "/normal/getTotalScrapState?project_no=" + project_no, true);
+		xhr.send();
+	} 
+	
+	function alarmScrollListener() {
+		const SCROLLED_HEIGHT = window.scrollY;
+		const WINDOW_HEIGHT = window.innerHeight;
+		const DOC_TOTAL_HEIGHT = document.body.offsetHeight;
+		const IS_BOTTOM = WINDOW_HEIGHT + SCROLLED_HEIGHT === DOC_TOTAL_HEIGHT;
+		 
+		if (IS_BOTTOM) {
+			pageNum++;
+			loadAlarmData();
+		}		
+	}
+	
+	function scrapScrollListener() {
+		const SCROLLED_HEIGHT = window.scrollY;
+		const WINDOW_HEIGHT = window.innerHeight;
+		const DOC_TOTAL_HEIGHT = document.body.offsetHeight;
+		const IS_BOTTOM = WINDOW_HEIGHT + SCROLLED_HEIGHT === DOC_TOTAL_HEIGHT;
+		 
+		if (IS_BOTTOM) {
+			pageNum++;
+			loadScrapData();
+		}		
+	}	
+	
+	window.addEventListener('scroll', alarmScrollListener);	
+
+	</script> 
+</head>
+<body>
+<div style="width: 1200px; margin:0 auto;">
+  <div class="container-fluid">
+  
+  <th:block th:include="commons/normal_navbar"></th:block>
+
+    <div class="row mt-3">
+        <div class="col">
+            <div id="root1" class="eframe-width py-6 mx-auto">
+                <div id="menuIcon" class="row">
+                    <div class="col eblock-buttons">
+                        <button class="ebtn-round ebtn-r-gray mr-10 my-1 on" th:onclick="selectMenu(this, 'recommand')" style="padding-left:6.25rem;padding-right: 6.25rem;"> 👍  맞춤 공고 </button>
+                        <button class="ebtn-round ebtn-r-gray mr-10 my-1" th:onclick="selectMenu(this, 'scrap')" style="padding-left:6.25rem;padding-right: 6.25rem;"> 🌟  MY Scrap </button>
+                        <button id="profileBtn" class="ebtn-round ebtn-r-gray my-1" th:onclick="selectMenu(this, 'profile')" style="padding-left:5.5rem;padding-right: 5.5rem;"> 🌈  회원정보 수정 </button>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col relative">
+                        <div class="drop-icon heart"></div> 
+                        <div class="drop-icon heart"></div> 
+                        <div class="drop-icon heart"></div> 
+                        <div class="drop-icon heart"></div> 
+                        <div class="drop-icon heart"></div>
+                        <div class="row">
+                            <div class="col">
+                                <div id="bigIconBox" class="heart-icon me-5"></div>
+                                <div class="typing-txt"></div>
+                                <div id="typingBox" class="inline-block typing px-3 text-fs-50 bold" style="margin-left: 5rem;"></div> 
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="typing-txt2"></div>
+                                <div class="inline-block typing2 px-3 text-fs-50 bold" style="margin-left: 7rem;"></div> 
+                                <div id="blankBox" class="blank"></div>
+                            </div>
+                        </div>                        
+                        <div class="drop-icon heart"></div> 
+                        <div class="drop-icon heart"></div> 
+                        <div class="drop-icon heart"></div> 
+                        <div class="drop-icon heart"></div> 
+                        <div class="drop-icon heart"></div>         
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="keyBox" class="col mt-5 text-fs-25 text-blue-light font-normal py-2">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div id="root2" class="eframe-width py-6 mx-auto">
+            	<div class="row mb-2">
+            		<div class="col"></div>
+            		<div id="allBox" class="col-3 mt-3 float-right text-center text-fs-15 text-gray-c_3c bold relative pr-0 pl-20">
+            			
+            		</div>
+            	</div>
+                <div id="cardContainer" class="row row-cols-2 row-cols-md-3 g-4">
+
+                </div>              
+            </div>
+        </div>
+    </div>
+
+  </div> 
+</div>
+<div id="detailModal" class="modal fade" tabindex="-1" role="dialog">
+	
+</div>
+<th:block th:include="commons/footer"></th:block>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="/js/nav.js"></script>
+	<link th:href="@{/css/commons.css}" rel="stylesheet">
+	<link th:href="@{/css/style.css}" rel="stylesheet">
+	<link th:href="@{/css/toggle.css}" rel="stylesheet">
+	
+	<style>
+	.info-border-l{border-left:2px solid #444; padding-left:1rem; padding-top:0; padding-bottom: 0; margin-top:.5rem}
+	.job-btn-round {
+	      display: inline-block;
+	      cursor: pointer;
+	      white-space: nowrap;
+	      text-align: center;
+	      border-radius: 100px;
+	      border-width: 1px;
+	      font-weight: 800;
+	      font-size: 0.75rem;
+	      padding: 0.75rem;
+	      margin-left:0.5rem;
+	  }
+	  
+    .local-btn-round {
+        display: inline-block;
+        cursor: pointer;
+        white-space: nowrap;
+        text-align: center;
+        border-radius: 100px;
+        border-width: 2px;
+        font-weight: 600;
+        font-size: 0.69rem;
+        padding-left: 0.4rem;
+        padding-right: 0.4rem;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        margin-left : .25rem;
+        margin-top: .25rem;
+    }	  
+	
+	.job-btn-r-gray{  background-color: rgba(255, 255, 255, 1); border-color: rgba(0, 0, 0, 1); }
+	.job-btn-r-gray:hover {  background-color: rgba(199, 236, 211, 0.808);  border-color: rgba(0, 0, 0, 1); }
+	.job-btn-r-gray.on {  border-width: 2px; background-color: rgba(199, 236, 211, 0.808); border-color: rgba(0, 0, 0, 1); }
+	
+	.local-btn-r-pink{  background-color: rgba(255, 255, 255, 1); border-color: rgba(0, 0, 0, 1); }
+	.local-btn-r-pink:hover {  background-color: rgba(236, 199, 207, 0.808);  border-color: rgba(0, 0, 0, 1); }
+	.local-btn-r-pink.on {  border-width: 2px; background-color: rgba(236, 199, 207, 0.808); border-color: rgba(0, 0, 0, 1); }    
+ 	
+ 	.border-box {border: 2px solid rgb(138, 137, 137); border-radius:30px;}
+ 	
+    .eblock-buttons{ 
+        display: inline-block; 
+        margin-bottom: 1rem; 
+        width: 100%;
+    } 	
+ 		
+	</style>
+	<script th:inline="javascript">
+	
+ 	/*<![CDATA[*/
+	const sessionUser =  /*[[ ${session.sessionUser} ]]*/;
+	/*]]*/	 
+	const jobList = /*[[ ${jobList} ]]*/;
+	const localList = /*[[ ${localList} ]]*/;
+	
+	const customer_kakao = /*[[ ${customer_kakao} ]]*/;	
+	const customer_kakao_id = /*[[ ${customer_kakao_id} ]]*/;
+	const customer_kakao_email = /*[[ ${customer_kakao_email} ]]*/;
+	const customer_kakao_name = /*[[ ${customer_kakao_name} ]]*/;
+	const customer_kakao_profile = /*[[ ${customer_kakao_profile} ]]*/;
+ 	
+	var job_no_list = [];
+	var local_no_list = [];
+	
+	function selectJob(btn) {
+		if(btn.classList.contains("on")) {
+			btn.classList.remove("on");
+		} else {
+			btn.classList.add("on");			
+		}
+		
+		job_no_list = [];
+		for(var e of document.querySelectorAll(".job-btn-r-gray.on")) {
+			job_no_list.push(e.value);
+		}
+	}
+	
+	function selectLocal(btn) {
+		if(btn.classList.contains("on")) {
+			btn.classList.remove("on");
+		} else {
+			btn.classList.add("on");			
+		}
+		
+		local_no_list = [];
+		for(var e of document.querySelectorAll(".local-btn-r-pink.on")) {
+			local_no_list.push(e.value);
+		}		
+	}
+	
+	function setThumbnail(event) { 
+		var reader = new FileReader(); 
+		
+		reader.onload = function(event) { 
+			
+			var img = document.querySelector("#profile_thumbnail img"); 
+			img.setAttribute("src", event.target.result);  
+			
+		}; 
+		
+		reader.readAsDataURL(event.target.files[0]); 
+	}	
+	
+	function changeToggle(toggle) {
+		var kakaoProfile = document.querySelector("#kakao_profile");
+		var thumbnail = document.querySelector("#profile_thumbnail img");
+		
+		if(toggle.checked) {
+			thumbnail.setAttribute("src", customer_kakao_profile);
+			kakaoProfile.value = customer_kakao_profile;
+			
+			if(document.querySelector("#fileInput") != null) {
+				document.querySelector("#fileInput").remove();
+			}
+		} else {
+			thumbnail.setAttribute("src", "../img/basic_profile.png");
+			kakaoProfile.value = null;
+			
+			var fileInput = document.createElement("input");
+			fileInput.setAttribute("type", "file");
+			fileInput.setAttribute("id", "fileInput");
+			fileInput.setAttribute("class", "form-control form-control-sm mt-2");
+			fileInput.setAttribute("name", "uploadFileThumbnail");
+			fileInput.setAttribute("onchange", "setThumbnail(event)");
+			
+			thumbnail.closest("#profile_thumbnail").appendChild(fileInput);
+		}
+	}
+	
+	function createMemberBox() {
+ 		
+ 		var container = document.createElement("div"); 		
+ 		container.setAttribute("class", "row mt-5 mb-5");
+ 		
+ 		var cusCol = document.createElement("div");
+ 		cusCol.setAttribute("class", "col mt-5 rounded-10 border bg-gradation-10 me-4 text-fs-60 font-extrabold text-gray-c_ff pt-20 pb-10 pl-15 ml-20 cursor-pointer");
+ 		cusCol.setAttribute("onclick", "createCustomerBox()");
+ 		var cusTextRow1 = document.createElement("div");
+ 		cusTextRow1.setAttribute("class", "row");
+ 		var cusTextCol1 = document.createElement("div");
+ 		cusTextCol1.setAttribute("class", "col");
+ 		cusTextCol1.innerText = "일반회원";
+ 		cusTextRow1.appendChild(cusTextCol1); 		
+ 		
+ 		var cusTextRow2 = document.createElement("div");
+ 		cusTextRow2.setAttribute("class", "row");
+ 		var cusTextCol2 = document.createElement("div");
+ 		cusTextCol2.setAttribute("class", "col");
+ 		cusTextCol2.innerText = "가입";
+ 		cusTextRow2.appendChild(cusTextCol2); 		
+ 		
+ 		var cusImgRow = document.createElement("div");
+ 		cusImgRow.setAttribute("class", "row");
+ 		var cusBlankCol = document.createElement("div");
+ 		cusBlankCol.setAttribute("class", "col");
+ 		var cusImgCol = document.createElement("div");
+ 		cusImgCol.setAttribute("class", "col me-3"); 		
+ 		var cusImg = document.createElement("img");
+ 		cusImg.setAttribute("class", "op-9");
+ 		cusImg.setAttribute("src", "../img/external-link200.png"); 	
+ 		cusImgCol.appendChild(cusImg);
+ 		cusImgRow.appendChild(cusBlankCol);
+ 		cusImgRow.appendChild(cusImgCol);
+ 		cusCol.appendChild(cusTextRow1);
+ 		cusCol.appendChild(cusTextRow2);
+ 		cusCol.appendChild(cusImgRow); 		
+ 		
+ 		var bizCol = document.createElement("div");
+ 		bizCol.setAttribute("class", "col mt-5 rounded-10 border bg-gradation-30 me-4 text-fs-60 font-extrabold text-gray-c_ff pt-20 pb-10 pl-15 mr-20 cursor-pointer");
+ 		bizCol.setAttribute("onclick", "createBizBox()");
+ 		var bizTextRow1 = document.createElement("div");
+ 		bizTextRow1.setAttribute("class", "row");
+ 		var bizTextCol1 = document.createElement("div");
+ 		bizTextCol1.setAttribute("class", "col");
+ 		bizTextCol1.innerText = "기업회원";
+ 		bizTextRow1.appendChild(bizTextCol1);
+ 		
+ 		var bizTextRow2 = document.createElement("div");
+ 		bizTextRow2.setAttribute("class", "row");
+ 		var bizTextCol2 = document.createElement("div");
+ 		bizTextCol2.setAttribute("class", "col");
+ 		bizTextCol2.innerText = "가입";
+ 		bizTextRow2.appendChild(bizTextCol2);
+ 		
+ 		var bizImgRow = document.createElement("div");
+ 		bizImgRow.setAttribute("class", "row");
+ 		var bizBlankCol = document.createElement("div");
+ 		bizBlankCol.setAttribute("class", "col");
+ 		var bizImgCol = document.createElement("div");
+ 		bizImgCol.setAttribute("class", "col me-3"); 		
+ 		var bizImg = document.createElement("img");
+ 		bizImg.setAttribute("class", "op-9");
+ 		bizImg.setAttribute("src", "../img/briefcase200.png");
+ 		bizImgCol.appendChild(bizImg);
+ 		bizImgRow.appendChild(bizBlankCol);
+ 		bizImgRow.appendChild(bizImgCol);
+ 		
+ 		bizCol.appendChild(bizTextRow1);
+ 		bizCol.appendChild(bizTextRow2);
+ 		bizCol.appendChild(bizImgRow);
+		
+ 		container.appendChild(cusCol);
+ 		container.appendChild(bizCol);
+ 		 	
+ 		var margin = document.createElement("div");
+ 		margin.setAttribute("class", "row mb-5 h-16");
+ 		
+ 		var root = document.querySelector("#mainContainer");
+ 		root.appendChild(container);
+ 		root.appendChild(margin);
+ 	}
+	
+	function createCustomerBox() {
+		var root = document.querySelector("#mainContainer");
+		root.innerHTML = "";
+		
+		var container = document.createElement("div");
+		container.setAttribute("class", "row");		
+		var containerCol = document.createElement("div");
+		containerCol.setAttribute("class", "col");
+		
+		var blankRow = document.createElement("div");
+		blankRow.setAttribute("class", "row");
+		blankRow.setAttribute("style", "padding:25px;");
+		
+		var titleRow = document.createElement("div");
+		titleRow.setAttribute("class", "row");
+		var titleCol = document.createElement("div");
+		titleCol.setAttribute("class", "col  text-center fs-2 fw-bold");
+		titleCol.innerText = "회원가입"
+		titleRow.appendChild(titleCol);
+		
+		var frm = document.createElement("form");
+		frm.setAttribute("action", "joinMemberProcess");
+		frm.setAttribute("method", "post");
+		frm.setAttribute("id", "frm");
+		frm.setAttribute("enctype", "multipart/form-data");
+		var frmContainer = document.createElement("div");
+		frmContainer.setAttribute("class", "row mt-5 bg-gray-c_e1t rounded-10 ms-5 me-5");
+		var blankCol1 = document.createElement("div");
+		blankCol1.setAttribute("class", "col");		
+		var info = document.createElement("div");
+		info.setAttribute("class", "col-10");
+		var frame1 = document.createElement("div");
+		frame1.setAttribute("class", "row");
+		
+		var frame1_col1 = document.createElement("div");
+		frame1_col1.setAttribute("class", "col-8");	
+		var idContainer = document.createElement("div");
+		idContainer.setAttribute("class", "row mt-5");
+		var idCol = document.createElement("div");
+		idCol.setAttribute("class", "col");	
+		var id1 = document.createElement("div");
+		id1.setAttribute("class", "row");
+		var idText = document.createElement("div");
+		idText.setAttribute("class", "col-3");	
+		var idP = document.createElement("p");
+		idP.setAttribute("class", "info-border-l");
+		idP.innerText = "아이디";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";
+		idP.appendChild(star);
+		idText.appendChild(idP);
+		id1.appendChild(idText);
+		
+		var idInputBox = document.createElement("div");
+		idInputBox.setAttribute("class", "col-7");
+		var idInput = document.createElement("input");
+		idInput.setAttribute("name", "member_id");
+		idInput.setAttribute("id", "inputId");
+		if(customer_kakao_id == null || customer_kakao_id == "undefined") {			
+			idInput.setAttribute("class", "form-control");						
+			idInput.setAttribute("type", "text");
+			idInput.setAttribute("placeholder", "아이디를 입력해주세요");
+			idInput.setAttribute("onblur", "confirmId()");
+			idInput.setAttribute("maxlength", 16);
+			idInputBox.appendChild(idInput);
+			id1.appendChild(idInputBox);
+			
+			var id2 = document.createElement("div");
+			id2.setAttribute("class", "row");
+			var idBlank = document.createElement("div");
+			idBlank.setAttribute("class", "col-3");	
+			var idConfirmBox = document.createElement("div");
+			idConfirmBox.setAttribute("class", "col-7");
+			var idConfirm = document.createElement("div");
+			idConfirm.setAttribute("id", "confirmIdAlertBox");
+			idConfirm.setAttribute("class", "text-fs-12");
+			idConfirmBox.appendChild(idConfirm);
+			id2.appendChild(idBlank);
+			id2.appendChild(idConfirmBox);
+			idCol.appendChild(id1);
+			idCol.appendChild(id2);			
+		} else {
+			var kakaoId = document.createElement("div");
+			kakaoId.innerText = "아이디 미입력 (카카오 연동)";
+			kakaoId.setAttribute("style", "margin-top:.5rem;")
+			idInput.setAttribute("type", "hidden");
+			idInput.value = customer_kakao_id;		
+			idInputBox.appendChild(kakaoId);
+			idInputBox.appendChild(idInput);
+			id1.appendChild(idInputBox);
+			idCol.appendChild(id1);
+		}
+		var typeInput = document.createElement("input");
+		typeInput.setAttribute("type", "hidden");
+		typeInput.setAttribute("value", "N");
+		typeInput.setAttribute("name", "member_type");
+		var kakaoInput = document.createElement("input");
+		kakaoInput.setAttribute("type", "hidden");
+		kakaoInput.setAttribute("value", (customer_kakao == "Y") ? customer_kakao : "N");
+		kakaoInput.setAttribute("name", "customer_kakao");		
+		
+		idCol.appendChild(typeInput);
+		idCol.appendChild(kakaoInput);
+
+		idContainer.appendChild(idCol);
+		frame1_col1.appendChild(idContainer);
+		
+		var pwContainer = document.createElement("div");
+		pwContainer.setAttribute("class", "row mt-3");
+		var pwCol = document.createElement("div");
+		pwCol.setAttribute("class", "col");	
+		var pw1 = document.createElement("div");
+		pw1.setAttribute("class", "row");
+		var pwText = document.createElement("div");
+		pwText.setAttribute("class", "col-3");	
+		var pwP = document.createElement("p");
+		pwP.setAttribute("class", "info-border-l");
+		pwP.innerText = "비밀번호";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";
+		pwP.appendChild(star);
+		pwText.appendChild(pwP);			
+		pw1.appendChild(pwText);		
+		
+		var pwInputBox = document.createElement("div");	
+		pwInputBox.setAttribute("class", "col-7");
+		var pwInput = document.createElement("input");
+		pwInput.setAttribute("name", "member_pw");
+		pwInput.setAttribute("id", "inputPw");
+		if(customer_kakao != "Y") {						
+			pwInput.setAttribute("class", "form-control");			
+			pwInput.setAttribute("type", "password");
+			pwInput.setAttribute("placeholder", "비밀번호를 입력해주세요");
+			pwInput.setAttribute("onblur", "confirmPw()");
+			pwInputBox.appendChild(pwInput);
+			pw1.appendChild(pwInputBox);
+			
+			var pw2 = document.createElement("div");
+			pw2.setAttribute("class", "row");
+			var pwBlank = document.createElement("div");
+			pwBlank.setAttribute("class", "col-3");	
+			var pwConfirmBox = document.createElement("div");
+			pwConfirmBox.setAttribute("class", "col-7");
+			var pwConfirm = document.createElement("div");
+			pwConfirm.setAttribute("id", "confirmPwAlertBox");
+			pwConfirm.setAttribute("class", "text-fs-12");			
+			pwConfirmBox.appendChild(pwConfirm);
+			pw2.appendChild(pwBlank);
+			pw2.appendChild(pwConfirmBox);
+			
+			pwCol.appendChild(pw1);
+			pwCol.appendChild(pw2);
+			
+		} else {
+			pwInputBox.setAttribute("style", "margin-top:.5rem;")
+			pwInputBox.innerText = "❓ ❔ ❓ ";
+			pwInput.setAttribute("type", "hidden");
+			pwInput.value = "";
+			pwInputBox.appendChild(pwInput);
+			pw1.appendChild(pwInputBox);
+			pwCol.appendChild(pw1);
+		}				
+				
+		pwContainer.appendChild(pwCol);
+		frame1_col1.appendChild(pwContainer);		
+		
+		
+		var repwContainer = document.createElement("div");
+		repwContainer.setAttribute("class", "row mt-3");
+		var repwCol = document.createElement("div");
+		repwCol.setAttribute("class", "col");	
+		var repw1 = document.createElement("div");
+		repw1.setAttribute("class", "row");
+		var repwText = document.createElement("div");
+		repwText.setAttribute("class", "col-3 pr-0");	
+		var repwP = document.createElement("p");
+		repwP.setAttribute("class", "info-border-l text-fs-15");
+		repwP.innerText = "비밀번호 확인";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft");
+		star.innerText = " *";
+		repwP.appendChild(star);
+		repwText.appendChild(repwP);
+		repw1.appendChild(repwText);
+		
+		var repwInputBox = document.createElement("div");
+		repwInputBox.setAttribute("class", "col-7");
+		var repwInput = document.createElement("input");
+		repwInput.setAttribute("id", "inputPwConfirm");
+		if(customer_kakao != "Y") {			
+			repwInput.setAttribute("class", "form-control");					
+			repwInput.setAttribute("type", "password");
+			repwInput.setAttribute("placeholder", "비밀번호를 재입력해주세요");
+			repwInput.setAttribute("onblur", "reConfirmPw()");
+			repwInputBox.appendChild(repwInput);
+			repw1.appendChild(repwInputBox);
+			
+			var repw2 = document.createElement("div");
+			repw2.setAttribute("class", "row");
+			var repwBlank = document.createElement("div");
+			repwBlank.setAttribute("class", "col-3");	
+			var repwConfirmBox = document.createElement("div");
+			repwConfirmBox.setAttribute("class", "col-7");
+			var repwConfirm = document.createElement("div");
+			repwConfirm.setAttribute("id", "reConfirmPwAlertBox");
+			repwConfirm.setAttribute("class", "text-fs-12");	
+			repwConfirmBox.appendChild(repwConfirm);
+			repw2.appendChild(repwBlank);
+			repw2.appendChild(repwConfirmBox);
+			
+			repwCol.appendChild(repw1);
+			repwCol.appendChild(repw2);
+		} else {
+			repwInput.setAttribute("type", "hidden");
+			repwInput.value = "";
+			repwInputBox.setAttribute("style", "margin-top:.5rem;")
+			repwInputBox.innerText = "🔥 🌙  ⭐   🌎  ";
+			repw1.appendChild(repwInputBox);
+			repwCol.appendChild(repw1);
+		}
+
+		repwContainer.appendChild(repwCol);
+		frame1_col1.appendChild(repwContainer);			
+		
+		
+		var nameContainer = document.createElement("div");
+		nameContainer.setAttribute("class", "row mt-3");
+		var nameCol = document.createElement("div");
+		nameCol.setAttribute("class", "col");	
+		var name1 = document.createElement("div");
+		name1.setAttribute("class", "row");
+		var nameText = document.createElement("div");
+		nameText.setAttribute("class", "col-3 pr-0");	
+		var nameP = document.createElement("p");
+		nameP.setAttribute("class", "info-border-l");
+		nameP.innerText = "이름";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";
+		
+		var nameInputBox = document.createElement("div");
+		nameInputBox.setAttribute("class", "col-7");
+		var nameInput = document.createElement("input");
+		nameInput.setAttribute("class", "form-control");		
+		nameInput.setAttribute("id", "inputName");
+		nameInput.setAttribute("name", "member_name");
+		nameInput.setAttribute("type", "text");
+		nameInput.setAttribute("placeholder", "이름(한글)을 입력해주세요");
+		nameInput.setAttribute("onkeypress", "onlyKorean(event)");
+		nameInput.setAttribute("oninput", "slice(this)");
+		nameInput.setAttribute("maxlength", 5);
+		if(customer_kakao_name != null && customer_kakao_name != "undefined") {
+			nameInput.value = customer_kakao_name;
+		}
+		
+		nameP.appendChild(star);
+		nameText.appendChild(nameP);
+		nameInputBox.appendChild(nameInput);		
+		name1.appendChild(nameText);
+		name1.appendChild(nameInputBox);		
+		nameCol.appendChild(name1);		
+		nameContainer.appendChild(nameCol);
+		frame1_col1.appendChild(nameContainer);					
+		
+		var frame1_col2 = document.createElement("div");
+		frame1_col2.setAttribute("class", "col mt-5 p-0");	
+		var profileBox = document.createElement("div");
+		profileBox.setAttribute("class", "border mt-3");
+		profileBox.setAttribute("id", "profile_thumbnail");
+		profileBox.setAttribute("style", "width:150px; height:180px; margin-left:5rem;");
+		var img = document.createElement("img");
+		img.setAttribute("class", "img-fluid");		
+		img.setAttribute("src", (customer_kakao_profile != null && customer_kakao_profile != "undefined" ) ? customer_kakao_profile : "../img/basic_profile.png");
+		img.setAttribute("style", "width:100%; height:100%;");
+		
+		profileBox.appendChild(img);
+		frame1_col2.appendChild(profileBox);
+		
+		frame1.appendChild(frame1_col1);
+		frame1.appendChild(frame1_col2);
+		
+		var birthContainer = document.createElement("div");
+		birthContainer.setAttribute("class", "row mt-3");
+		var birthCol = document.createElement("div");
+		birthCol.setAttribute("class", "col");	
+		var birth1 = document.createElement("div");
+		birth1.setAttribute("class", "row");
+		var birthText = document.createElement("div");
+		birthText.setAttribute("class", "col-2");	
+		var birthP = document.createElement("p");
+		birthP.setAttribute("class", "info-border-l");
+		birthP.innerText = "생년월일";
+		
+		var birthYear = document.createElement("div");
+		birthYear.setAttribute("class", "col-2");
+		var selectYear = document.createElement("select");
+		selectYear.setAttribute("class", "form-control");		
+		selectYear.setAttribute("id", "inputBirth_yy");
+		var birthInput = document.createElement("input");
+		birthInput.setAttribute("type", "hidden");		
+		birthInput.setAttribute("name", "customer_birth");
+		var birthMonth = document.createElement("div");
+		birthMonth.setAttribute("class", "col-2");
+		var selectMonth = document.createElement("select");
+		selectMonth.setAttribute("class", "form-control");		
+		selectMonth.setAttribute("id", "inputBirth_mm");		
+		var birthDay = document.createElement("div");
+		birthDay.setAttribute("class", "col-2");
+		var selectDay = document.createElement("select");
+		selectDay.setAttribute("class", "form-control");		
+		selectDay.setAttribute("id", "inputBirth_dd");
+		
+		birthText.appendChild(birthP);
+		birthYear.appendChild(selectYear);
+		birthMonth.appendChild(selectMonth);
+		birthDay.appendChild(selectDay);
+		
+		birth1.appendChild(birthText);
+		birth1.appendChild(birthYear);
+		birth1.appendChild(birthInput);
+		birth1.appendChild(birthMonth);
+		birth1.appendChild(birthDay);
+		birthCol.appendChild(birth1);
+		birthContainer.appendChild(birthCol);		
+		
+		
+		var phoneContainer = document.createElement("div");
+		phoneContainer.setAttribute("class", "row mt-3");
+		var phoneText = document.createElement("div");
+		phoneText.setAttribute("class", "col-2");	
+		var phoneP = document.createElement("p");
+		phoneP.setAttribute("class", "info-border-l");
+		phoneP.innerText = "핸드폰";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";		
+		
+		var phoneFirst = document.createElement("div");
+		phoneFirst.setAttribute("class", "col-2");
+		var inputFirst = document.createElement("input");
+		inputFirst.setAttribute("class", "form-control");		
+		inputFirst.setAttribute("id", "inputPhone");
+		inputFirst.setAttribute("type", "text");
+		inputFirst.setAttribute("placeholder", "010");
+		inputFirst.setAttribute("oninput", "onlyNumber(this)");
+		inputFirst.setAttribute("maxlength", 3);
+		var phoneInput = document.createElement("input");
+		phoneInput.setAttribute("type", "hidden");	
+		phoneInput.setAttribute("name", "member_phone");
+		var phoneSecond = document.createElement("div");
+		phoneSecond.setAttribute("class", "col-2");
+		var inputSecond = document.createElement("input");
+		inputSecond.setAttribute("class", "form-control");		
+		inputSecond.setAttribute("id", "inputPhone2");
+		inputSecond.setAttribute("type", "text");
+		inputSecond.setAttribute("placeholder", "1111");
+		inputSecond.setAttribute("oninput", "onlyNumber(this)");
+		inputSecond.setAttribute("maxlength", 4);
+		var phoneThird = document.createElement("div");
+		phoneThird.setAttribute("class", "col-2");
+		var inputThird = document.createElement("input");
+		inputThird.setAttribute("class", "form-control");		
+		inputThird.setAttribute("id", "inputPhone3");
+		inputThird.setAttribute("type", "text");
+		inputThird.setAttribute("placeholder", "2222");
+		inputThird.setAttribute("oninput", "onlyNumber(this)");
+		inputThird.setAttribute("maxlength", 4);				
+		
+		phoneP.appendChild(star);
+		phoneText.appendChild(phoneP);
+		phoneFirst.appendChild(inputFirst);
+		phoneFirst.appendChild(phoneInput);
+		phoneSecond.appendChild(inputSecond);
+		phoneThird.appendChild(inputThird);
+		phoneContainer.appendChild(phoneText);
+		phoneContainer.appendChild(phoneFirst);
+		phoneContainer.appendChild(phoneSecond);
+		phoneContainer.appendChild(phoneThird);
+		
+
+		var emailContainer = document.createElement("div");
+		emailContainer.setAttribute("class", "row mt-3");
+		var emailCol = document.createElement("div");
+		emailCol.setAttribute("class", "col");	
+		var email1 = document.createElement("div");
+		email1.setAttribute("class", "row");
+		var emailText = document.createElement("div");
+		emailText.setAttribute("class", "col-2");	
+		var emailP = document.createElement("p");
+		emailP.setAttribute("class", "info-border-l");
+		emailP.innerText = "이메일";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";	
+		emailP.appendChild(star);
+		emailText.appendChild(emailP);
+		email1.appendChild(emailText);
+		
+		if(customer_kakao_email == "undefined" || customer_kakao_email == null) {
+			var emailId = document.createElement("div");
+			emailId.setAttribute("class", "col-3");		
+			var inputEmailId = document.createElement("input");
+			inputEmailId.setAttribute("class", "form-control");		
+			inputEmailId.setAttribute("id", "inputEmail");
+			inputEmailId.setAttribute("type", "text");		
+			inputEmailId.setAttribute("onblur", "confirmEmail()");
+			inputEmailId.setAttribute("style", "padding-right:1px;");
+			var emailInput = document.createElement("input");
+			emailInput.setAttribute("type", "hidden");	
+			emailInput.setAttribute("name", "member_email");
+			var at = document.createElement("div");
+			at.setAttribute("class", "center");
+			at.setAttribute("style", "width:1px; padding-bottom:15px; padding-right:12px; padding-left:0px; padding-top:0px;");
+			at.innerText = "@";
+			var emailDomain = document.createElement("div");
+			emailDomain.setAttribute("class", "col-3");
+			var inputEmailDomain = document.createElement("input");
+			inputEmailDomain.setAttribute("class", "form-control");		
+			inputEmailDomain.setAttribute("id", "inputEmailDomain");
+			inputEmailDomain.setAttribute("type", "text");		
+			inputEmailDomain.setAttribute("onblur", "confirmEmailDomain()");		
+			var emailSelectBox = document.createElement("div");
+			emailSelectBox.setAttribute("class", "col-3 p-0");		
+			var selectEmailDomain = document.createElement("select");
+			selectEmailDomain.setAttribute("onchange", "setEmailDomain(this.value);return false;");
+			selectEmailDomain.setAttribute("class", "form-control");
+			var domain_list = ["직접입력", "naver.com", "gmail.com", "daum.net", "hotmail.com", "korea.com", "nate.com", "yahoo.com"];
+			for(var domain of domain_list) {
+				var option = document.createElement("option");
+				option.value = domain;
+				option.innerText = domain;
+				selectEmailDomain.appendChild(option);
+			}
+			
+			var email2 = document.createElement("div");
+			email2.setAttribute("class", "row");
+			var emailBlank = document.createElement("div");
+			emailBlank.setAttribute("class", "col-2");	
+			var emailConfirmBox = document.createElement("div");
+			emailConfirmBox.setAttribute("class", "col");
+			var emailConfirm = document.createElement("div");
+			emailConfirm.setAttribute("id", "emailConfirmPwAlertBox");
+			emailConfirm.setAttribute("class", "text-fs-12");		
+			
+
+			emailId.appendChild(inputEmailId);
+			emailId.appendChild(emailInput);
+			emailDomain.appendChild(inputEmailDomain);
+			emailSelectBox.appendChild(selectEmailDomain);
+
+			email1.appendChild(emailId);
+			email1.appendChild(at);
+			email1.appendChild(emailDomain);
+			email1.appendChild(emailSelectBox);
+			emailConfirmBox.appendChild(emailConfirm);
+			email2.appendChild(emailBlank);
+			email2.appendChild(emailConfirmBox);		
+			
+			emailCol.appendChild(email1);
+			emailCol.appendChild(email2);			
+		} else {
+			var kakaoEmail = document.createElement("div");
+			kakaoEmail.setAttribute("class", "col-8");
+			kakaoEmail.setAttribute("style", "margin-top:.5rem;");
+			kakaoEmail.innerText = customer_kakao_email;
+			
+			var emailInput = document.createElement("input");
+			emailInput.setAttribute("type", "hidden");	
+			emailInput.setAttribute("name", "member_email");			
+			emailInput.value = customer_kakao_email;
+			
+			email1.appendChild(kakaoEmail);
+			email1.appendChild(emailInput);
+			emailCol.appendChild(email1);
+		}		
+				
+		emailContainer.appendChild(emailCol);		
+		
+		var profileContainer = document.createElement("div");
+		profileContainer.setAttribute("class", "row mt-3");
+		var profileText = document.createElement("div");
+		profileText.setAttribute("class", "col-2");	
+		var profileP = document.createElement("p");
+		profileP.setAttribute("class", "info-border-l");
+		profileP.innerText = "프로필";	
+		
+		var profileInputBox = document.createElement("div");
+		profileInputBox.setAttribute("class", "col-4");
+		
+		if(customer_kakao_profile == null || customer_kakao_profile == "undefined") {
+			var inputProfile = document.createElement("input");
+			inputProfile.setAttribute("class", "form-control form-control-sm mt-2");		
+			inputProfile.setAttribute("id", "formFileSm");
+			inputProfile.setAttribute("type", "file");
+			inputProfile.setAttribute("name", "uploadFileThumbnail");
+			inputProfile.setAttribute("accept", "image/*");
+			inputProfile.setAttribute("onchange", "setThumbnail(event)");
+			profileInputBox.appendChild(inputProfile);			
+		} else {
+			var toggelText = document.createElement("span");
+			toggelText.innerText = "카카오프로필 사용하기";
+			toggelText.setAttribute("class", "mt-2")
+			var label = document.createElement("label");
+			label.setAttribute("class", "switch ms-2 mt-2");
+			var toggle = document.createElement("input");
+			toggle.setAttribute("type", "checkbox");
+			toggle.setAttribute("checked", true);
+			toggle.setAttribute("onclick", "changeToggle(this)");
+			var slider = document.createElement("span");
+			slider.setAttribute("class", "slider round");
+			label.appendChild(toggle);
+			label.appendChild(slider);
+			
+			var kakaoProfile = document.createElement("input");
+			kakaoProfile.setAttribute("type", "hidden");
+			kakaoProfile.setAttribute("name", "kakao_profile");
+			kakaoProfile.setAttribute("id", "kakao_profile");
+			kakaoProfile.value = customer_kakao_profile;
+			
+			profileInputBox.appendChild(toggelText);
+			profileInputBox.appendChild(label);
+			profileInputBox.appendChild(kakaoProfile);
+		}		
+		
+		var profileBlank = document.createElement("div");
+		profileBlank.setAttribute("class", "col"); 
+				
+		profileText.appendChild(profileP);								
+		profileContainer.appendChild(profileText);
+		profileContainer.appendChild(profileInputBox);
+		profileContainer.appendChild(profileBlank);	
+		
+		
+		var addrContainer = document.createElement("div");
+		addrContainer.setAttribute("class", "row mt-3");
+		var addrCol = document.createElement("div");
+		addrCol.setAttribute("class", "col");	
+		var addr1 = document.createElement("div");
+		addr1.setAttribute("class", "row");
+		var addrText = document.createElement("div");
+		addrText.setAttribute("class", "col-2");	
+		var addrP = document.createElement("p");
+		addrP.setAttribute("class", "info-border-l");
+		addrP.innerText = "주소";
+		var addrInputBox = document.createElement("div");
+		addrInputBox.setAttribute("class", "col-8");	
+		var inputFirstAddr = document.createElement("input");
+		inputFirstAddr.setAttribute("id", "inputAddress");
+		inputFirstAddr.setAttribute("type", "text");
+		inputFirstAddr.setAttribute("class", "form-control");
+		inputFirstAddr.setAttribute("readonly", true);
+		var inputAddr = document.createElement("input");
+		inputAddr.setAttribute("name", "member_address");
+		inputAddr.setAttribute("type", "hidden");
+		var btnBox = document.createElement("div");
+		btnBox.setAttribute("class", "col");
+		var addrBtn = document.createElement("button");
+		addrBtn.setAttribute("type", "button");
+		addrBtn.setAttribute("class", "btn btn-outline-dark");
+		addrBtn.setAttribute("onclick", "findAddr()");
+		addrBtn.innerText = "주소찾기";
+		
+		var addr2 = document.createElement("div");
+		addr2.setAttribute("class", "row");
+		var addrText2 = document.createElement("div");
+		addrText2.setAttribute("class", "col-2");	
+		var addrP2 = document.createElement("p");
+		addrP2.setAttribute("class", "pl-4 mt-1");
+		addrP2.innerText = "상세주소";
+		var addrInputBox2 = document.createElement("div");
+		addrInputBox2.setAttribute("class", "col-7");	
+		var inputSecondAddr2 = document.createElement("input");
+		inputSecondAddr2.setAttribute("id", "inputDetailAddress");
+		inputSecondAddr2.setAttribute("type", "text");
+		inputSecondAddr2.setAttribute("class", "form-control");			
+		
+		addrText.appendChild(addrP);
+		addrInputBox.appendChild(inputFirstAddr);
+		addrInputBox.appendChild(inputAddr);
+		btnBox.appendChild(addrBtn);
+		addr1.appendChild(addrText);
+		addr1.appendChild(addrInputBox);
+		addr1.appendChild(btnBox);		
+		addrText2.appendChild(addrP2);
+		addrInputBox2.appendChild(inputSecondAddr2);
+		addr2.appendChild(addrText2);
+		addr2.appendChild(addrInputBox2);
+		addrCol.appendChild(addr1);
+		addrCol.appendChild(addr2);
+		addrContainer.appendChild(addrCol);
+		
+		
+		var jobContainer = document.createElement("div");
+		jobContainer.setAttribute("class", "row mt-3");
+		var jobText = document.createElement("div");
+		jobText.setAttribute("class", "col-2");	
+		var jobP = document.createElement("p");
+		jobP.setAttribute("class", "info-border-l");
+		jobP.innerText = "희망직종";			
+		var jobCategory = document.createElement("div");
+		jobCategory.setAttribute("class", "col");
+		var jobBtnGroup = document.createElement("div");
+		jobBtnGroup.setAttribute("class", "eblock-buttons");		
+		var jobList = /*[[ ${jobList} ]]*/;
+		for(job of jobList) {
+			if(job.job_name == '기타') continue;
+			var span = document.createElement("span");
+			span.setAttribute("class", "job-btn-round job-btn-r-gray border-box");
+			span.setAttribute("onclick", "selectJob(this)");
+			if(job.job_name.length < 3) {
+				span.classList.add("px-4");
+			}			
+			span.innerText = job.job_name;
+			span.value = job.job_no;
+			jobBtnGroup.appendChild(span);
+		}
+
+		jobText.appendChild(jobP);
+		jobCategory.appendChild(jobBtnGroup);
+		jobContainer.appendChild(jobText);
+		jobContainer.appendChild(jobCategory);				
+		
+		
+		var localContainer = document.createElement("div");
+		localContainer.setAttribute("class", "row mt-3");
+		var localText = document.createElement("div");
+		localText.setAttribute("class", "col-2");	
+		var localP = document.createElement("p");
+		localP.setAttribute("class", "info-border-l");
+		localP.innerText = "희망지역";			
+		var localCategory = document.createElement("div");
+		localCategory.setAttribute("class", "col");
+		var localBtnGroup = document.createElement("div");
+		localBtnGroup.setAttribute("class", "eblock-buttons");		
+		var localList = /*[[ ${localList} ]]*/;
+		for(local of localList) {
+			if(local.local_name == '기타') continue;
+			var span = document.createElement("span");
+			span.setAttribute("class", "local-btn-round local-btn-r-pink border-box");
+			if(local.local_name.length < 3) {
+				span.classList.add("px-3");
+			}
+			span.setAttribute("onclick", "selectLocal(this)");
+			span.innerText = local.local_name;
+			span.value = local.local_no;
+			localBtnGroup.appendChild(span);
+		}
+
+		localText.appendChild(localP);
+		localCategory.appendChild(localBtnGroup);
+		localContainer.appendChild(localText);
+		localContainer.appendChild(localCategory);			
+		
+		
+		var btnContainer = document.createElement("div");
+		btnContainer.setAttribute("class", "row mt-5");
+		var btnBlank1 = document.createElement("div");
+		btnBlank1.setAttribute("class", "col");
+		var btnBox = document.createElement("div");
+		btnBox.setAttribute("class", "col-4 d-grid");
+		var submitBtn = document.createElement("div");
+		submitBtn.setAttribute("class", "btn btn-dark");
+		submitBtn.setAttribute("onclick", "joinMemberValidCheck(event)");
+		submitBtn.innerText = "회원가입";
+		var btnBlank2 = document.createElement("div");
+		btnBlank2.setAttribute("class", "col");
+		
+		btnBox.appendChild(submitBtn);
+		btnContainer.appendChild(btnBlank1);
+		btnContainer.appendChild(btnBox);
+		btnContainer.appendChild(btnBlank2);
+		
+		var botBlank = document.createElement("div");
+		botBlank.setAttribute("class", "row mt-2 mb-5");
+		
+		info.appendChild(frame1);
+		info.appendChild(birthContainer);
+		info.appendChild(phoneContainer);
+		info.appendChild(emailContainer);
+		info.appendChild(profileContainer);
+		info.appendChild(addrContainer);
+		info.appendChild(jobContainer);
+		info.appendChild(localContainer);
+		info.appendChild(btnContainer);
+		info.appendChild(botBlank);
+		
+		var blankCol2 = document.createElement("div");
+		blankCol2.setAttribute("class", "col");
+		
+		frmContainer.appendChild(blankCol1);
+		frmContainer.appendChild(info);
+		frmContainer.appendChild(blankCol2);
+		frm.appendChild(frmContainer);
+		
+		var botBlank = document.createElement("div");
+		botBlank.setAttribute("class", "row");
+		botBlank.setAttribute("style", "padding:100px;");
+		
+		containerCol.appendChild(blankRow);
+		containerCol.appendChild(titleRow);
+		containerCol.appendChild(frm);
+		containerCol.appendChild(botBlank);
+		container.appendChild(containerCol);
+		root.appendChild(container);
+		
+		createBirthSelect();
+	}
+	
+	function createBizBox() {
+		var root = document.querySelector("#mainContainer");
+		root.innerHTML = "";
+		
+		var container = document.createElement("div");
+		container.setAttribute("class", "row");		
+		var containerCol = document.createElement("div");
+		containerCol.setAttribute("class", "col");
+		
+		var blankRow = document.createElement("div");
+		blankRow.setAttribute("class", "row");
+		blankRow.setAttribute("style", "padding:25px;");
+		
+		var titleRow = document.createElement("div");
+		titleRow.setAttribute("class", "row");
+		var titleCol = document.createElement("div");
+		titleCol.setAttribute("class", "col  text-center fs-2 fw-bold");
+		titleCol.innerText = "회원가입"
+		titleRow.appendChild(titleCol);
+		
+		var frm = document.createElement("form");
+		frm.setAttribute("action", "joinMemberProcess");
+		frm.setAttribute("method", "post");
+		frm.setAttribute("id", "frm");
+		frm.setAttribute("enctype", "multipart/form-data");
+		var frmContainer = document.createElement("div");
+		frmContainer.setAttribute("class", "row mt-5 bg-gray-c_e1t rounded-10 ms-5 me-5");
+		var blankCol1 = document.createElement("div");
+		blankCol1.setAttribute("class", "col");		
+		var info = document.createElement("div");
+		info.setAttribute("class", "col-10");
+		var frame1 = document.createElement("div");
+		frame1.setAttribute("class", "row");
+		
+		var frame1_col1 = document.createElement("div");
+		frame1_col1.setAttribute("class", "col-8");	
+		var idContainer = document.createElement("div");
+		idContainer.setAttribute("class", "row mt-5");
+		var idCol = document.createElement("div");
+		idCol.setAttribute("class", "col");	
+		var id1 = document.createElement("div");
+		id1.setAttribute("class", "row");
+		var idText = document.createElement("div");
+		idText.setAttribute("class", "col-3");	
+		var idP = document.createElement("p");
+		idP.setAttribute("class", "info-border-l");
+		idP.innerText = "아이디";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";
+		idP.appendChild(star);
+		idText.appendChild(idP);
+		id1.appendChild(idText);
+		
+		var idInputBox = document.createElement("div");
+		idInputBox.setAttribute("class", "col-7");
+		var idInput = document.createElement("input");
+		idInput.setAttribute("name", "member_id");
+		idInput.setAttribute("id", "inputId");
+		
+		idInput.setAttribute("class", "form-control");						
+		idInput.setAttribute("type", "text");
+		idInput.setAttribute("placeholder", "아이디를 입력해주세요");
+		idInput.setAttribute("onblur", "confirmId()");
+		idInput.setAttribute("maxlength", 16);
+		idInputBox.appendChild(idInput);
+		id1.appendChild(idInputBox);
+		
+		var id2 = document.createElement("div");
+		id2.setAttribute("class", "row");
+		var idBlank = document.createElement("div");
+		idBlank.setAttribute("class", "col-3");	
+		var idConfirmBox = document.createElement("div");
+		idConfirmBox.setAttribute("class", "col-7");
+		var idConfirm = document.createElement("div");
+		idConfirm.setAttribute("id", "confirmIdAlertBox");
+		idConfirm.setAttribute("style", "font-size: small;");
+		idConfirmBox.appendChild(idConfirm);
+		id2.appendChild(idBlank);
+		id2.appendChild(idConfirmBox);
+		idCol.appendChild(id1);
+		idCol.appendChild(id2);			
+
+		var typeInput = document.createElement("input");
+		typeInput.setAttribute("type", "hidden");
+		typeInput.setAttribute("value", "B");
+		typeInput.setAttribute("name", "member_type");		
+		
+		idCol.appendChild(typeInput);
+
+		idContainer.appendChild(idCol);
+		frame1_col1.appendChild(idContainer);
+		
+		var pwContainer = document.createElement("div");
+		pwContainer.setAttribute("class", "row mt-3");
+		var pwCol = document.createElement("div");
+		pwCol.setAttribute("class", "col");	
+		var pw1 = document.createElement("div");
+		pw1.setAttribute("class", "row");
+		var pwText = document.createElement("div");
+		pwText.setAttribute("class", "col-3");	
+		var pwP = document.createElement("p");
+		pwP.setAttribute("class", "info-border-l");
+		pwP.innerText = "비밀번호";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";
+		
+		var pwInputBox = document.createElement("div");
+		pwInputBox.setAttribute("class", "col-7");
+		var pwInput = document.createElement("input");
+		pwInput.setAttribute("class", "form-control");
+		pwInput.setAttribute("name", "member_pw");
+		pwInput.setAttribute("id", "inputPw");
+		pwInput.setAttribute("type", "password");
+		pwInput.setAttribute("placeholder", "비밀번호를 입력해주세요");
+		pwInput.setAttribute("onblur", "confirmPw()");
+		
+		var pw2 = document.createElement("div");
+		pw2.setAttribute("class", "row");
+		var pwBlank = document.createElement("div");
+		pwBlank.setAttribute("class", "col-3");	
+		var pwConfirmBox = document.createElement("div");
+		pwConfirmBox.setAttribute("class", "col-7");
+		var pwConfirm = document.createElement("div");
+		pwConfirm.setAttribute("id", "confirmPwAlertBox");
+		pwConfirm.setAttribute("style", "font-size: small;");
+		
+		pwP.appendChild(star);
+		pwText.appendChild(pwP);
+		pwInputBox.appendChild(pwInput);		
+		pw1.appendChild(pwText);
+		pw1.appendChild(pwInputBox);
+		pwConfirmBox.appendChild(pwConfirm);
+		pw2.appendChild(pwBlank);
+		pw2.appendChild(pwConfirmBox);
+		pwCol.appendChild(pw1);
+		pwCol.appendChild(pw2);
+		pwContainer.appendChild(pwCol);
+		frame1_col1.appendChild(pwContainer);		
+		
+		
+		var repwContainer = document.createElement("div");
+		repwContainer.setAttribute("class", "row mt-3");
+		var repwCol = document.createElement("div");
+		repwCol.setAttribute("class", "col");	
+		var repw1 = document.createElement("div");
+		repw1.setAttribute("class", "row");
+		var repwText = document.createElement("div");
+		repwText.setAttribute("class", "col-3 pr-0");	
+		var repwP = document.createElement("p");
+		repwP.setAttribute("class", "info-border-l text-fs-15");
+		repwP.innerText = "비밀번호 확인";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft");
+		star.innerText = " *";
+		
+		var repwInputBox = document.createElement("div");
+		repwInputBox.setAttribute("class", "col-7");
+		var repwInput = document.createElement("input");
+		repwInput.setAttribute("class", "form-control");		
+		repwInput.setAttribute("id", "inputPwConfirm");
+		repwInput.setAttribute("type", "password");
+		repwInput.setAttribute("placeholder", "비밀번호를 재입력해주세요");
+		repwInput.setAttribute("onblur", "reConfirmPw()");
+		
+		var repw2 = document.createElement("div");
+		repw2.setAttribute("class", "row");
+		var repwBlank = document.createElement("div");
+		repwBlank.setAttribute("class", "col-3");	
+		var repwConfirmBox = document.createElement("div");
+		repwConfirmBox.setAttribute("class", "col-7");
+		var repwConfirm = document.createElement("div");
+		repwConfirm.setAttribute("id", "reConfirmPwAlertBox");
+		repwConfirm.setAttribute("style", "font-size: small;");
+		
+		repwP.appendChild(star);
+		repwText.appendChild(repwP);
+		repwInputBox.appendChild(repwInput);		
+		repw1.appendChild(repwText);
+		repw1.appendChild(repwInputBox);
+		repwConfirmBox.appendChild(repwConfirm);
+		repw2.appendChild(repwBlank);
+		repw2.appendChild(repwConfirmBox);
+		repwCol.appendChild(repw1);
+		repwCol.appendChild(repw2);
+		repwContainer.appendChild(repwCol);
+		frame1_col1.appendChild(repwContainer);			
+		
+		
+		var nameContainer = document.createElement("div");
+		nameContainer.setAttribute("class", "row mt-3");
+		var nameCol = document.createElement("div");
+		nameCol.setAttribute("class", "col");	
+		var name1 = document.createElement("div");
+		name1.setAttribute("class", "row");
+		var nameText = document.createElement("div");
+		nameText.setAttribute("class", "col-3 pr-0");	
+		var nameP = document.createElement("p");
+		nameP.setAttribute("class", "info-border-l");
+		nameP.innerText = "회사명";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";
+		
+		var nameInputBox = document.createElement("div");
+		nameInputBox.setAttribute("class", "col-7");
+		var nameInput = document.createElement("input");
+		nameInput.setAttribute("class", "form-control");		
+		nameInput.setAttribute("id", "inputName");
+		nameInput.setAttribute("name", "member_name");
+		nameInput.setAttribute("type", "text");
+		nameInput.setAttribute("placeholder", "회사명을 입력해주세요");
+
+		nameP.appendChild(star);
+		nameText.appendChild(nameP);
+		nameInputBox.appendChild(nameInput);		
+		name1.appendChild(nameText);
+		name1.appendChild(nameInputBox);		
+		nameCol.appendChild(name1);		
+		nameContainer.appendChild(nameCol);
+		frame1_col1.appendChild(nameContainer);					
+		
+		var frame1_col2 = document.createElement("div");
+		frame1_col2.setAttribute("class", "col mt-5 p-0");	
+		var profileBox = document.createElement("div");
+		profileBox.setAttribute("class", "border mt-3");
+		profileBox.setAttribute("id", "profile_thumbnail");
+		profileBox.setAttribute("style", "width:150px; height:180px; margin-left:5rem;");
+		var img = document.createElement("img");
+		img.setAttribute("class", "img-fluid");		
+		img.setAttribute("src", "../img/basic_profile.png");
+		img.setAttribute("style", "width:100%; height:100%;");
+		
+		profileBox.appendChild(img);
+		frame1_col2.appendChild(profileBox);
+		
+		frame1.appendChild(frame1_col1);
+		frame1.appendChild(frame1_col2);
+		
+		var managerContainer = document.createElement("div");
+		managerContainer.setAttribute("class", "row mt-3");
+		var managerCol = document.createElement("div");
+		managerCol.setAttribute("class", "col");	
+		var manager1 = document.createElement("div");
+		manager1.setAttribute("class", "row");
+		var managerText = document.createElement("div");
+		managerText.setAttribute("class", "col-2 pr-0");	
+		var managerP = document.createElement("p");
+		managerP.setAttribute("class", "info-border-l text-fs-15");
+		managerP.innerText = "담당자명";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";
+		
+		var managerInputBox = document.createElement("div");
+		managerInputBox.setAttribute("class", "col-7");
+		var managerInput = document.createElement("input");
+		managerInput.setAttribute("class", "form-control");		
+		managerInput.setAttribute("id", "inputManager");
+		managerInput.setAttribute("name", "company_manager");
+		managerInput.setAttribute("type", "text");
+		managerInput.setAttribute("placeholder", "담당자명(한글)을 입력해주세요");
+		managerInput.setAttribute("onkeypress", "onlyKorean(event)");
+		managerInput.setAttribute("oninput", "slice(this)");
+		managerInput.setAttribute("maxlength", 5);
+		
+		managerP.appendChild(star);
+		managerText.appendChild(managerP);
+		managerInputBox.appendChild(managerInput);		
+		manager1.appendChild(managerText);
+		manager1.appendChild(managerInputBox);		
+		managerCol.appendChild(manager1);		
+		managerContainer.appendChild(managerCol);
+		frame1_col1.appendChild(managerContainer);		
+		
+		
+		var phoneContainer = document.createElement("div");
+		phoneContainer.setAttribute("class", "row mt-3");
+		var phoneText = document.createElement("div");
+		phoneText.setAttribute("class", "col-2");	
+		var phoneP = document.createElement("p");
+		phoneP.setAttribute("class", "info-border-l text-fs-15");
+		phoneP.innerText = "담당자 번호";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft");
+		star.innerText = " *";		
+		
+		var phoneFirst = document.createElement("div");
+		phoneFirst.setAttribute("class", "col-2");
+		var inputFirst = document.createElement("input");
+		inputFirst.setAttribute("class", "form-control");		
+		inputFirst.setAttribute("id", "inputPhone");
+		inputFirst.setAttribute("type", "text");
+		inputFirst.setAttribute("placeholder", "010");
+		inputFirst.setAttribute("oninput", "onlyNumber(this)");
+		inputFirst.setAttribute("maxlength", 3);
+		var phoneInput = document.createElement("input");
+		phoneInput.setAttribute("type", "hidden");	
+		phoneInput.setAttribute("name", "member_phone");
+		var phoneSecond = document.createElement("div");
+		phoneSecond.setAttribute("class", "col-2");
+		var inputSecond = document.createElement("input");
+		inputSecond.setAttribute("class", "form-control");		
+		inputSecond.setAttribute("id", "inputPhone2");
+		inputSecond.setAttribute("type", "text");
+		inputSecond.setAttribute("placeholder", "1111");
+		inputSecond.setAttribute("oninput", "onlyNumber(this)");
+		inputSecond.setAttribute("maxlength", 4);
+		var phoneThird = document.createElement("div");
+		phoneThird.setAttribute("class", "col-2");
+		var inputThird = document.createElement("input");
+		inputThird.setAttribute("class", "form-control");		
+		inputThird.setAttribute("id", "inputPhone3");
+		inputThird.setAttribute("type", "text");
+		inputThird.setAttribute("placeholder", "2222");
+		inputThird.setAttribute("oninput", "onlyNumber(this)");
+		inputThird.setAttribute("maxlength", 4);				
+		
+		phoneP.appendChild(star);
+		phoneText.appendChild(phoneP);
+		phoneFirst.appendChild(inputFirst);
+		phoneFirst.appendChild(phoneInput);
+		phoneSecond.appendChild(inputSecond);
+		phoneThird.appendChild(inputThird);
+		phoneContainer.appendChild(phoneText);
+		phoneContainer.appendChild(phoneFirst);
+		phoneContainer.appendChild(phoneSecond);
+		phoneContainer.appendChild(phoneThird);
+		
+		
+		var bizNumContainer = document.createElement("div");
+		bizNumContainer.setAttribute("class", "row mt-3");
+		var bizNumText = document.createElement("div");
+		bizNumText.setAttribute("class", "col-2");	
+		var bizNumP = document.createElement("p");
+		bizNumP.setAttribute("class", "info-border-l text-fs-15");
+		bizNumP.innerText = "사업자 번호";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft");
+		star.innerText = " *";		
+		
+		var bizNumInputBox = document.createElement("div");
+		bizNumInputBox.setAttribute("class", "col-5");
+		var inputBizNum = document.createElement("input");
+		inputBizNum.setAttribute("class", "form-control");		
+		inputBizNum.setAttribute("id", "inputBizNum");
+		inputBizNum.setAttribute("name", "company_license_number");
+		inputBizNum.setAttribute("type", "text");
+		inputBizNum.setAttribute("oninput", "inputBizNumber(this)");
+		inputBizNum.setAttribute("maxlength", 12);			
+				
+		bizNumP.appendChild(star);
+		bizNumText.appendChild(bizNumP);
+		bizNumInputBox.appendChild(inputBizNum);
+		bizNumContainer.appendChild(bizNumText);
+		bizNumContainer.appendChild(bizNumInputBox);			
+
+		
+		var bizImgContainer = document.createElement("div");
+		bizImgContainer.setAttribute("class", "row mt-3");
+		var bizImgText = document.createElement("div");
+		bizImgText.setAttribute("class", "col-2 pr-0");	
+		var bizImgP = document.createElement("p");
+		bizImgP.setAttribute("class", "info-border-l text-fs-15");
+		bizImgP.innerText = "사업자 등록증";		
+		var bizImgInputBox = document.createElement("div");
+		bizImgInputBox.setAttribute("class", "col-4");
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft");
+		star.innerText = " *";		
+		
+		var inputbizImg = document.createElement("input");
+		inputbizImg.setAttribute("class", "form-control form-control-sm");		
+		inputbizImg.setAttribute("id", "inputBizImg");
+		inputbizImg.setAttribute("type", "file");
+		inputbizImg.setAttribute("name", "uploadFileBizImg");
+		inputbizImg.setAttribute("accept", "image/*");
+		bizImgInputBox.appendChild(inputbizImg);			
+			
+		var bizImgBlank = document.createElement("div");
+		bizImgBlank.setAttribute("class", "col");
+		
+		bizImgP.appendChild(star);
+		bizImgText.appendChild(bizImgP);								
+		bizImgContainer.appendChild(bizImgText);
+		bizImgContainer.appendChild(bizImgInputBox);
+		bizImgContainer.appendChild(bizImgBlank);			
+		
+		
+		var emailContainer = document.createElement("div");
+		emailContainer.setAttribute("class", "row mt-3");
+		var emailCol = document.createElement("div");
+		emailCol.setAttribute("class", "col");	
+		var email1 = document.createElement("div");
+		email1.setAttribute("class", "row");
+		var emailText = document.createElement("div");
+		emailText.setAttribute("class", "col-2");	
+		var emailP = document.createElement("p");
+		emailP.setAttribute("class", "info-border-l");
+		emailP.innerText = "이메일";
+		var star = document.createElement("span");
+		star.setAttribute("class", "text-red-soft p-1");
+		star.innerText = "*";	
+		emailP.appendChild(star);
+		emailText.appendChild(emailP);
+		email1.appendChild(emailText);
+		
+
+		var emailId = document.createElement("div");
+		emailId.setAttribute("class", "col-3");		
+		var inputEmailId = document.createElement("input");
+		inputEmailId.setAttribute("class", "form-control");		
+		inputEmailId.setAttribute("id", "inputEmail");
+		inputEmailId.setAttribute("type", "text");		
+		inputEmailId.setAttribute("onblur", "confirmEmail()");
+		inputEmailId.setAttribute("style", "padding-right:1px;");
+		var emailInput = document.createElement("input");
+		emailInput.setAttribute("type", "hidden");	
+		emailInput.setAttribute("name", "member_email");
+		var at = document.createElement("div");
+		at.setAttribute("class", "center");
+		at.setAttribute("style", "width:1px; padding-bottom:15px; padding-right:12px; padding-left:0px; padding-top:0px;");
+		at.innerText = "@";
+		var emailDomain = document.createElement("div");
+		emailDomain.setAttribute("class", "col-3");
+		var inputEmailDomain = document.createElement("input");
+		inputEmailDomain.setAttribute("class", "form-control");		
+		inputEmailDomain.setAttribute("id", "inputEmailDomain");
+		inputEmailDomain.setAttribute("type", "text");		
+		inputEmailDomain.setAttribute("onblur", "confirmEmailDomain()");		
+		var emailSelectBox = document.createElement("div");
+		emailSelectBox.setAttribute("class", "col-3 p-0");		
+		var selectEmailDomain = document.createElement("select");
+		selectEmailDomain.setAttribute("onchange", "setEmailDomain(this.value);return false;");
+		selectEmailDomain.setAttribute("class", "form-control");
+		var domain_list = ["직접입력", "naver.com", "gmail.com", "daum.net", "hotmail.com", "korea.com", "nate.com", "yahoo.com"];
+		for(var domain of domain_list) {
+			var option = document.createElement("option");
+			option.value = domain;
+			option.innerText = domain;
+			selectEmailDomain.appendChild(option);
+		}
+		
+		var email2 = document.createElement("div");
+		email2.setAttribute("class", "row");
+		var emailBlank = document.createElement("div");
+		emailBlank.setAttribute("class", "col-2");	
+		var emailConfirmBox = document.createElement("div");
+		emailConfirmBox.setAttribute("class", "col");
+		var emailConfirm = document.createElement("div");
+		emailConfirm.setAttribute("id", "emailConfirmPwAlertBox");
+		emailConfirm.setAttribute("style", "font-size: small;");		
+		
+
+		emailId.appendChild(inputEmailId);
+		emailId.appendChild(emailInput);
+		emailDomain.appendChild(inputEmailDomain);
+		emailSelectBox.appendChild(selectEmailDomain);
+
+		email1.appendChild(emailId);
+		email1.appendChild(at);
+		email1.appendChild(emailDomain);
+		email1.appendChild(emailSelectBox);
+		emailConfirmBox.appendChild(emailConfirm);
+		email2.appendChild(emailBlank);
+		email2.appendChild(emailConfirmBox);		
+		
+		emailCol.appendChild(email1);
+		emailCol.appendChild(email2);			
+		
+				
+		emailContainer.appendChild(emailCol);		
+		
+		var profileContainer = document.createElement("div");
+		profileContainer.setAttribute("class", "row mt-3");
+		var profileText = document.createElement("div");
+		profileText.setAttribute("class", "col-2");	
+		var profileP = document.createElement("p");
+		profileP.setAttribute("class", "info-border-l");
+		profileP.innerText = "회사 로고";	
+		
+		var profileInputBox = document.createElement("div");
+		profileInputBox.setAttribute("class", "col-4");
+		
+
+		var inputProfile = document.createElement("input");
+		inputProfile.setAttribute("class", "form-control form-control-sm mt-2");		
+		inputProfile.setAttribute("id", "formFileSm");
+		inputProfile.setAttribute("type", "file");
+		inputProfile.setAttribute("name", "uploadFileThumbnail");
+		inputProfile.setAttribute("accept", "image/*");
+		inputProfile.setAttribute("onchange", "setThumbnail(event)");
+		profileInputBox.appendChild(inputProfile);			
+	
+		
+		var profileBlank = document.createElement("div");
+		profileBlank.setAttribute("class", "col"); 
+				
+		profileText.appendChild(profileP);								
+		profileContainer.appendChild(profileText);
+		profileContainer.appendChild(profileInputBox);
+		profileContainer.appendChild(profileBlank);	
+		
+		
+		var addrContainer = document.createElement("div");
+		addrContainer.setAttribute("class", "row mt-3");
+		var addrCol = document.createElement("div");
+		addrCol.setAttribute("class", "col");	
+		var addr1 = document.createElement("div");
+		addr1.setAttribute("class", "row");
+		var addrText = document.createElement("div");
+		addrText.setAttribute("class", "col-2");	
+		var addrP = document.createElement("p");
+		addrP.setAttribute("class", "info-border-l");
+		addrP.innerText = "주소";
+		var addrInputBox = document.createElement("div");
+		addrInputBox.setAttribute("class", "col-8");	
+		var inputFirstAddr = document.createElement("input");
+		inputFirstAddr.setAttribute("id", "inputAddress");
+		inputFirstAddr.setAttribute("type", "text");
+		inputFirstAddr.setAttribute("class", "form-control");
+		inputFirstAddr.setAttribute("readonly", true);
+		var inputAddr = document.createElement("input");
+		inputAddr.setAttribute("name", "member_address");
+		inputAddr.setAttribute("type", "hidden");
+		var btnBox = document.createElement("div");
+		btnBox.setAttribute("class", "col");
+		var addrBtn = document.createElement("button");
+		addrBtn.setAttribute("type", "button");
+		addrBtn.setAttribute("class", "btn btn-outline-dark");
+		addrBtn.setAttribute("onclick", "findAddr()");
+		addrBtn.innerText = "주소찾기";
+		
+		var addr2 = document.createElement("div");
+		addr2.setAttribute("class", "row");
+		var addrText2 = document.createElement("div");
+		addrText2.setAttribute("class", "col-2");	
+		var addrP2 = document.createElement("p");
+		addrP2.setAttribute("class", "pl-4 mt-1");
+		addrP2.innerText = "상세주소";
+		var addrInputBox2 = document.createElement("div");
+		addrInputBox2.setAttribute("class", "col-7");	
+		var inputSecondAddr2 = document.createElement("input");
+		inputSecondAddr2.setAttribute("id", "inputDetailAddress");
+		inputSecondAddr2.setAttribute("type", "text");
+		inputSecondAddr2.setAttribute("class", "form-control");			
+		
+		addrText.appendChild(addrP);
+		addrInputBox.appendChild(inputFirstAddr);
+		addrInputBox.appendChild(inputAddr);
+		btnBox.appendChild(addrBtn);
+		addr1.appendChild(addrText);
+		addr1.appendChild(addrInputBox);
+		addr1.appendChild(btnBox);		
+		addrText2.appendChild(addrP2);
+		addrInputBox2.appendChild(inputSecondAddr2);
+		addr2.appendChild(addrText2);
+		addr2.appendChild(addrInputBox2);
+		addrCol.appendChild(addr1);
+		addrCol.appendChild(addr2);
+		addrContainer.appendChild(addrCol);
+
+		
+		var btnContainer = document.createElement("div");
+		btnContainer.setAttribute("class", "row mt-5");
+		var btnBlank1 = document.createElement("div");
+		btnBlank1.setAttribute("class", "col");
+		var btnBox = document.createElement("div");
+		btnBox.setAttribute("class", "col-4 d-grid");
+		var submitBtn = document.createElement("div");
+		submitBtn.setAttribute("class", "btn btn-dark");
+		submitBtn.setAttribute("onclick", "joinBizMemberValidCheck(event)");
+		submitBtn.innerText = "회원가입";
+		var btnBlank2 = document.createElement("div");
+		btnBlank2.setAttribute("class", "col");
+		
+		btnBox.appendChild(submitBtn);
+		btnContainer.appendChild(btnBlank1);
+		btnContainer.appendChild(btnBox);
+		btnContainer.appendChild(btnBlank2);
+		
+		var botBlank = document.createElement("div");
+		botBlank.setAttribute("class", "row mt-2 mb-5");
+		
+		info.appendChild(frame1);
+		info.appendChild(managerContainer);
+		info.appendChild(phoneContainer);
+		info.appendChild(bizNumContainer);
+		info.appendChild(bizImgContainer);
+		info.appendChild(emailContainer);
+		info.appendChild(profileContainer);
+		info.appendChild(addrContainer);
+		info.appendChild(btnContainer);
+		info.appendChild(botBlank);			
+		
+		var blankCol2 = document.createElement("div");
+		blankCol2.setAttribute("class", "col");
+		
+		frmContainer.appendChild(blankCol1);
+		frmContainer.appendChild(info);
+		frmContainer.appendChild(blankCol2);
+		frm.appendChild(frmContainer);
+		
+		var botBlank = document.createElement("div");
+		botBlank.setAttribute("class", "row");
+		botBlank.setAttribute("style", "padding:100px;");
+		
+		containerCol.appendChild(blankRow);
+		containerCol.appendChild(titleRow);
+		containerCol.appendChild(frm);
+		containerCol.appendChild(botBlank);
+		container.appendChild(containerCol);
+		root.appendChild(container);
+				
+	}
+	
+	
+	function confirmId() {
+		var idBox = document.getElementById("inputId");
+		var idValue = idBox.value;
+		//정규표현식
+		var idRegExp = /^[a-z]+[a-z0-9]{3,15}$/;
+		
+		if(!idRegExp.test($("#inputId").val())){
+			confirm_id = false;
+			confirmIdAlertBox.innerText = "영소문자 또는 영소문자+숫자 4~16자로 입력해 주세요.";
+			confirmIdAlertBox.style.color = "red";
+			return;
+		}		
+		
+		//AJAX 호출
+		var xhr = new XMLHttpRequest();
+		
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200) {
+				var data = JSON.parse(xhr.responseText);
+				
+				var confirmIdAlertBox = document.getElementById("confirmIdAlertBox")
+				
+				if(data.result == true) {
+					confirm_id = false;
+					confirmIdAlertBox.innerText = "이미 존재하는 아이디 입니다.";
+					confirmIdAlertBox.style.color = "red";
+				} else {
+					confirm_id = true;
+					confirmIdAlertBox.innerText = "사용 가능한 아이디 입니다.";
+					confirmIdAlertBox.style.color = "green";
+				}															
+			}
+			
+		};		
+		xhr.open("GET", "./isExistId?member_id=" + idValue, true);
+		xhr.send();
+		
+	}
+	
+	function confirmPw() {
+		//정규표현식...
+		var pwRegExp = /(?=.*\d)(?=.*[a-zA-ZS]).{8,}/;
+		
+		
+		var confirmPwAlertBox = document.getElementById("confirmPwAlertBox");
+		
+		if(!pwRegExp.test($("#inputPw").val())){
+			confirm_pw = false;
+			confirmPwAlertBox.innerText = "문자/숫자 1개이상 포함 8자리 이상이어야 합니다.";
+			confirmPwAlertBox.style.color = "red";			
+		} else {
+			confirm_pw = true;
+			confirmPwAlertBox.innerText = "사용 가능한 비밀번호입니다.";
+			confirmPwAlertBox.style.color = "green";			
+		}
+		
+	}	
+	
+	function reConfirmPw() {
+		
+		var reConfirmPwAlertBox = document.getElementById("reConfirmPwAlertBox")
+		
+		if( $("#inputPw").val() != $("#inputPwConfirm").val() ){
+			confirm_pw = false;
+			reConfirmPwAlertBox.innerText = "입력하신 비밀번호가 일치하지 않습니다.";
+			reConfirmPwAlertBox.style.color = "red";
+		} else {
+			confirm_pw = true;
+			reConfirmPwAlertBox.innerText = "";
+			reConfirmPwAlertBox.style.color = "green";
+		}
+		
+	}
+	
+	function onlyKorean(event) {
+		
+		if((event.keyCode < 12592) || (event.keyCode > 12687)){
+			event.returnValue = false;
+		}
+				
+	}
+	
+	function slice(obj) {
+		if(obj.value.length > obj.maxLength){
+			obj.value = obj.value.slice(0, obj.maxLength);
+        }			
+	}
+	
+	function onlyNumber(obj) {
+		
+		/*if ((event.keyCode < 48) || (event.keyCode > 57))
+            event.returnValue = false;*/
+            
+            obj.value = obj.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');            
+
+	}
+	
+	//사업자번호
+	function inputBizNumber(obj) {
+
+		obj.value = obj.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+		
+		var number = obj.value.replace(/[^0-9]/g, "");
+		var biz = "";
+		
+		
+		
+		if(number.length < 4) {
+		    return number;
+		} else if(number.length < 5) {
+			biz += number.substr(0, 3);
+			biz += "-";
+			biz += number.substr(3);
+		} else if(number.length < 10) {
+			biz += number.substr(0, 3);
+			biz += "-";
+			biz += number.substr(3, 2);
+			biz += "-";
+			biz += number.substr(5);
+		} else {
+			biz += number.substr(0, 3);
+			biz += "-";
+			biz += number.substr(3, 2);
+			biz += "-";
+			biz += number.substr(5);
+		}
+		obj.value = biz;
+	}	
+	
+	function confirmEmail() {
+		//정규표현식...
+		//var emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+		
+		//var emailRegExp = /^[A-za-z0-9]([-_]?[A-za-z0-9])/g;
+		
+		var emailRegExp = /^[A-Za-z0-9+]*$/;
+
+		
+		var inputEmail = document.getElementById("inputEmail");
+		
+		var emailConfirmPwAlertBox = document.getElementById("emailConfirmPwAlertBox");
+		
+		if(!emailRegExp.test(inputEmail.value)) {
+			emailConfirmPwAlertBox.innerText = "이메일 주소를 형식에 맞게 입력해주세요";
+			emailConfirmPwAlertBox.style.color = "red";
+			confirm_email = false;
+		} else {
+			emailConfirmPwAlertBox.innerText = "";
+			emailConfirmPwAlertBox.style.color = "green";
+			confirm_email = true;
+		}
+		
+	}
+	
+	
+	function confirmEmailDomain() {
+		var domainRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+		var inputEmailDomain = document.getElementById("inputEmailDomain");
+		
+		var emailConfirmPwAlertBox = document.getElementById("emailConfirmPwAlertBox");
+		
+		if(!domainRegExp.test(inputEmailDomain.value)) {
+			emailConfirmPwAlertBox.innerText = "이메일 도메인을 형식에 맞게 입력해주세요";
+			emailConfirmPwAlertBox.style.color = "red";
+			confirm_emailDomain = false;
+		} else {
+			emailConfirmPwAlertBox.innerText = "";
+			emailConfirmPwAlertBox.style.color = "green";
+			confirm_emailDomain = true;
+		}
+	}	
+	
+	function setEmailDomain(domain){
+        $("#inputEmailDomain").val(domain);
+        $("#emailConfirmPwAlertBox").text("");
+        confirm_emailDomain = true;        
+    }
+	
+	function findAddr(){
+		new daum.Postcode({
+	        oncomplete: function(data) {
+				
+				// 도로명 주소 변수
+				var roadAddr = data.roadAddress;
+				// 지번 주소 변수
+				var jibunAddr = data.jibunAddress;
+				
+	            if(roadAddr !== ''){
+	                document.getElementById("inputAddress").value = roadAddr;
+	            } 
+	            else if(jibunAddr !== ''){
+	                document.getElementById("inputAddress").value = jibunAddr;
+	            }
+	        }
+	    }).open();
+	}	
+ 	
+  	var confirm_id = false;
+  	var confirm_pw = false;
+  	var confirm_email = false;
+  	var confirm_emailDomain = false;
+	
+	function joinMemberValidCheck(e){
+		
+		e.preventDefault();
+		
+		if(customer_kakao == "Y") {
+			confirm_id = true;
+			confirm_pw = true;
+		}
+		
+		//입력 유무 체크
+		
+		if($("#inputId").val() == ""){
+			alert("아이디를 입력해주세요.");
+			$("#inputId").focus();
+			return;
+		}		
+		
+		if(!confirm_id) {
+			alert("사용 불가능한 아이디 입니다. 다시 입력해주세요.");
+			$("#inputId").focus();
+			return;
+		}
+		
+		if(customer_kakao != "Y") {
+			if($("#inputPw").val() == ""){
+				alert("비밀번호를 입력해주세요.");
+				$("#inputPw").focus();
+				return;
+			}
+			
+			if($("#inputPwConfirm").val() == ""){
+				alert("비밀번호를 재확인해주세요.");
+				$("#inputPwConfirm").focus();
+				return;
+			}
+		}
+		
+		if(!confirm_pw) {
+			alert("비밀번호를 확인해주세요.");
+			$("#inputPw").focus();
+			return;
+		}		
+		
+		if($("#inputName").val() == ""){
+			alert("이름을 입력해주세요.");
+			$("#inputName").focus();
+			return;
+		}
+		
+		if($("#inputPhone").val() == "" || $("#inputPhone2").val() == "" || $("#inputPhone3").val() == ""){
+			alert("휴대폰번호를 입력해주세요.");
+			$("#inputPhone").focus();
+			return;
+		}
+		
+		if(customer_kakao_email == null || customer_kakao_email == "undefined") {
+			if($("#inputEmail").val() == ""){
+				alert("이메일을 입력해주세요.");
+				$("#inputEmail").focus();
+				return;
+			}
+			
+			if($("#inputEmailDomain").val() == ""){
+				alert("이메일 도메인을 입력해주세요.");
+				$("#inputEmailDomain").focus();
+				return;
+			}
+			
+			if(!confirm_email) {
+				alert("이메일을 확인해주세요.");
+				$("#inputEmail").focus();
+				return;			
+			}
+			
+			if(!confirm_emailDomain) {
+				alert("이메일 도메인을 확인해주세요.");
+				$("#inputEmailDomain").focus();
+				return;			
+			}
+			
+			var inputEmail = document.getElementById("inputEmail");
+			var inputEmailDomain = document.getElementById("inputEmailDomain");		
+			document.getElementsByName("member_email")[0].value = inputEmail.value + "@" + inputEmailDomain.value;	
+			
+		}		
+		/*if($("#formFileSm").val() == ""){
+			alert("프로필이미지를 선택해주세요.");
+			$("#formFileSm").focus();
+			return;
+		}
+		
+		if($("#inputBirth_yy").val() == "" || $("#inputBirth_mm").val() == "" || $("#inputBirth_dd").val() == ""){
+			alert("생년월일을 입력해주세요.");
+			$("#inputBirth_yy").focus();
+			return;
+		}
+		
+		if($("#inputAddress").val() == ""){
+			alert("주소를 입력해주세요.");
+			$("#inputAddress").focus();
+			return;
+		}*/ 
+		
+		//휴대폰번호 합치기
+		var inputPhone = document.getElementById("inputPhone");
+		var inputPhone2 = document.getElementById("inputPhone2");
+		var inputPhone3 = document.getElementById("inputPhone3");
+		document.getElementsByName("member_phone")[0].value = inputPhone.value + "-" + inputPhone2.value + "-" + inputPhone3.value;
+		
+		// 생년월일 합치기
+		var inputBirth_yy = document.getElementById("inputBirth_yy");
+		var inputBirth_mm = document.getElementById("inputBirth_mm");
+		var inputBirth_dd = document.getElementById("inputBirth_dd");
+
+		var month = parseInt(inputBirth_mm.value);
+		var day = parseInt(inputBirth_dd.value);
+		
+		
+		if(month == 2 && day > 28) {
+
+			inputBirth_dd.value = "28";
+		}
+		else if(month%2 == 0 && day > 30) {
+
+			inputBirth_dd.value = "30";
+		}
+		
+		var customer_birth = document.getElementsByName("customer_birth")[0];
+		customer_birth.value = inputBirth_yy.value + "-" + inputBirth_mm.value + "-" + inputBirth_dd.value; 				
+		
+		// 상세주소 입력양식 찾기
+		var inputDetailAddress = document.getElementById("inputDetailAddress");
+		var inputAddress = document.getElementById("inputAddress");
+		// 상세주소가 입력된게 있다면 주소찾기를 통해 찾은 주소와 합치기
+		if(inputDetailAddress.value != "") {
+			document.getElementsByName("member_address")[0].value = inputAddress.value + ", " + inputDetailAddress.value;
+		}		
+		
+		var frm = document.getElementById("frm");
+		
+		var jobNoList = document.createElement("input");
+		jobNoList.setAttribute("type", "hidden");
+		jobNoList.setAttribute("name", "job_no_list");
+		jobNoList.value = job_no_list;
+		
+		frm.appendChild(jobNoList);
+		
+		var localNoList = document.createElement("input");
+		localNoList.setAttribute("type", "hidden");
+		localNoList.setAttribute("name", "local_no_list");
+		localNoList.value = local_no_list;
+		
+		frm.appendChild(localNoList);
+		
+		//submit 실행
+		
+		frm.submit();
+		
+	}	
+	
+	
+	function joinBizMemberValidCheck(e){
+		
+		e.preventDefault();
+		
+		//입력 유무 체크
+		
+		if($("#inputId").val() == ""){
+			alert("아이디를 입력해주세요.");
+			$("#inputId").focus();
+			return;
+		}		
+		
+		if(!confirm_id) {
+			alert("사용 불가능한 아이디 입니다. 다시 입력해주세요.");
+			$("#inputId").focus();
+			return;
+		}
+		
+		if($("#inputPw").val() == ""){
+			alert("비밀번호를 입력해주세요.");
+			$("#inputPw").focus();
+			return;
+		}
+		
+		if($("#inputPwConfirm").val() == ""){
+			alert("비밀번호를 재확인해주세요.");
+			$("#inputPwConfirm").focus();
+			return;
+		}
+		
+		if(!confirm_pw) {
+			alert("비밀번호를 확인해주세요.");
+			$("#inputPw").focus();
+			return;
+		}		
+		
+		if($("#inputName").val() == ""){
+			alert("회사명을 입력해주세요.");
+			$("#inputName").focus();
+			return;
+		}
+		
+		if($("#inputManager").val() == ""){
+			alert("담당자명을 입력해주세요.");
+			$("#inputManager").focus();
+			return;
+		}		
+		
+		if($("#inputPhone").val() == "" || $("#inputPhone2").val() == "" || $("#inputPhone3").val() == ""){
+			alert("담당자 휴대폰번호를 입력해주세요.");
+			$("#inputPhone").focus();
+			return;
+		}
+		
+		if($("#inputBizNum").val() == ""){
+			alert("사업자 번호를 입력해주세요.");
+			$("#inputBizNum").focus();
+			return;
+		}
+		
+		if($("#inputBizImg").val() == ""){
+			alert("사업자 등록증을 업로드 해주세요.");
+			$("#inputBizImg").focus();
+			return;
+		}
+			
+		
+		if(customer_kakao_email == null || customer_kakao_email == "undefined") {
+			if($("#inputEmail").val() == ""){
+				alert("이메일을 입력해주세요.");
+				$("#inputEmail").focus();
+				return;
+			}
+			
+			if($("#inputEmailDomain").val() == ""){
+				alert("이메일 도메인을 입력해주세요.");
+				$("#inputEmailDomain").focus();
+				return;
+			}
+			
+			if(!confirm_email) {
+				alert("이메일을 확인해주세요.");
+				$("#inputEmail").focus();
+				return;			
+			}
+			
+			if(!confirm_emailDomain) {
+				alert("이메일 도메인을 확인해주세요.");
+				$("#inputEmailDomain").focus();
+				return;			
+			}
+			
+			var inputEmail = document.getElementById("inputEmail");
+			var inputEmailDomain = document.getElementById("inputEmailDomain");		
+			document.getElementsByName("member_email")[0].value = inputEmail.value + "@" + inputEmailDomain.value;	
+			
+		}		
+		
+		//휴대폰번호 합치기
+		var inputPhone = document.getElementById("inputPhone");
+		var inputPhone2 = document.getElementById("inputPhone2");
+		var inputPhone3 = document.getElementById("inputPhone3");
+		document.getElementsByName("member_phone")[0].value = inputPhone.value + "-" + inputPhone2.value + "-" + inputPhone3.value;
+					
+		
+		// 상세주소 입력양식 찾기
+		var inputDetailAddress = document.getElementById("inputDetailAddress");
+		var inputAddress = document.getElementById("inputAddress");
+		// 상세주소가 입력된게 있다면 주소찾기를 통해 찾은 주소와 합치기
+		if(inputDetailAddress.value != "") {
+			document.getElementsByName("member_address")[0].value = inputAddress.value + ", " + inputDetailAddress.value;
+		}		
+		
+		var frm = document.getElementById("frm");
+
+		//submit 실행
+		
+		frm.submit();
+		
+	}		
+	
+	function createBirthSelect() {
+		var now = new Date();
+		var year = now.getFullYear();
+		var mon = (now.getMonth() + 1) > 9 ? ''+(now.getMonth() + 1) : '0'+(now.getMonth() + 1);
+		var day = (now.getDate()) > 9 ? ''+(now.getDate()) : '0'+(now.getDate()); 
+		
+		//년도 selectbox만들기 
+		for(var i = 1900 ; i <= year ; i++) { 
+			$('#inputBirth_yy').append('<option value="' + i + '">' + i + '년</option>');
+		} 
+		
+		// 월별 selectbox 만들기 
+		for(var i=1; i <= 12; i++) {
+			var mm = i > 9 ? i : "0"+i ;
+			$('#inputBirth_mm').append('<option value="' + mm + '">' + mm + '월</option>');
+		}
+		
+		// 일별 selectbox 만들기
+		for(var i=1; i <= 31; i++) {
+			var dd = i > 9 ? i : "0"+i ;
+			$('#inputBirth_dd').append('<option value="' + dd + '">' + dd+ '일</option>');
+		}
+		
+		// 기본 값 오늘 날짜로 세팅
+		$("#inputBirth_yy > option[value="+year+"]").attr("selected", "true");
+		$("#inputBirth_mm > option[value="+mon+"]").attr("selected", "true");
+		$("#inputBirth_dd > option[value="+day+"]").attr("selected", "true"); 
+		
+	}
+	
+	window.addEventListener("DOMContentLoaded" , function(){
+
+		if(customer_kakao != null && customer_kakao == 'Y') {
+			createCustomerBox();			
+		} else {
+			createMemberBox();
+		}
+		
+	});
+	
+	
+	</script>
+	
+</head>
+<body>
+<div style="width: 1200px; margin:0 auto;">
+  <div class="container-fluid">
+  
+  <th:block th:include="commons/normal_navbar"></th:block>
+	
+	<div class="row mt-3">
+		<div class="col">
+			<div id="mainContainer" class="eframe-width mx-auto w-full">
+			
+			</div>
+		</div>
+	</div>	
+  </div> 
+</div>
+
+	<th:block th:include="commons/footer"></th:block>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

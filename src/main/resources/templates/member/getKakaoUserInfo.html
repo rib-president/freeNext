@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script th:inline="javascript">        
+ 	/*<![CDATA[*/
+	const token =  /*[[ ${access_token} ]]*/;
+	/*]]*/
+	
+	const jsKey = /*[[ ${jsKey }]]*/;
+
+	Kakao.init(jsKey);
+	Kakao.Auth.setAccessToken(token);		
+	Kakao.API.request({
+	    url: '/v2/user/me',
+
+	    success: function(response) {
+	    	createForm(response);
+	    },
+	    fail: function(error) {
+	    	alert("카카오 로그인 실패 :" + token + ", " + jsKey);
+	    	location.href='./loginPage';
+	    }
+	});
+	
+	function createForm(response) {
+		var form = document.createElement("form");
+		form.setAttribute("action", "./checkJoin");
+		form.setAttribute("method", "post");
+		form.setAttribute("style", "display:none;");
+		
+		var id = document.createElement("input");
+		id.setAttribute("name", "member_id");
+		id.setAttribute("value", response.id);
+		// 선택
+		var email = document.createElement("input");
+		email.setAttribute("name", "member_email");
+		email.setAttribute("value", response.kakao_account.email);
+		
+		var nickname = document.createElement("input");
+		nickname.setAttribute("name", "member_name");
+		nickname.setAttribute("value", response.kakao_account.profile.nickname);
+		
+		// 선택
+		var profile = document.createElement("input");
+		profile.setAttribute("name", "member_profile");
+		profile.setAttribute("value", response.kakao_account.profile.profile_image_url);
+		
+		form.appendChild(id);
+		form.appendChild(email);
+		form.appendChild(nickname);
+		form.appendChild(profile);
+		
+		document.body.appendChild(form);
+		
+		form.submit();
+	}
+	
+</script>
+</head>
+<body>
+
+</body>
+</html>

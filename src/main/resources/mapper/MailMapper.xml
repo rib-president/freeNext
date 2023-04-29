@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamb.freenext.mail.mapper.MailMapper">
+
+<select id="selectAllCustomer" resultType="com.teamb.freenext.vo.MemberVo">
+	select *
+	from fn_member
+	where member_type = "N"
+</select>
+
+<select id="selectRandomAlarm" resultType="com.teamb.freenext.vo.ProjectBoardVo">
+	select t2.* from(
+	select fp.*
+	from fn_projectboard fp, (
+	select project_no as fa_project_no
+	from fn_alarm
+	where member_no = #{member_no}
+	<![CDATA[ 
+	and timestampdiff(hour, alarm_date, now()) < 336
+	]]>
+	and alarm_read = 'N') t1
+	where fp.project_no = t1.fa_project_no
+	order by rand()
+	limit 2
+	) as t2
+	order by rand()
+</select>
+
+<select id="selectAdListAll" resultType="com.teamb.freenext.vo.ProjectBoardVo">
+	select fp.*
+	from fn_projectboard fp , fn_ad fa 
+	where fp.project_no = fa.project_no 
+	and timestampdiff(hour, now(), fa.ad_endDate) > 0
+</select>
+
+</mapper>

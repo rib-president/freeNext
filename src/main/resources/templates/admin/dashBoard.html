@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/echarts.min.js" integrity="sha256-up/VQ00XWfwfCN9hDtxDmZk9PgDVs83dQvTPRnWK0p4=" crossorigin="anonymous"></script>
+    <script src="/js/nav.js"></script>
+	<link th:href="@{/css/commons.css}" rel="stylesheet">
+	<link th:href="@{/css/style.css}" rel="stylesheet">
+	
+	<style>
+		.grayColor {text-decoration:underline;}
+		.grayColor:hover {color: #808080;}
+	</style>
+	<script th:inline="javascript">
+	
+	const sessionUser =  null;	
+	
+	function loadDashBoardData() {
+		
+		var xhr = new XMLHttpRequest();
+
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				var data = JSON.parse(xhr.responseText);
+				
+				createChart1(data.memberProportion);
+				createChart2(data.memberCntDuringWeek);
+				createChart3(data.cooperationCntDuringWeek, data.cooperationList);
+				createChart4(data.cooperationProportion, data.cooperationList);
+				createChart5(data.categoryProportion, data.jobCategoryList);
+				createChart6(data.totalAdPrice);
+				createChart7(data.adCountDuringWeek);
+			}
+			
+		};
+		
+
+		xhr.open("GET" , "./getDashBoardData" , true);
+		xhr.send();
+
+	}
+	
+	function createChart1(data) {
+		var root = document.querySelector("#memberProportion");
+		
+		var chartTitle = document.createElement("div");
+		chartTitle.setAttribute("class", "rounded-10 p-6 text-center bold text-fs-23 py-3 text-gray-c_25");
+		chartTitle.innerText = "👨‍👩‍👧‍👧 회원 비율";
+		root.appendChild(chartTitle);
+		
+		var chartMain = document.createElement("div");
+		chartMain.setAttribute("style", "width: 430px;height:300px;");
+		chartMain.setAttribute("class", "ms-5");
+		
+		root.appendChild(chartMain);
+		
+		var chart = echarts.init(chartMain);
+		
+		var dataList = [];
+		dataList.push({"value" : data.normalProportion, "name" : "일반회원"});
+		dataList.push({"value" : data.bizProportion, "name" : "기업회원"});
+		
+		option = {
+				  tooltip: {
+				    trigger: 'item'
+				  },
+				  legend: {
+				    orient: 'vertical',
+				    left: 'left',
+				    top: '30%'
+				  },
+				  series: [
+				    {
+				      name: '회원 비율',
+				      type: 'pie',
+				      radius: '50%',
+				      data: dataList,
+				      emphasis: {
+				        itemStyle: {
+				          shadowBlur: 10,
+				          shadowOffsetX: 0,
+				          shadowColor: 'rgba(0, 0, 0, 0.5)'
+				        }
+				      }
+				    }
+				  ]
+				};
+		
+		chart.setOption(option);
+       
+	}	
+	
+	
+	function createChart2(data) {
+		var root = document.querySelector("#memberCnt");
+		
+		var chartTitle = document.createElement("div");
+		chartTitle.setAttribute("class", "inline-block rounded-10 p-6 text-center bold text-fs-23 py-3 text-gray-c_25");
+		chartTitle.innerText = "📆  일별 회원가입 수";
+		var spanTitle = document.createElement("span");
+		spanTitle.setAttribute("class", "text-fs-13 text-gray-c_8c")
+		spanTitle.innerText = "(최근 일주일)";
+		root.appendChild(chartTitle);
+		root.appendChild(spanTitle);
+		
+		var chartMain = document.createElement("div");
+		chartMain.setAttribute("style", "width: 430px;height:300px;");
+		//chartMain.setAttribute("class", "ms-4");
+		
+		root.appendChild(chartMain);
+		
+		var chart = echarts.init(chartMain);
+		
+		var xAxisList = [];		
+		var dataList = [];
+		
+		for(var d of data) {
+			xAxisList.push(d.day);
+			dataList.push(d.cnt);
+		}
+		
+		option = {
+				  xAxis: {
+				    type: 'category',
+				    data: xAxisList
+				  },
+				  yAxis: {
+				    type: 'value'
+				  },
+				  series: [
+				    {
+				      data: dataList,
+				      type: 'bar',
+				      showBackground: true,
+				      backgroundStyle: {
+				        color: 'rgba(180, 180, 180, 0.2)'
+				      }
+				    }
+				  ]
+				};
+		
+		chart.setOption(option);
+       
+	}		
+	
+	
+	function createChart3(data, cooperationList) {
+		var root = document.querySelector("#cooperationCnt");
+		
+		var chartTitle = document.createElement("div");
+		chartTitle.setAttribute("class", "inline-block rounded-10 p-6 text-center bold text-fs-23 py-3 text-gray-c_25");
+		chartTitle.innerText = "📚 등록 주체 별 프로젝트 수";
+		var spanTitle = document.createElement("span");
+		spanTitle.setAttribute("class", "text-fs-13 text-gray-c_8c")
+		spanTitle.innerText = "(최근 일주일)";
+		root.appendChild(chartTitle);
+		root.appendChild(spanTitle);
+		
+		var chartMain = document.createElement("div");
+		chartMain.setAttribute("style", "width: 450px;height:300px;");
+		chartMain.setAttribute("class", "ms-4");
+		
+		root.appendChild(chartMain);
+		
+		var chart = echarts.init(chartMain);
+		
+		var xAxisList = [];
+		var seriesList = [];
+
+		var cnt = 0;
+		var isFirst = true;
+		for(var d of data) {
+			var m = {};
+			m["name"] = cooperationList[cnt].cooperation_name;
+			m["type"] = "line";
+			
+			cnt++;
+			dataList = [];
+			for(var map of d.mapList) {
+				if(isFirst) {
+					xAxisList.push(map.day.slice(5, map.day.length));					
+				}
+				
+				
+				dataList.push(map.cnt);
+				
+			}
+			m["data"] = dataList;
+			seriesList.push(m);
+			isFirst = false;
+		}
+		
+		var legendList = [];
+		for(var coo of cooperationList) {
+			legendList.push(coo.cooperation_name);
+		}
+		
+		option = {
+				  tooltip: {
+				    trigger: 'axis'
+				  },
+				  legend: {
+				    data: legendList
+				  },
+				  grid: {
+				    left: '3%',
+				    right: '4%',
+				    bottom: '3%',
+				    containLabel: true
+				  },
+				  toolbox: {
+				    feature: {
+				      saveAsImage: {}
+				    }
+				  },
+				  xAxis: {
+				    type: 'category',
+				    boundaryGap: false,
+				    data: xAxisList
+				  },
+				  yAxis: {
+				    type: 'value'
+				  },
+				  series: seriesList
+				};
+		
+		chart.setOption(option);
+       
+	}
+	
+	function createChart4(data, cooperationList) {
+		var root = document.querySelector("#cooperationProportion");
+		
+		var chartTitle = document.createElement("div");
+		chartTitle.setAttribute("class", "rounded-10 p-6 text-center bold text-fs-23 py-3 text-gray-c_25");
+		chartTitle.innerText = "🎈 등록 주체별 프로젝트 비율";
+		root.appendChild(chartTitle);
+		
+		var chartMain = document.createElement("div");
+		chartMain.setAttribute("style", "width: 430px;height:300px;");
+		chartMain.setAttribute("class", "ms-4");
+		
+		root.appendChild(chartMain);
+		
+		var chart = echarts.init(chartMain);
+		
+		var dataList = [];
+
+		for(var d of data) {
+			var map = {};
+			map["value"] = d.cnt;
+			map["name"] = cooperationList[parseInt(d.cooperation_no)-1].cooperation_name;
+			
+			dataList.push(map);
+		}
+		
+		option = {
+				  series: [
+				    {
+				      name: 'Proportion',
+				      type: 'pie',
+				      radius: ['40%', '70%'],
+				      data: dataList,
+				      emphasis: {
+				        itemStyle: {
+				          shadowBlur: 10,
+				          shadowOffsetX: 0,
+				          shadowColor: 'rgba(0, 0, 0, 0.5)'
+				        }
+				      }
+				    }
+				  ]
+				};
+		
+		chart.setOption(option);
+	}
+
+	
+	function createChart5(data, jobCategoryList) {
+		var root = document.querySelector("#jobCategoryProportion");
+		
+		var chartTitle = document.createElement("div");
+		chartTitle.setAttribute("class", "rounded-10 p-6 text-center bold text-fs-23 py-3 text-gray-c_25");
+		chartTitle.innerText = "💡 직종 별 프로젝트 등록 비율";
+		root.appendChild(chartTitle);
+		
+		var chartMain = document.createElement("div");
+		chartMain.setAttribute("style", "width: 860px;height:350px; margin-left:7rem");
+		
+		root.appendChild(chartMain);
+		
+		var chart = echarts.init(chartMain);
+		
+		var xAxisList = [];
+		for(var job of jobCategoryList) {
+			xAxisList.push(job.job_name);
+		}
+		
+		var dataList = [];
+		var maxCnt = 0;
+		var max = 0;
+		var cnt = 0;
+		for(var d of data) {			
+			if(max < d.cnt) {
+				max = d.cnt;
+				maxCnt = cnt;
+			}			
+			dataList.push(d.cnt);
+			cnt++;
+		}
+		
+		var map = {};
+		map["value"] = dataList[maxCnt];
+		map["itemStyle"] = {color: "#a90000"};
+		dataList[maxCnt] = map;
+		
+		option = {
+				  xAxis: {
+				    type: 'category',
+				    data: xAxisList
+				  },
+				  yAxis: {
+				    type: 'value'
+				  },
+				  series: [
+					    {
+					      data: dataList,
+					      type: 'bar'
+					    }
+			]
+		};
+		chart.setOption(option);
+	}
+	
+	
+	function createChart6(data) {
+		var root = document.querySelector("#totalAdPrice");
+		
+		var title = document.createElement("div");
+		title.setAttribute("class", "inline-block rounded-10 p-6 text-center bold text-fs-23 py-3 text-gray-c_ff");
+		title.innerText = "🚀 누적 광고 수익";
+		var price = document.createElement("div");
+		price.setAttribute("class", "block text-fs-60 text-gray-c_ff bold mb-5 mt-3");
+		price.innerText = "￦ " + data.toLocaleString() + "원";
+		root.appendChild(title);
+		root.appendChild(price);
+		
+
+	}	
+	
+	
+	function createChart7(data) {
+		var root = document.querySelector("#adCnt");
+		
+		var chartTitle = document.createElement("div");
+		chartTitle.setAttribute("class", "inline-block rounded-10 p-6 text-center bold text-fs-23 py-3 text-gray-c_25");
+		chartTitle.innerText = "📢 일별 등록 광고";
+		var spanTitle = document.createElement("span");
+		spanTitle.setAttribute("class", "text-fs-13 text-gray-c_8c")
+		spanTitle.innerText = "(최근 일주일)";
+		root.appendChild(chartTitle);
+		root.appendChild(spanTitle);
+		
+		var chartMain = document.createElement("div");
+		chartMain.setAttribute("style", "width: 500px;height:300px;");
+		chartMain.setAttribute("class", "ms-4");
+		
+		root.appendChild(chartMain);
+		
+		var chart = echarts.init(chartMain);
+		
+		var xAxisList = [];
+		var dataList = [];
+
+		for(var d of data) {
+			xAxisList.push(d.registDate);
+			dataList.push(d.cnt);
+		}
+		
+		option = {
+				  xAxis: {
+				    type: 'category',
+				    data: xAxisList
+				  },
+				  yAxis: {
+				    type: 'value'
+				  },
+				  series: [
+				    {
+				      data: dataList,
+				      type: 'line',
+				      symbol: 'triangle',
+				      symbolSize: 20,
+				      lineStyle: {
+				        color: '#5470C6',
+				        width: 4,
+				        type: 'dashed'
+				      },
+				      itemStyle: {
+				        borderWidth: 3,
+				        borderColor: '#EE6666',
+				        color: 'yellow'
+				      }
+				    }
+				  ]
+				};
+		
+		chart.setOption(option);
+	}	
+		
+	
+	window.addEventListener("DOMContentLoaded", function() {
+		loadDashBoardData();
+	});
+	
+	</script>
+</head>
+<body>
+<div style="width: 1200px; margin:0 auto;">
+  <div class="container-fluid">
+  
+  <th:block th:include="commons/admin_navbar"></th:block>	
+
+  <div class="row mt-5">
+  	<div class="col">
+	  <div class="eframe-width py-6 mx-auto">
+  		<div class="row">
+  			<div id="memberProportion" class="col bg-gray-c_e1t rounded-10 me-4 pr-0 pt-10 pb-0">
+
+  			</div>
+  			<div id="memberCnt" class="col bg-gray-c_e1t rounded-10 pr-0 pt-10 pb-0 text-center">
+  				
+  			</div>
+  		</div>
+  		<div class="row mt-4">
+  			<div id="cooperationCnt" class="col bg-gray-c_e1t rounded-10 me-4 pr-2 pt-10 pb-3 pl-0 text-center">
+  				
+  			</div>
+  			
+  			<div id="cooperationProportion" class="col bg-gray-c_e1t rounded-10 pr-0 pt-10 pb-0 text-center">
+  				
+  			</div>  			
+  		</div>
+  		<div class="row mt-4">
+  			<div id="jobCategoryProportion" class="col bg-gray-c_e1t rounded-10 pr-2 pt-10 pb-3 pl-0 text-center">
+  				
+  			</div>
+  		</div>
+  		<div class="row mt-4 mb-40">
+  			<div id="totalAdPrice" class="col-5 rounded-10 me-4 pr-2 pt-24 pb-3 text-center pb-5" style="background-image: url('../img/dashboardbg.jpg'); background-repeat: no-repeat; background-size: cover;">
+  				
+  			</div>
+  			<div id="adCnt" class="col bg-gray-c_e1t rounded-10 pr-0 pt-10 pb-0 text-center">
+  				
+  			</div>
+  		</div>  		  		
+  	  </div>  	
+  	</div>
+  </div>
+  
+	
+  </div> 
+</div>
+
+<th:block th:include="commons/footer"></th:block>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

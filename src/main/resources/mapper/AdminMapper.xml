@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.teamb.freenext.admin.mapper.AdminMapper">
+
+
+<!-- 관리자 로그인 -->
+<select id="getAdminByIdAndPw" resultType="com.teamb.freenext.vo.AdminVo">
+	SELECT *
+	FROM FN_Admin
+	WHERE admin_id = #{admin_id}
+	AND admin_pw = #{admin_pw}
+</select>
+
+<!-- 회원관리(리스트,수정) 관련 -->
+<select id="getMemberList" resultType="com.teamb.freenext.vo.MemberVo">
+SELECT * FROM FN_Member
+<choose>
+   <when test="searchWord != null">
+      <choose>
+         <when test='searchOption == "all"'>
+            where (member_id like CONCAT('%',#{searchWord},'%') or member_name like CONCAT('%',#{searchWord},'%'))
+         </when>
+         <when test='searchOption == "id"'>
+            where member_id like CONCAT('%',#{searchWord},'%')     
+         </when>
+         <when test='searchOption == "name"'>
+            where member_name like CONCAT('%',#{searchWord},'%')
+         </when>
+      </choose>
+      <if test="searchMemberType !=null">
+            and member_type = #{searchMemberType}
+      </if>
+   </when>
+   <when test="searchMemberType != null and searchWord == null">
+         where member_type = #{searchMemberType}        
+   </when>
+</choose>
+ORDER BY member_no DESC
+limit #{startNum}, 10
+</select>
+
+<!-- 
+<select id="getMemberCount" resultType="int">
+	SELECT COUNT(*) FROM FN_Member
+	<choose>
+		<when test="searchOption != null">
+			<choose>
+				<when test='searchOption == "all"'>
+					where member_id like '%' || #{searchWord} || '%' or member_name like '%' || #{searchWord} || '%'
+				</when>
+				<when test='searchOption == "id"'>
+					where member_id like '%' || #{searchWord} || '%'		
+				</when>
+				<when test='searchOption == "name"'>
+					where member_name like '%' || #{searchWord} || '%'
+				</when>
+			</choose>
+			<if test="searchApproval !=null">
+					and member_approval = #{searchApproval} 
+			</if>
+			<if test="searchMemberType !=null">
+					and member_type = #{searchMemberType}
+			</if>
+		</when>
+		<when test="searchApproval != null">
+				where member_approval = #{searchApproval}
+		</when>
+		<when test="searchMemberType != null">
+				where member_type = {searchMemberType}
+		</when>
+	</choose>		
+</select>  -->
+
+<select id="getCommonMemberByNo" resultType="com.teamb.freenext.vo.MemberVo">
+	SELECT * FROM FN_Member WHERE member_no= #{no}
+</select>
+
+<select id="getMemberCustomerByNo" resultType="com.teamb.freenext.vo.MemberCustomerVo">
+	SELECT * FROM FN_Member_Customer WHERE member_no= #{no}
+</select>
+
+<select id="getMemberCompanyByNo" resultType="com.teamb.freenext.vo.MemberCompanyVo">
+	SELECT * FROM FN_Member_Company WHERE member_no= #{no}
+</select>
+
+<update id="updateCommonMember">
+	UPDATE FN_Member 
+	SET member_pw = #{member_pw}, member_name= #{member_name}, 
+	member_phone =#{member_phone}, member_email = #{member_email}, member_profile= #{member_profile},
+	member_address = #{member_address}
+	WHERE member_no= #{member_no}
+</update>
+
+<update id="updateMemberCustomer">
+	UPDATE FN_Member_Customer 
+	SET customer_birth = #{customer_birth}
+	WHERE member_no= #{member_no}
+</update>
+
+<update id="updateMemberCompany">
+	UPDATE FN_Member_Company 
+	SET company_manager=#{company_manager}, company_license_number=#{company_license_number}, 
+		company_license_img=#{company_license_img}
+	WHERE member_no= #{member_no}
+</update>
+
+<!-- 회원 수 조회 관련 -->
+<select id="getTotalNumber" resultType="int">
+ 	SELECT count(*) FROM FN_Member
+	<choose>
+	   <when test="searchWord != null">
+	      <choose>
+	         <when test='searchOption == "all"'>
+	            where (member_id like CONCAT('%',#{searchWord},'%') or member_name like CONCAT('%',#{searchWord},'%'))
+	         </when>
+	         <when test='searchOption == "id"'>
+	            where member_id like CONCAT('%',#{searchWord},'%')     
+	         </when>
+	         <when test='searchOption == "name"'>
+	            where member_name like CONCAT('%',#{searchWord},'%')
+	         </when>
+	      </choose>
+	      <if test="searchMemberType !=null">
+	            and member_type = #{searchMemberType}
+	      </if>
+	   </when>
+	   <when test="searchMemberType != null and searchWord == null">
+	         where member_type = #{searchMemberType}        
+	   </when>
+	</choose> 	
+</select>
+
+<select id="getTotalMemberTypeNumber" resultType="int">
+	SELECT count(*) FROM FN_Member
+	where member_type = #{member_type}
+
+   <if test="searchWord != null">
+      <choose>
+         <when test='searchOption == "all"'>
+            and (member_id like CONCAT('%',#{searchWord},'%') or member_name like CONCAT('%',#{searchWord},'%'))
+         </when>
+         <when test='searchOption == "id"'>
+            and member_id like CONCAT('%',#{searchWord},'%')     
+         </when>
+         <when test='searchOption == "name"'>
+            and member_name like CONCAT('%',#{searchWord},'%')
+         </when>
+      </choose>
+	</if>  	
+</select>
+
+<select id="getTotalCompany" resultType="int">
+	SELECT count(*) FROM FN_Member, FN_Member_Company
+</select>
+
+<select id="selectCompanyVoByMemberNo" resultType="com.teamb.freenext.vo.MemberCompanyVo">
+	select * from FN_Member_Company where member_no = #{member_no}
+</select>
+
+<select id="selectCooperationCategoryList" resultType="com.teamb.freenext.vo.CooperationCategoryVo">
+	select *
+	from FN_Cooperation_Category;
+</select>
+
+<!-- 통계 -->
+<!-- 회원 비율 -->
+<select id="selectAllMemberType" resultType="map">
+	select count(*) as cnt, member_type
+	from FN_Member
+	group by member_type
+</select>
+
+<!-- 일별 회원가입(최근 일주일) -->
+<select id="selectJoinDateDuringWeek" resultType="map">
+	select count(*) as cnt, date(member_joindate) as joinDate 
+	from fn_member
+	where member_joindate
+	between #{startDate} and #{endDate}
+	group by date(member_joindate)
+</select>
+
+<!-- 일별 프로젝트 등록/스크래핑 수(최근 일주일) -->
+<select id="selectRegistProjectCntDuringWeek" resultType="map">
+	select count(*) as cnt, date(project_date) as project_date
+	from FN_ProjectBoard
+	where cooperation_no = #{cooperation_no}
+	and project_date between #{startDate} and #{endDate}
+	group by date(project_date)
+</select>
+
+<!-- 개별등록/스크래핑 비율 -->
+<select id="selectCountGroupByCooperation" resultType="map">
+	select count(*) as cnt, cooperation_no 
+	from FN_ProjectBoard
+	group by cooperation_no
+</select>
+
+<!-- 잡 카테고리별 프로젝트 비율 -->
+<select id="selectJobCategoryProportion" resultType="map">
+	select count(*) as cnt, fpj.job_no
+	from fn_projectboard fp, FN_Project_Job fpj 
+	where fp.project_no = fpj.project_no 
+	group by fpj.job_no
+</select>
+
+<!-- 누적 광고수익 -->
+<select id="selectTotalAdPrice" resultType="int">
+	select (count(*)*50000) as totalAdPrice
+	from FN_Ad fa
+</select>
+
+<!-- 일별 등록 광고(최근 일주일) -->
+<select id="selectAdCountDuringWeek" resultType="map">
+	select count(*) as cnt, date(DATE_ADD(ad_endDate , INTERVAL -6 DAY)) as registDate
+	from FN_Ad
+	where date(DATE_ADD(ad_endDate , INTERVAL -6 DAY)) between #{startDate} and #{endDate}
+	group by date(DATE_ADD(ad_endDate , INTERVAL -6 DAY))
+</select>
+
+</mapper>

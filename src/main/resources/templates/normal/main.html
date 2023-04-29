@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>    
+	<link th:href="@{/css/commons.css}" rel="stylesheet">
+	<link th:href="@{/css/style.css}" rel="stylesheet">
+	
+	<style>
+        /* Slideshow container */
+        .slideshow-container {
+        /*max-width: 1440px;*/
+        position: relative;
+        /*margin: auto;*/
+        /*margin-top: 120px;*/
+        }
+
+        /* effect */
+        .fade {
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: 4s;
+        animation-name: fade;
+        animation-duration: 4s;
+        }
+
+        @-webkit-keyframes fade {
+        from {opacity: .4} 
+        to {opacity: 1}
+        }
+
+        @keyframes fade {
+        from {opacity: .4} 
+        to {opacity: 1}
+        }
+
+        /* Next & previous buttons */
+        .prev, .next {
+        cursor: pointer;
+        /*position: absolute;
+        top: 50%;
+        width: auto;*/
+        padding: 16px;
+        /*margin-top: -22px;
+        color: white;*/
+        color: black;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.1s ease;
+        /*border-radius: 0 3px 3px 0;*/
+        }	
+	
+    .etext-base{
+        --tw-shadow:0 0 #0000;
+        box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow);
+        color:rgba(0,0,0,1);display:inline-block
+    }
+
+    .searchmain-text{
+        border-width:0;
+        font-size:1.5rem;
+        font-weight: bold;
+        line-height:1.25;
+        margin-top:.1rem;
+        margin-left:1rem;
+        padding:.5rem 0;        
+        }
+        
+    .searchbar-frame {
+        background-image: -moz-linear-gradient(right, #131212, #99190d); /* FF3.6 */
+        background-image: -webkit-gradient(linear,left top,right bottom,color-stop(0, #131212),color-stop(1, #99190d)); /* Saf4+, Chrome */
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300'); /* IE6,IE7 */
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300')"; /* IE8 */
+        background-image: -ms-linear-gradient(right, #131212 0%, #99190d 100%); /* IE10 */
+
+        border-radius: 9999px;
+        cursor: pointer;
+        padding: 0.2rem;
+        position: static;
+    }
+
+    .searchmain-inner {
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 9999px;
+        cursor: pointer;
+        height: 3.5rem;
+        line-height: 2.5rem;
+        padding: 5px;
+        padding-left: 1rem;
+        padding-right: 0.25rem;
+        position: relative;
+        width: 100%;
+    }
+
+    .searchmain-img {
+        /*position: absolute;*/
+        top: 0.5rem;
+        right: 0.8rem;
+        width: 1.5rem;
+    }
+
+    .eblank-title{ margin-bottom: 0.75rem; margin-top: 1.5rem; width: 100%;}
+    .etext-title{ float: left; font-weight: 600; font-size: 2rem;}
+
+    .eblock-project{ 
+        display: -ms-grid;
+        display: grid;
+        -ms-grid-columns: 1fr 1fr 1fr 1fr;
+        gap: 3rem; row-gap: 2rem; 
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .emain-project{ 
+        border-radius: 10px; 
+        display: flex; 
+        flex-direction: row; 
+        align-items: center;
+        height: 4rem; 
+        /*width: 100%;*/
+    }
+    
+    .emain-project-name{
+        font-size: 0.75rem;
+        /*padding-top: 1.5rem;*/
+        text-align: center;
+        width: 30%;
+    } 
+
+    .ecard-pj-roll {
+        float: right;
+        margin-left: 0.25rem;
+        width: 1.25rem;
+    }
+
+    .emain-project a {color:rgba(255,255,255,1);}
+    .emain-project a:hover {color:rgba(255,255,255,1);}
+
+    .more-btn {
+        border:2px solid rgba(0,0,0,.5);
+        border-radius: 9999px;
+        padding: 0.75rem;
+    }
+    
+    .more-btn:hover {
+    	background-color: rgba(231, 231, 231, 1);
+    }
+    
+	.project-box:hover {
+	  border-color: black;
+	}
+	
+	.hashTag1 {animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;}
+	.hashTag2 {animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both; animation-delay: .2s;}
+	.hashTag3 {animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both; animation-delay: .4s;}	
+	@keyframes tracking-in-expand-fwd {
+	  0% {
+	    letter-spacing: -0.5em;
+	    -webkit-transform: translateZ(-700px);
+	            transform: translateZ(-700px);
+	    opacity: 0;
+	  }
+	  40% {
+	    opacity: 0.6;
+	  }
+	  100% {
+	    -webkit-transform: translateZ(0);
+	            transform: translateZ(0);
+	    opacity: 1;
+	  }
+	}
+			
+	</style>
+ 	<script th:inline="javascript">        
+ 	/*<![CDATA[*/
+	const sessionUser =  /*[[ ${session.sessionUser} ]]*/;
+	/*]]*/
+    //이전 슬라이드
+    function prevSlide() {
+        $(".mySlideDiv").hide(); //모든 div 숨김
+        var allSlide = $(".mySlideDiv"); //모든 div 객체를 변수에 저장
+        var currentIndex = 0; //현재 나타난 슬라이드의 인덱스 변수
+        
+        //반복문으로 현재 active클래스를 가진 div를 찾아 index 저장
+        $(".mySlideDiv").each(function(index,item){ 
+            if($(this).hasClass("active")) {
+                currentIndex = index;
+            }
+            
+        });
+        
+        //새롭게 나타낼 div의 index
+        var newIndex = 0;
+        
+        if(currentIndex <= 0) {
+            //현재 슬라이드의 index가 0인 경우 마지막 슬라이드로 보냄(무한반복)
+            newIndex = allSlide.length-1;
+        } else {
+            //현재 슬라이드의 index에서 한 칸 만큼 뒤로 간 index 지정
+            newIndex = currentIndex-1;
+        }
+    
+        //모든 div에서 active 클래스 제거
+        $(".mySlideDiv").removeClass("active");
+        
+        //새롭게 지정한 index번째 슬라이드에 active 클래스 부여 후 show()
+        $(".mySlideDiv").eq(newIndex).addClass("active");
+        $(".mySlideDiv").eq(newIndex).show();
+    
+    }
+    
+    //다음 슬라이드
+    function nextSlide() {
+        $(".mySlideDiv").hide();
+        var allSlide = $(".mySlideDiv");
+        var currentIndex = 0;
+        
+        $(".mySlideDiv").each(function(index,item){
+            if($(this).hasClass("active")) {
+                currentIndex = index;
+            }
+            
+        });
+        
+        var newIndex = 0;
+        
+        if(currentIndex >= allSlide.length-1) {
+            //현재 슬라이드 index가 마지막 순서면 0번째로 보냄(무한반복)
+            newIndex = 0;
+        } else {
+            //현재 슬라이드의 index에서 한 칸 만큼 앞으로 간 index 지정
+            newIndex = currentIndex+1;
+        }
+    
+        $(".mySlideDiv").removeClass("active");
+        $(".mySlideDiv").eq(newIndex).addClass("active");
+        $(".mySlideDiv").eq(newIndex).show();
+        
+    }
+    
+    function loadMainData() {
+    	var xhr = new XMLHttpRequest();
+    	
+    	xhr.onreadystatechange = function() {
+    		if(xhr.readyState == 4 && xhr.status == 200) {
+    			var data = JSON.parse(xhr.responseText);
+    			
+    			var pjCount = document.querySelector("#totPjCount");
+    			var norCount = document.querySelector("#totNorCount");
+    			var bizCount = document.querySelector("#totBizCount");
+    			
+    			pjCount.innerText = data.mainData.totalProject;
+    			pjCount.setAttribute("class", "num");
+    			pjCount.setAttribute("data-num-ani-slow-point", "0.8");
+    			pjCount.setAttribute("data-num-ani-slow-add-interval", "10");
+    			pjCount.setAttribute("data-num-ani-interval", "5");
+    			pjCount.setAttribute("data-num-ani-stride", "10");
+    			pjCount.setAttribute("data-num-ani-start", "0");
+    			pjCount.setAttribute("data-num-ani-end", parseInt(data.mainData.totalProject));
+    			norCount.innerText = data.mainData.totalCustomer;
+    			norCount.setAttribute("class", "num");
+    			norCount.setAttribute("data-num-ani-slow-point", "0.6");
+    			norCount.setAttribute("data-num-ani-slow-add-interval", "5");
+    			norCount.setAttribute("data-num-ani-interval", "10");
+    			norCount.setAttribute("data-num-ani-stride", "1");
+    			norCount.setAttribute("data-num-ani-start", "0");
+    			norCount.setAttribute("data-num-ani-end", parseInt(data.mainData.totalCustomer));    			
+    			bizCount.innerText = data.mainData.totalCompany;
+    			bizCount.setAttribute("class", "num");
+    			bizCount.setAttribute("data-num-ani-slow-point", "0.6");
+    			bizCount.setAttribute("data-num-ani-slow-add-interval", "5");
+    			bizCount.setAttribute("data-num-ani-interval", "10");
+    			bizCount.setAttribute("data-num-ani-stride", "1");
+    			bizCount.setAttribute("data-num-ani-start", "0");
+    			bizCount.setAttribute("data-num-ani-end", parseInt(data.mainData.totalCompany));    			
+    			//document.querySelector("#totPjCount").innerText = data.mainData.totalProject;
+    			//document.querySelector("#totNorCount").innerText = data.mainData.totalCustomer;
+    			//document.querySelector("#totBizCount").innerText = data.mainData.totalCompany;
+    			    			
+    			createHotProjectBox(data.hotProjectList);
+    			
+    			for(var v of data.mainData.newProjectList) {
+    				createProjectBox(v);
+    			}
+				
+    			createBotBox();
+    		}
+    	}
+    	
+    	xhr.open("GET", "/normal/getMainData", false);
+    	xhr.send();
+    }
+    
+    
+    function createSecondSlide() {
+    	var fade = document.createElement("span");
+    	fade.setAttribute("class", "mySlideDiv fade");
+    	var secondSlide = document.createElement("span");
+    	secondSlide.setAttribute("id", "secondSlide");
+    	secondSlide.setAttribute("class", "row");
+    	fade.appendChild(secondSlide);
+    
+    	document.querySelector("#hotContainer").appendChild(fade);
+    }
+    
+    function createHotProjectBox(dataList) {
+    	
+    	var firstSlide = document.querySelector("#firstSlide");
+    	
+    	if(dataList.length > 3) {
+    		createSecondSlide();
+    	}
+    	
+    	for(var i=0;i<dataList.length;i++) {
+    		var box = document.createElement("span");
+    		box.setAttribute("class", "col px-0 inline-block cursor-pointer");
+    		box.setAttribute("onclick", "location.href='../normal/projectDetailPage?project_no=" + dataList[i].projectVo.project_no + "'");
+    		
+    		var card = document.createElement("span");
+    		card.setAttribute("class", "card h-full inline-block");
+    		card.setAttribute("style", "width: 20rem;");
+    		
+    		var relative = document.createElement("span");
+    		relative.setAttribute("class", "relative inline-block");
+    		relative.setAttribute("style", "width:318px; height:200px;")
+    		var img = document.createElement("img");    		
+    		var coono = dataList[i].projectVo.cooperation_no;
+    		if(coono == 1) {
+    			var profile = dataList[i].memberVo.member_profile;
+    			if(profile != null) {
+    				img.setAttribute("src", "/profileImage/" + dataList[i].memberVo.member_profile);
+    				//img.setAttribute("src", "../img/main_illust.png");
+    			} else {
+    				img.setAttribute("src", "../img/invidual.jpg");	
+    			}    				
+    		} else if(coono == 2) {
+    			img.setAttribute("src", "../img/elancer.jpg");
+    		} else if(coono == 3) {
+    			img.setAttribute("src", "../img/design9.jpg");
+    		} else if(coono == 4) {
+    			img.setAttribute("src", "../img/wishket.jpg");
+    		} else if(coono == 5) {
+    			img.setAttribute("src", "../img/webcruit.jpg");
+    		}
+    		img.setAttribute("class", "card-img-top items-center");
+    		//img.setAttribute("style", "width: 318px; height: 272px;");
+    		img.setAttribute("style", "width: 100%; height: 100%;");
+    		
+    		var iTag = document.createElement("i");    		    	
+    		if(dataList[i].myScrap > 0) {
+    			iTag.setAttribute("class", "bi bi-star-fill absolute px-1 text-fs-20 bg-gray-c_ff");
+    			iTag.setAttribute("style", "top: 5%; right:3%; color: rgb(255, 219, 17);");
+    		} else {
+    			iTag.setAttribute("class", "bi bi-star absolute px-1 text-fs-20 bg-gray-c_ff");
+    			iTag.setAttribute("style", "top: 5%; right:3%;");
+    		}
+    		iTag.setAttribute("onclick", "doScrap(event, this," + dataList[i].projectVo.project_no + ", true)");
+    		relative.appendChild(img);
+    		relative.appendChild(iTag);
+    		
+    		var body = document.createElement("span");
+    		body.setAttribute("class", "card-body inline-block");
+    		var title = document.createElement("span");
+    		title.setAttribute("class", "bold card-title h-18 inline-block");
+    		title.innerText = dataList[i].projectVo.project_name;
+    		var badgeBox = document.createElement("span");
+    		badgeBox.setAttribute("class", "card-text h-18 block");
+    		
+    		for(var jobVo of dataList[i].jobVoList) {
+        		var badge1 = document.createElement("span");
+        		badge1.setAttribute("class", "badge bg-success me-1");
+       			badge1.innerText = jobVo.job_name;
+        		badgeBox.appendChild(badge1);    			
+    		}
+    		
+    		var badge2 = document.createElement("span");
+    		badge2.setAttribute("class", "badge bg-secondary me-1");
+    		badge2.innerText = dataList[i].projectVo.project_price;
+    		badgeBox.appendChild(badge2);
+    		if(dataList[i].localVo != null) {
+    			var badge3 = document.createElement("span");
+        		badge3.setAttribute("class", "badge bg-secondary me-1");
+    			badge3.innerText = dataList[i].localVo.local_name;
+    			badgeBox.appendChild(badge3);
+    		}
+    		var badge4 = document.createElement("span");
+    		badge4.setAttribute("class", "badge bg-danger me-1");
+    		if(dataList[i].projectVo.project_state == "Y") {
+    			badge4.innerText = "접수중";
+    		} else {
+    			badge4.innerText = "마감";
+    		}
+    		badgeBox.appendChild(badge4);
+    		
+    		var botBox = document.createElement("span");
+    		botBox.setAttribute("class", "mt-2 h-9 card-text text-fs-15 block");
+    		var span1 = document.createElement("span");
+    		span1.innerText = dataList[i].projectVo.project_period;
+    		var span2 = document.createElement("span");
+    		span2.innerText = "/";
+    		botBox.appendChild(span1);
+    		botBox.appendChild(span2);
+    		
+       		var span3 = document.createElement("span");    		
+       		span3.innerText = dataList[i].workTypeVo.workType_name;
+       		var span4 = document.createElement("span");
+       		span4.innerText = "/";
+       		botBox.appendChild(span3);
+       		botBox.appendChild(span4);
+
+    		
+    		var span5 = document.createElement("span");
+    		span5.innerText = dataList[i].cooperationVo.cooperation_name;
+    		botBox.appendChild(span5);
+    		
+    		body.appendChild(title);
+    		body.appendChild(badgeBox);
+    		body.appendChild(botBox);
+    		card.appendChild(relative);
+    		card.appendChild(body);
+    		box.appendChild(card);
+    		
+    		if(i < 3) {
+    			firstSlide.appendChild(box);
+    		} else {
+    			document.querySelector("#secondSlide").appendChild(box);
+    		}
+    	}
+    }
+    
+    function createProjectBox(data) {
+		var project_box = document.createElement("div");
+		project_box.setAttribute("class", "row project-box mt-3 cursor-pointer");
+		project_box.setAttribute("onclick", "location.href='../normal/projectDetailPage?project_no=" + data.projectVo.project_no + "'");
+		
+		var col = document.createElement("div");
+		col.setAttribute("class", "col");
+		
+		var row1 = document.createElement("div");
+		row1.setAttribute("class", "row");
+		var row1_col1 = document.createElement("div")
+		row1_col1.setAttribute("class", "col bold text-fs-25");
+		row1_col1.innerText = data.projectVo.project_name;
+		var row1_col2 = document.createElement("div")
+		row1_col2.setAttribute("class", "col-1 pl-10");
+		var i = document.createElement("i");
+		if(data.myScrap > 0) {
+			i.setAttribute("class", "bi bi-star-fill text-fs-23 bg-gray-c_ff")
+			i.setAttribute("style", "color:rgb(255, 219, 17);")
+		} else {
+			i.setAttribute("class", "bi bi-star text-fs-23 bg-gray-c_ff")	
+		}
+		i.setAttribute("onclick", "doScrap(event, this, " + data.projectVo.project_no + ")");
+		row1_col2.appendChild(i);
+		row1.appendChild(row1_col1);
+		row1.appendChild(row1_col2);
+		
+		var row2 = document.createElement("div");
+		row2.setAttribute("class", "row mt-2");
+		var row2_col = document.createElement("div");
+		row2_col.setAttribute("class", "col text-blue");
+		var row2_col_span1 = document.createElement("span");
+		row2_col_span1.setAttribute("class", "bold");			
+		row2_col_span1.innerText = data.projectVo.project_price;		
+		var row2_col_span2 = document.createElement("span");
+		row2_col_span2.setAttribute("class", "px-0");
+		row2_col_span2.innerText = " | ";
+		var row2_col_span3 = document.createElement("span");
+		row2_col_span3.setAttribute("class", "bold");
+		var i2 = document.createElement("i");
+		i2.setAttribute("class", "bi bi-clock");
+		row2_col_span3.appendChild(i2);
+		var row2_col_span4 = document.createElement("span");
+		row2_col_span4.setAttribute("class", "bold");
+		row2_col_span4.innerText = " " + data.projectVo.project_period;			
+		row2_col.appendChild(row2_col_span1);
+		row2_col.appendChild(row2_col_span2);
+		row2_col.appendChild(row2_col_span3);
+		row2_col.appendChild(row2_col_span4);
+		if(data.localVo != null) {
+			var row2_col_span6 = document.createElement("span");
+			row2_col_span6.setAttribute("class", "bold");
+			var row2_col_span5 = document.createElement("span");
+			row2_col_span5.setAttribute("class", "px-0");
+			row2_col_span5.innerText = " | ";
+			row2_col_span6.innerText = data.localVo.local_name;
+			row2_col.appendChild(row2_col_span5);
+			row2_col.appendChild(row2_col_span6);
+		}
+		row2.appendChild(row2_col);
+		
+		var row3 = document.createElement("div");
+		row3.setAttribute("class", "row mt-3");
+		var row3_col = document.createElement("div");
+		row3_col.setAttribute("class", "col text-gray-c_8c text-fs-15 h-18");			
+		var content = data.projectVo.project_content;
+		if(content.length > 201) {
+			content = content.slice(0, 201) + "...";
+		}			
+		row3_col.innerText = content;
+		row3.appendChild(row3_col);
+		
+		var row4 = document.createElement("div");
+		row4.setAttribute("class", "row mt-3");
+		var row4_col1 = document.createElement("div");
+		row4_col1.setAttribute("class", "col text-gray-c_25");
+		var row4_col1_span1 = document.createElement("span");
+		row4_col1_span1.setAttribute("class", "bold");
+		var job_names = "";
+		for(var jobVo of data.jobVoList) {
+			job_names += jobVo.job_name + "·";
+		}		
+		row4_col1_span1.innerText = job_names.slice(0, job_names.length-1);
+		var row4_col1_span2 = document.createElement("span");
+		row4_col1_span2.setAttribute("class", "px-0");
+		row4_col1_span2.innerText = " | ";
+		var row4_col1_span3 = document.createElement("span");
+		row4_col1_span3.setAttribute("class", "bold");
+		row4_col1_span3.innerText = data.workTypeVo.workType_name;
+		row4_col1.appendChild(row4_col1_span1);
+		row4_col1.appendChild(row4_col1_span2);
+		row4_col1.appendChild(row4_col1_span3);					
+
+		var row4_col1_span4 = document.createElement("span");
+		row4_col1_span4.setAttribute("class", "px-0");
+		row4_col1_span4.innerText = " | ";
+		var row4_col1_span5 = document.createElement("span");
+		row4_col1_span5.setAttribute("class", "bold");
+		row4_col1_span5.innerText = data.cooperationVo.cooperation_name;
+		row4_col1.appendChild(row4_col1_span4);
+		row4_col1.appendChild(row4_col1_span5);
+		
+		var row4_col1_span6 = document.createElement("span");
+		row4_col1_span6.setAttribute("class", "px-0");
+		row4_col1_span6.innerText = " | ";
+		var row4_col1_span7 = document.createElement("span");
+		row4_col1_span7.setAttribute("class", "bold");
+		row4_col1_span7.innerText = data.recruitTypeVo.recruitType_name;	
+		
+		row4_col1.appendChild(row4_col1_span6);
+		row4_col1.appendChild(row4_col1_span7);			
+		
+		var row4_col2 = document.createElement("div");
+		row4_col2.setAttribute("class", "col-3 float-right text-fs-15 bold text-gray-c_3c pl-15");			
+		var row4_col2_span1 = document.createElement("span");
+		row4_col2_span1.setAttribute("class", "text-red-soft");
+		row4_col2_span1.innerText = data.scrapCount + "명";
+		var row4_col2_span2 = document.createElement("span");
+		row4_col2_span2.innerText = "의 관심을 받고 있어요";			
+		row4_col2.appendChild(row4_col2_span1);
+		row4_col2.appendChild(row4_col2_span2);
+		row4.appendChild(row4_col1);
+		row4.appendChild(row4_col2);
+		
+		col.appendChild(row1);
+		col.appendChild(row2);
+		col.appendChild(row3);
+		col.appendChild(row4);
+		project_box.appendChild(col);
+		
+		document.querySelector("#projectBox").appendChild(project_box);    	
+    }
+    
+    function createBotBox() {    	
+    	
+    	var row1 = document.createElement("div");
+    	row1.setAttribute("class", "row mt-3");
+    	col1 = document.createElement("div");
+    	col1.setAttribute("class", "col");
+    	col2 = document.createElement("div");
+    	col2.setAttribute("class", "col-1 more-btn bold text-fs-15 text-center text-gray-c_25 cursor-pointer");
+    	col2.setAttribute("onclick", "location.href='../normal/projectListPage'");
+    	col2.innerText = "더보기 + ";
+    	col3 = document.createElement("div");
+    	col3.setAttribute("class", "col");
+    	row1.appendChild(col1);
+    	row1.appendChild(col2);
+    	row1.appendChild(col3);
+    	
+    	var row2 = document.createElement("div");
+    	row2.setAttribute("class", "row mb-5");
+    	
+    	var root = document.querySelector("#projectBox");
+    	root.appendChild(row1);
+    	root.appendChild(row2);
+    }
+    
+    
+	function doScrap(event, starBox, project_no, isHot=false){
+
+		event.stopPropagation();				
+	
+		
+		project_no = parseInt(project_no);
+		//AJAX...호출...
+		var xhr = new XMLHttpRequest();
+		
+		//응답 받을때...
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				var data = JSON.parse(xhr.responseText);
+				
+				if(data.result == "success") {
+					refreshStar(starBox, project_no, isHot);
+					if(!isHot) {
+						getStarCount(starBox, project_no)	
+					}					
+				} else {
+					alert(data.reason);
+					return;
+				}
+			}
+			
+		};
+		
+		xhr.open("POST" , "/normal/doScrap" , true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xhr.send("project_no="+project_no);
+		
+	}
+	
+	function refreshStar(starBox, project_no, isHot){
+		//AJAX...호출...
+		var xhr = new XMLHttpRequest();
+		
+		//응답 받을때...
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				var data = JSON.parse(xhr.responseText);
+				
+				if(data.result == 'error'){
+					alert(data.reason);
+					return;
+				}
+				
+				if(data.state == 'scrap'){
+					if(isHot) {
+						starBox.setAttribute("class", "bi bi-star-fill absolute border rounded-full px-1 text-fs-18 bg-gray-c_ff");
+					} else {
+						starBox.setAttribute("class", "bi bi-star-fill text-fs-23 bg-gray-c_ff");
+					}						
+					starBox.style.color = "rgb(255, 219, 17)";
+				}else{
+					if(isHot) {
+						starBox.setAttribute("class", "bi bi-star absolute border rounded-full px-1 text-fs-18 bg-gray-c_ff");
+					} else {
+						starBox.setAttribute("class", "bi bi-star text-fs-23 bg-gray-c_ff");
+					}
+					starBox.style.color = "black";
+				}
+				
+			}
+			
+		};
+		
+		xhr.open("get" , "/normal/getMyScrapState?project_no="+project_no , true);
+		xhr.send();		
+	}
+	
+	function getStarCount(starBox, project_no) {
+		var xhr = new XMLHttpRequest();
+		
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState == 4 && xhr.status == 200) {
+				var data = JSON.parse(xhr.responseText);
+				
+				starBox.closest(".project-box").querySelector(".text-red-soft").innerText = data.totalScrapCount + "명";
+			}
+		}
+		
+		xhr.open("get", "/normal/getTotalScrapState?project_no=" + project_no, true);
+		xhr.send();
+	}
+
+	function NumAni__start(selector) {
+	    $(selector).each(function(index, node) {
+	        var $el = $(node);
+	        
+	        var start = parseInt($el.attr('data-num-ani-start'));
+	        var interval = parseInt($el.attr('data-num-ani-interval'));
+
+	        $el.attr('data-num-ani-interval-current', interval);
+
+	        $el.text(start);
+
+	        NumAni__increaseWon($el);
+	    });
+	}
+
+	function NumAni__increaseWon($el) {
+	    var current = parseInt($el.text());
+	    var end = parseInt($el.attr('data-num-ani-end'));
+	    var stride = parseInt($el.attr('data-num-ani-stride'));
+	    var interval = parseInt($el.attr('data-num-ani-interval-current'));
+	    var slowPoint = parseFloat($el.attr('data-num-ani-slow-point'))
+
+	    if (current < end) {
+	        if ( current > end * slowPoint ) {
+	            interval += parseInt($el.attr('data-num-ani-slow-add-interval'));
+	            if ( interval > 100 ) {
+	                interval = 100;
+	            }
+	            $el.attr('data-num-ani-interval-current', interval);
+	        }
+	        
+	        if ( current + stride > end ) {
+	        	$el.addClass('inline-block text-gray-c_25 text-fs-32');
+	            $el.text(end);
+	        }
+	        else {
+	        	$el.addClass('inline-block text-gray-c_25 text-fs-32');
+	            $el.text(current + stride);
+	        }
+
+	        setTimeout(function () {
+	            NumAni__increaseWon($el);
+	        }, interval);
+	    }
+	    else {
+	        $el.addClass('num-action-done inline-block text-gray-c_25 text-fs-32');
+	    }
+	}	
+
+	
+	window.addEventListener("DOMContentLoaded" , function(){
+		loadMainData();
+		
+		$(".mySlideDiv").not(".active").hide(); //화면 로딩 후 첫번째 div를 제외한 나머지 숨김        
+        setInterval(nextSlide, 4000); //4초(4000)마다 다음 슬라이드로 넘어감
+        NumAni__start('.num');
+	});
+	
+ 	</script>
+ 	<script th:inline="javascript" src="/js/nav.js"></script>
+</head>
+<body>
+<div style="width: 1200px; margin:0 auto;">
+  <div class="container-fluid">
+  
+  <th:block th:include="commons/normal_navbar"></th:block>
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="eframe-width mx-auto w-full">
+                <div class="searchbar-frame">
+                    <div class="searchmain-inner">
+                        <form method="get" action="./projectListPage">
+                            <input type="text" name="searchKeyword" id="searchBar" placeholder="JAVA / 디자인 / 기획 / 서울 / 상주 / 아웃소싱" class="etext-base searchmain-text w-10_12 items-center">
+                            <button class="btn-border-none absolute mt-1">
+                                <i class="bi bi-search text-fs-30" style="color:#291d44;"></i>
+                            </button>                
+                        </form>
+                    </div>
+                </div>
+            </div>                
+            <div class="row eframe-width mx-auto w-full mt-3">
+                <div class="col-5 mt-4">
+                    <div class="row mt-14 bold text-fs-40">
+                        <div class="col">
+                            <div class="row">
+                                <div class="hashTag1 col">#프리랜서</div>
+                            </div>
+                            <div class="row">
+                                <div class="hashTag2 col">#IT아웃소싱</div>
+                            </div>
+                            <div class="row">
+                                <div class="hashTag3 col">#프로젝트중개서비스</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col text-fs-18 text-gray-c_3c">기업회원 가입하고</div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <button onclick="location.href='../biz/registProjectPage'" class="btn btn-dark"><div class="text-fs-18 ms-5 me-5">프로젝트 등록하기</div></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="col">
+                    <img class="img-fluid" src="../img/main_illust.png">
+                </div>                
+            </div>
+        </div>
+    </div>
+    
+    <div class="row border-t border-gray-c_d7">
+        <div class="col">
+            <div class="eframe-width mx-auto pt-3">	
+                <div class="w-full py-6 text-gray-c_8c flex flex-col flex-row">
+                    <div class="w-full w-1_4 relative text-center">
+                        <p>
+                            <span class="block w-full text-center text-fs-18">등록된 총 프로젝트</span>
+                            <span id="totPjCount" class="inline-block text-gray-c_25 text-fs-32" style="line-height:4rem;"></span>
+                            <span class="inline-block text-fs-18" style="line-height:4rem;">건</span>
+                        </p>
+                    </div>
+                    <div class="w-full w-1_2 relative text-center border-r border-l border-gray-c_d7">
+                        <p>
+                            <span class="block w-full text-center text-fs-18 ">총 프리랜서</span>
+                            <span id="totNorCount" class="inline-block text-gray-c_25 text-fs-32" style="line-height:4rem;"></span>
+                            <span class="inline-block text-fs-18" style="line-height:4rem;">명</span>
+                        </p>
+                    </div>
+                    <div class="w-full w-1_4 relative text-center">
+                        <p>
+                            <span class="block w-full text-center text-fs-18 ">총 등록기업</span>
+                            <span id="totBizCount" class="inline-block text-gray-c_25 text-fs-32" style="line-height:4rem;"></span>
+                            <span class="inline-block text-fs-18" style="line-height:4rem;">개</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="eframe-width mx-auto">	
+                <div class="inline-block eblank-title">
+                    <h1 class="flex etext-title">프로젝트 카테고리</h1>        
+                </div>
+                <div class="relative inline-block w-full mb-10">
+                    <div class="eblock-project">
+                        <div class="emain-project bg-gradation-10 cursor-pointer" th:onclick="location.href='../normal/projectListPage?job_no_list=1'">
+                            <a class="emain-project-name me-5"><i class="text-fs-3em w-10 bi bi-brush"></i></a>
+                            <a class="emain-project-name bold ms-2" style="font-size: 1em;">디자인</a>
+                        </div>
+                        <div class="emain-project bg-gradation-30 cursor-pointer" th:onclick="location.href='../normal/projectListPage?job_no_list=2'">
+                            <a class="emain-project-name me-5"><i class="text-fs-3em w-10 bi bi-keyboard"></i></a>
+                            <span><a class="emain-project-name bold" style="font-size: 1em;">프로그래머</a></span>           
+                        </div>
+                        <div class="emain-project bg-gradation-50 cursor-pointer" th:onclick="location.href='../normal/projectListPage?job_no_list=3'">
+                            <a class="emain-project-name me-4"><i class="text-fs-3em w-10 bi bi-card-list"></i></a>
+                            <span><a class="emain-project-name bold" style="font-size: 1em;">웹/모바일기획</a></span>             
+                        </div>
+                        <div class="emain-project bg-gradation-60 cursor-pointer" th:onclick="location.href='../normal/projectListPage?job_no_list=4'">
+                            <a class="emain-project-name me-5"><i class="text-fs-3em w-10 bi bi-bar-chart-line"></i></a>
+                            <span><a class="emain-project-name bold ms-5" style="font-size: 1em;">PM</a></span>             
+                        </div>
+                        <div class="emain-project bg-gradation-60 cursor-pointer" th:onclick="location.href='../normal/projectListPage?job_no_list=5'">
+                            <a class="emain-project-name me-2"><i class="text-fs-3em w-10 bi bi-send"></i></a>
+                            <span><a class="emain-project-name bold" style="font-size: 1em;">퍼블리싱/스크립트</a></span>             
+                        </div>
+                        <div class="emain-project bg-gradation-50 cursor-pointer" th:onclick="location.href='../normal/projectListPage?job_no_list=6'">
+                            <a class="emain-project-name me-5"><i class="text-fs-3em w-10 bi bi-basket3"></i></a>
+                            <span><a class="emain-project-name bold ms-2" style="font-size: 1em;">마케팅/AE</a></span>             
+                        </div>
+                        <div class="emain-project bg-gradation-30 cursor-pointer" th:onclick="location.href='../normal/projectListPage?job_no_list=7'">
+                            <a class="emain-project-name me-5"><i class="text-fs-3em w-10 bi bi-three-dots"></i></a>
+                            <span><a class="emain-project-name bold ms-5" style="font-size: 1em;">기타</a></span>             
+                        </div>
+                        <div class="emain-project bg-gradation-10 cursor-pointer" th:onclick="location.href='../normal/projectListPage?recruitType_no=2'">
+                            <a class="emain-project-name me-5"><i class="text-fs-3em w-10 bi bi-person-check"></i></a>
+                            <span><a class="emain-project-name bold ms-2" style="font-size: 1em;">IT아웃소싱</a></span>             
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col">
+            <div class="eframe-width mx-auto">
+            	<div id="hotContainer">
+	                <div class="inline-block eblank-title">
+	                    <h1 class="etext-title">HOT 프로젝트</h1>
+	                    <a class="next cursor-pointer" onclick="nextSlide()"><i class="block ecard-pj-roll bi bi-caret-right-square text-gray-c_25 text-fs-30 ms-5 me-3"></i></a>
+	                    <a class="prev cursor-pointer" onclick="prevSlide()"><i class="block ecard-pj-roll bi bi-caret-left-square text-gray-c_25 text-fs-30"></i></a>
+	                </div>
+	                <span class="mySlideDiv fade active">
+	                    <span id="firstSlide" class="row">
+	                                                            
+	                    </span>
+	                </span> 
+
+                </div>
+                <div class="inline-block eblank-title mt-5">
+                    <h1 class="mt-5 etext-title">최신 프로젝트</h1>
+                </div>
+                <div class="row">
+                    <div id="projectBox" class="col">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  </div> 
+</div>
+
+<th:block th:include="commons/footer"></th:block>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

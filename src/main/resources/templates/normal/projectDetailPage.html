@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<link th:href="@{/css/commons.css}" rel="stylesheet">
+	
+	<style>
+    .project-money {
+        font-family: 'Futura', sans-serif;
+        font-weight: 550;
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0;
+        color: black;
+        
+    }    
+
+    .group-btns {
+        display: inline-block;
+        margin-bottom: 0.625rem;
+    }
+
+    .btn-medium {
+    display: inline-block;
+    text-align: center;
+    margin:3px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 1rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    } 
+    
+    .btn-cf-white{  background-color: rgba(255, 255, 255, 1);  color: rgba(0, 0, 0, 1); }
+    .btn-cf-dpink{  background-color: rgba(243, 220, 11, 0.815);  color: rgb(255, 255, 255); }
+    .btn-cf-dgray{  background-color: rgba(60, 60, 60, 1);  border-color: rgba(60, 60, 60, 1); border-width: 1px;  color: rgba(255, 255, 255, 1); }
+    .btn-c-gray{  background-color: rgba(204, 204, 204, 1); }
+    .btn-cl-dred{
+        background-color: #ffffff;
+      
+        border-color: #999898;
+        border-width: 2px;
+        border-style: solid;
+        
+        color: #6b6b6b;
+    }
+	.btn-cf-sky{  background-color: rgba(77, 165, 248, 0.699);  color: rgba(245, 245, 245, 0.918); }
+
+    .etext-h2{ font-size: 1.5rem; font-weight: 600;}
+    .eblank-h2{ margin-top: 5rem; margin-bottom: 0.625rem;}
+    .etext-p{ font-size: 1rem;}
+
+    .shadow { box-shadow : 1px 1px 5px rgb(42, 42, 42);}	
+    
+    .ecard-pj-roll {
+        float: right;
+        margin-left: 0.25rem;
+        width: 1.25rem;
+    }    
+    
+    .etext-title{ float: left; font-weight: 600; font-size: 2rem;}
+    .eblank-title{ margin-bottom: 0.75rem; margin-top: 1.5rem; width: 100%;}
+    
+    .border-box {border: 2px solid rgb(138, 137, 137); border-radius:10px;}
+    .border-box-top-divider {border-top: 2px solid rgba(138, 137, 137, 0.596);}    
+    
+    .ad {
+		width:300px;
+		height:625px;
+        position : fixed;
+        left: 5%;
+        top: 17%;        
+    }
+    
+	.topFixBannerFixed {
+        position: fixed;
+        top: 5px;
+        text-align:left;
+        padding-left:20px;
+      }
+      
+    .seenProject {
+		width:120px;
+		height:500px;
+        position : fixed;
+        right: 15%;
+        top: 30%;        
+    }
+    
+	.topFixBannerFixedRight {
+        position: fixed;
+        top: 130px;
+        /*text-align:right;*/
+      }      
+
+	</style>
+	
+	<script th:inline="javascript">
+ 	/*<![CDATA[*/
+	const sessionUser =  /*[[ ${session.sessionUser} ]]*/;
+	/*]]*/
+
+	
+    function prevSlide() {
+        $(".mySlideDiv").hide(); //모든 div 숨김
+        var allSlide = $(".mySlideDiv"); //모든 div 객체를 변수에 저장
+        var currentIndex = 0; //현재 나타난 슬라이드의 인덱스 변수
+        
+        //반복문으로 현재 active클래스를 가진 div를 찾아 index 저장
+        $(".mySlideDiv").each(function(index,item){ 
+            if($(this).hasClass("active")) {
+                currentIndex = index;
+            }
+            
+        });
+        
+        //새롭게 나타낼 div의 index
+        var newIndex = 0;
+        
+        if(currentIndex <= 0) {
+            //현재 슬라이드의 index가 0인 경우 마지막 슬라이드로 보냄(무한반복)
+            newIndex = allSlide.length-1;
+        } else {
+            //현재 슬라이드의 index에서 한 칸 만큼 뒤로 간 index 지정
+            newIndex = currentIndex-1;
+        }
+    
+        //모든 div에서 active 클래스 제거
+        $(".mySlideDiv").removeClass("active");
+        
+        //새롭게 지정한 index번째 슬라이드에 active 클래스 부여 후 show()
+        $(".mySlideDiv").eq(newIndex).addClass("active");
+        $(".mySlideDiv").eq(newIndex).show();
+    
+    }
+    
+    //다음 슬라이드
+    function nextSlide() {
+        $(".mySlideDiv").hide();
+        var allSlide = $(".mySlideDiv");
+        var currentIndex = 0;
+        
+        $(".mySlideDiv").each(function(index,item){
+            if($(this).hasClass("active")) {
+                currentIndex = index;
+            }
+            
+        });
+        
+        var newIndex = 0;
+        
+        if(currentIndex >= allSlide.length-1) {
+            //현재 슬라이드 index가 마지막 순서면 0번째로 보냄(무한반복)
+            newIndex = 0;
+        } else {
+            //현재 슬라이드의 index에서 한 칸 만큼 앞으로 간 index 지정
+            newIndex = currentIndex+1;
+        }
+    
+        $(".mySlideDiv").removeClass("active");
+        $(".mySlideDiv").eq(newIndex).addClass("active");
+        $(".mySlideDiv").eq(newIndex).show();
+        
+    }	
+    
+    function prevSeenSlide() {
+        $(".seenSlideDiv").hide(); //모든 div 숨김
+        var allSlide = $(".seenSlideDiv"); //모든 div 객체를 변수에 저장
+        var currentIndex = 0; //현재 나타난 슬라이드의 인덱스 변수
+        
+        //반복문으로 현재 active클래스를 가진 div를 찾아 index 저장
+        $(".seenSlideDiv").each(function(index,item){ 
+            if($(this).hasClass("active")) {
+                currentIndex = index;
+            }
+            
+        });
+        
+        //새롭게 나타낼 div의 index
+        var newIndex = 0;
+        
+        if(currentIndex <= 0) {
+            //현재 슬라이드의 index가 0인 경우 마지막 슬라이드로 보냄(무한반복)
+            newIndex = allSlide.length-1;
+        } else {
+            //현재 슬라이드의 index에서 한 칸 만큼 뒤로 간 index 지정
+            newIndex = currentIndex-1;
+        }
+    
+        //모든 div에서 active 클래스 제거
+        $(".seenSlideDiv").removeClass("active");
+        
+        //새롭게 지정한 index번째 슬라이드에 active 클래스 부여 후 show()
+        $(".seenSlideDiv").eq(newIndex).addClass("active");
+        $(".seenSlideDiv").eq(newIndex).show();
+    
+    }
+    
+    //다음 슬라이드
+    function nextSeenSlide() {
+        $(".seenSlideDiv").hide();
+        var allSlide = $(".seenSlideDiv");
+        var currentIndex = 0;
+        
+        $(".seenSlideDiv").each(function(index,item){
+            if($(this).hasClass("active")) {
+                currentIndex = index;
+            }
+            
+        });
+        
+        var newIndex = 0;
+        
+        if(currentIndex >= allSlide.length-1) {
+            //현재 슬라이드 index가 마지막 순서면 0번째로 보냄(무한반복)
+            newIndex = 0;
+        } else {
+            //현재 슬라이드의 index에서 한 칸 만큼 앞으로 간 index 지정
+            newIndex = currentIndex+1;
+        }
+    
+        $(".seenSlideDiv").removeClass("active");
+        $(".seenSlideDiv").eq(newIndex).addClass("active");
+        $(".seenSlideDiv").eq(newIndex).show();
+        
+    }    
+	
+	function openUrl() {
+		var url = /*[[ ${data.projectBoardVo.project_url} ]]*/;
+		window.open(url, "_blank");
+	}
+	
+    function createSecondSlide() {
+    	var fade = document.createElement("span");
+    	fade.setAttribute("class", "mySlideDiv fade");
+    	var secondSlide = document.createElement("span");
+    	secondSlide.setAttribute("id", "secondSlide");
+    	secondSlide.setAttribute("class", "row");
+    	fade.appendChild(secondSlide);
+    
+    	document.querySelector("#relativeContainer").appendChild(fade);
+    }
+    
+    function loadRelativeProject() {
+    	
+		/*<![CDATA[*/
+		var jobVoList = /*[[ ${data.jobCategoryVoList} ]]*/;
+		/*]]*/
+
+    	var params = "";
+    	for(var jobVo of jobVoList) {
+    		params += "&job_no_list=" + jobVo.job_no;
+    	}
+    	params = params.slice(1, params.length);
+    	
+    	var xhr = new XMLHttpRequest();
+    	
+    	xhr.onreadystatechange = function() {
+    		if(xhr.readyState == 4 && xhr.status == 200) {
+    			var data = JSON.parse(xhr.responseText);    			
+    			    			
+    			createRelativeProjectBox(data.result);
+
+    		}
+    	}
+    	
+    	xhr.open("GET", "/normal/getRelativeProject?" + params, false);
+    	xhr.send();	
+    }
+    
+    function createRelativeProjectBox(dataList) {
+    	
+    	var firstSlide = document.querySelector("#firstSlide");
+    	
+    	if(dataList.length > 3) {
+    		createSecondSlide();
+    	}
+    	
+    	for(var i=0;i<dataList.length;i++) {
+    		var box = document.createElement("span");
+    		box.setAttribute("class", "col-4 px-0 inline-block cursor-pointer");
+    		box.setAttribute("onclick", "location.href='../normal/projectDetailPage?project_no=" + dataList[i].projectVo.project_no + "'");
+    		
+    		var card = document.createElement("span");
+    		card.setAttribute("class", "card h-full inline-block");
+    		card.setAttribute("style", "width: 17.75rem;");
+    		
+    		var relative = document.createElement("span");
+    		relative.setAttribute("class", "relative inline-block");
+    		relative.setAttribute("style", "width:282px; height:200px;")
+    		var img = document.createElement("img");    		
+    		var coono = dataList[i].projectVo.cooperation_no;
+    		if(coono == 1) {
+    			var profile = dataList[i].memberVo.member_profile;
+    			if(profile != null) {
+    				img.setAttribute("src", "/profileImage/" + dataList[i].memberVo.member_profile);
+    				//img.setAttribute("src", "../img/main_illust.png");
+    			} else {
+    				img.setAttribute("src", "../img/invidual.jpg");	
+    			}    				
+    		} else if(coono == 2) {
+    			img.setAttribute("src", "../img/elancer.jpg");
+    		} else if(coono == 3) {
+    			img.setAttribute("src", "../img/design9.jpg");
+    		} else if(coono == 4) {
+    			img.setAttribute("src", "../img/wishket.jpg");
+    		} else if(coono == 5) {
+    			img.setAttribute("src", "../img/webcruit.jpg");
+    		}
+    		img.setAttribute("class", "card-img-top items-center");
+    		//img.setAttribute("style", "width: 318px; height: 272px;");
+    		img.setAttribute("style", "width: 100%; height: 100%;");
+    		
+    		var iTag = document.createElement("i");    		    	
+    		if(dataList[i].myScrap > 0) {
+    			iTag.setAttribute("class", "cursor-pointer bi bi-star-fill absolute border rounded-full px-1 text-fs-20 bg-gray-c_ff");
+    			iTag.setAttribute("style", "top: 5%; right:3%; color: rgb(255, 219, 17);");
+    		} else {
+    			iTag.setAttribute("class", "cursor-pointer bi bi-star absolute border rounded-full px-1 text-fs-20 bg-gray-c_ff");
+    			iTag.setAttribute("style", "top: 5%; right:3%;");
+    		}
+    		iTag.setAttribute("onclick", "doScrap(event, this," + dataList[i].projectVo.project_no + ", true)");
+    		relative.appendChild(img);
+    		relative.appendChild(iTag);
+    		
+    		var body = document.createElement("span");
+    		body.setAttribute("class", "card-body block");
+    		var title = document.createElement("span");
+    		title.setAttribute("class", "card-title h-18 block bold text-fs-17");
+    		title.innerText = dataList[i].projectVo.project_name;    		
+    		var badgeBox = document.createElement("span");
+    		badgeBox.setAttribute("class", "card-text h-18 block");
+    		var badge1 = document.createElement("span");
+    		badge1.setAttribute("class", "badge bg-success me-1");
+			
+    		var job_names = "";
+    		for(var jobVo of dataList[i].jobVoList) {
+    			job_names += jobVo.job_name + "·";
+    		}
+    		job_names = job_names.slice(0, job_names.length-1);
+    		badge1.innerText = job_names;
+
+    		badgeBox.appendChild(badge1);
+    		var badge2 = document.createElement("span");
+    		badge2.setAttribute("class", "badge bg-secondary me-1");
+    		var price = dataList[i].projectVo.project_price;
+    		if(price.length > 33) {
+    			price = price.slice(0, 33) + "...";
+    		}
+    		badge2.innerText = price;
+    		badgeBox.appendChild(badge2);
+    		if(dataList[i].projectVo.recruitType_no == 1) {
+    			var badge3 = document.createElement("span");
+        		badge3.setAttribute("class", "badge bg-secondary me-1");
+    			badge3.innerText = dataList[i].localVo.local_name;
+    			badgeBox.appendChild(badge3);
+    		}
+    		var badge4 = document.createElement("span");
+    		badge4.setAttribute("class", "badge bg-danger me-1");
+    		if(dataList[i].projectVo.project_state == "Y") {
+    			badge4.innerText = "접수중";
+    		} else {
+    			badge4.innerText = "마감";
+    		}
+    		badgeBox.appendChild(badge4);
+    		
+    		var botBox = document.createElement("span");
+    		botBox.setAttribute("class", "mt-2 h-9 card-text text-fs-13 block");
+    		var span1 = document.createElement("span");
+    		span1.innerText = dataList[i].projectVo.project_period;
+    		var span2 = document.createElement("span");
+    		span2.innerText = "/";
+    		botBox.appendChild(span1);
+    		botBox.appendChild(span2);
+    		if(dataList[i].projectVo.recruitType_no == 1) {
+        		var span3 = document.createElement("span");    		
+        		span3.innerText = dataList[i].workTypeVo.workType_name;
+        		var span4 = document.createElement("span");
+        		span4.innerText = "/";
+        		botBox.appendChild(span3);
+        		botBox.appendChild(span4);
+    		}
+    		
+    		var span5 = document.createElement("span");
+    		span5.innerText = dataList[i].cooperationVo.cooperation_name;
+    		botBox.appendChild(span5);
+    		
+    		body.appendChild(title);
+    		body.appendChild(badgeBox);
+    		body.appendChild(botBox);
+    		card.appendChild(relative);
+    		card.appendChild(body);
+    		box.appendChild(card);
+    		
+    		if(i < 3) {
+    			firstSlide.appendChild(box);
+    		} else {
+    			document.querySelector("#secondSlide").appendChild(box);
+    		}
+    	}
+    }
+    
+    function createSeenProjectBox() {
+    	const seenProjectList = /*[[ ${seenProjectList} ]]*/;    	    	
+        
+    	if(seenProjectList == null || seenProjectList == "") return;
+    	
+    	var root = document.querySelector("#seenBox");
+    	
+        var upBox = document.createElement("div");
+        upBox.setAttribute("class", "cursor-pointer block text-center mt-2");
+        upBox.setAttribute("onclick", "prevSeenSlide()");
+        var upI = document.createElement("i");
+        upI.setAttribute("class", "bi bi-caret-up-fill text-fs-30");
+        upBox.appendChild(upI);
+        root.appendChild(upBox);
+        
+        var isFirst = true;
+        var endSlide = parseInt(seenProjectList.length / 3);        
+        var residual = seenProjectList.length % 3;
+        endSlide = (residual > 0) ? endSlide+1 : endSlide;       
+        
+        for(var i=0;i<endSlide;i++) {
+        	var slide = document.createElement("div");
+        	slide.setAttribute("class", "seenSlideDiv text-fs-12");
+        	if(isFirst) {
+        		slide.classList.add("active");
+        		isFirst = false;
+        	}
+        	var cnt = 0;
+        	while(cnt<3) {
+        		/*if(seenProjectList.length == 0) {
+        			break;
+        		}*/
+        		
+        		var row = document.createElement("div");
+        		row.setAttribute("class", "row mb-1 cursor-pointer");
+        		var col = document.createElement("div");
+        		col.setAttribute("class", "col rounded-10 mx-2 p-2 bold");
+        		col.setAttribute("style", "height: 100px");
+        		if(seenProjectList.length != 0) {
+        			col.classList.add("bg-gray-c_ff");
+            		var project = seenProjectList.shift();
+            		col.setAttribute("onclick", "location.href='../normal/projectDetailPage?project_no=" + project.project_no + "'");            		
+            		var project_name = project.project_name;
+            		if(project_name.length > 48) {
+            			project_name = project_name.slice(0, 48) + "...";
+            		}
+            		col.innerText = project_name;
+        		}
+        		row.appendChild(col);
+        		slide.appendChild(row);
+        		cnt++;
+        	}
+        	root.appendChild(slide);
+        }
+        
+        var downBox = document.createElement("div");
+        downBox.setAttribute("class", "cursor-pointer block text-center mt-2");
+        downBox.setAttribute("onclick", "nextSeenSlide()");
+        var downI = document.createElement("i");
+        downI.setAttribute("class", "bi bi-caret-down-fill text-fs-30");
+        downBox.appendChild(downI);        
+        root.appendChild(downBox);    	
+    }
+	
+	function doScrap(event, starBox, project_no, isRe=false){
+
+		event.stopPropagation();
+		
+		project_no = parseInt(project_no);
+		//AJAX...호출...
+		var xhr = new XMLHttpRequest();
+		
+		//응답 받을때...
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				var data = JSON.parse(xhr.responseText);
+				
+				if(data.result == "success") {
+					refreshStar(starBox, project_no, isRe);
+					getStarCount(project_no);
+				} else {
+					alert(data.reason);
+					return;
+				}
+			}				
+		};
+		
+		xhr.open("POST", "/normal/doScrap", true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xhr.send("project_no=" + project_no);
+		
+	}
+	
+	function refreshStar(starBox, project_no, isRe){
+		//AJAX...호출...
+		var xhr = new XMLHttpRequest();
+		
+		//응답 받을때...
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				var data = JSON.parse(xhr.responseText);
+				
+				if(data.result == 'error'){
+					alert(data.reason);
+					return;
+				}
+				
+				if(data.state == 'scrap'){					
+					if(isRe) {
+						starBox.setAttribute("class", "cursor-pointer bi bi-star-fill absolute border rounded-full px-1 text-fs-18 bg-gray-c_ff");
+						starBox.style.color = "rgb(255, 219, 17)"
+						return;
+					}
+					starBox.setAttribute("class","cursor-pointer bi bi-star-fill text-fs-24 px-2");
+					starBox.setAttribute("style", "color: rgb(255, 219, 17);");
+				}else{					
+					if(isRe) {
+						starBox.setAttribute("class", "cursor-pointer bi bi-star absolute border rounded-full px-1 text-fs-18 bg-gray-c_ff");
+						starBox.style.color = "black"
+						return;
+					}
+					starBox.setAttribute("class","cursor-pointer bi bi-star text-fs-24 px-2");
+					starBox.setAttribute("style", "color: black;");
+				}
+				
+			}
+			
+		};
+		
+		xhr.open("get" , "/normal/getMyScrapState?project_no="+project_no , true);
+		xhr.send();		
+	}
+	
+	function getStarCount(project_no) {
+		var xhr = new XMLHttpRequest();
+		
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState == 4 && xhr.status == 200) {
+				var data = JSON.parse(xhr.responseText);
+				
+				document.querySelector(".text-red-soft").innerText = data.totalScrapCount + "명";
+			}
+		}
+		
+		xhr.open("get", "/normal/getTotalScrapState?project_no=" + project_no, true);
+		xhr.send();
+	}
+	
+
+	
+	window.addEventListener("DOMContentLoaded" , function(){
+		
+		loadRelativeProject();
+		createSeenProjectBox();
+		
+		$(".mySlideDiv").not(".active").hide(); //화면 로딩 후 첫번째 div를 제외한 나머지 숨김
+		setInterval(nextSlide, 4000); //4초(4000)마다 다음 슬라이드로 넘어감
+		
+		$(".seenSlideDiv").not(".active").hide();
+	    	    		
+    	
+	});
+	
+    
+    window.addEventListener('scroll', function() {
+    	/*var banner = document.querySelector(".ad");
+    	if(document.querySelector('html').scrollTop > banner.offsetTop) {
+    		banner.classList.add("topFixBannerFixed");
+    	} else {
+    		banner.classList.remove("topFixBannerFixed");
+    	}*/
+    	
+    	var seenProject = document.querySelector(".seenProject");
+    	if(document.querySelector('html').scrollTop > seenProject.offsetTop) {
+    		seenProject.classList.add("topFixBannerFixedRight");
+    	} else {
+    		seenProject.classList.remove("topFixBannerFixedRight");
+    	}    	
+    });
+	
+	
+	</script>
+ 	<script th:inline="javascript" src="/js/nav.js"></script>
+</head>
+<body>
+<div style="width: 1200px; margin:0 auto;">
+  <div class="container-fluid">
+  
+  <th:block th:include="commons/normal_navbar"></th:block>
+
+    <div class="row mt-5 relative">
+    	<div class="col-2">
+    		<div class="row sticky-top me-3">
+    			<img src="../img/iu_banner_long2.jpg">
+    		</div>
+    	</div>
+        <div class="col">
+            <div class="eframe-width py-11 mx-auto border-box" style="padding-left: 2.5rem; padding-right:2.5rem;">	
+                <div class="inline-block float-right text-fs-15 font-extrabold text-gray-c_3c pl-15"><span class="text-red-soft" th:text="${scrapCount} + '명'"></span>의 관심을 받고 있어요</div>
+                <div class="mb-4 text-fs-40 font-extrabold inline-block" th:text="${data.projectBoardVo.project_name}"></div>
+                <div class="project-money" th:text="'￦ ' + ${data.projectBoardVo.project_price}"></div>
+                <span class="group-btns w-full mt-10">
+                    <span class="btn-medium btn-cl-dred" th:text="'⏱ '  + ${data.projectBoardVo.project_period}"></span>
+                    <span th:if="${data.projectBoardVo.workType_no != 4}" class="btn-medium btn-cl-dred" th:text="${data.localCategoryVo.local_name}"></span>
+                    <th:block th:each="jobCategoryVo : ${data.jobCategoryVoList}">
+                    	<span class="btn-medium btn-cl-dred" th:if="${jobCategoryVo.job_no == 1}" th:text="'🎨 ' + ${jobCategoryVo.job_name}"></span>
+                    	<span class="btn-medium btn-cl-dred" th:if="${jobCategoryVo.job_no == 2}" th:text="'💻 ' + ${jobCategoryVo.job_name}"></span>
+                    	<span class="btn-medium btn-cl-dred" th:if="${jobCategoryVo.job_no == 3}" th:text="'📃 ' + ${jobCategoryVo.job_name}"></span>
+                    	<span class="btn-medium btn-cl-dred" th:if="${jobCategoryVo.job_no == 4}" th:text="'📢 ' + ${jobCategoryVo.job_name}"></span>
+                    	<span class="btn-medium btn-cl-dred" th:if="${jobCategoryVo.job_no == 5}" th:text="'🚀 ' + ${jobCategoryVo.job_name}"></span>
+                    	<span class="btn-medium btn-cl-dred" th:if="${jobCategoryVo.job_no == 6}" th:text="'🛒 ' + ${jobCategoryVo.job_name}"></span>
+                    	<span class="btn-medium btn-cl-dred" th:if="${jobCategoryVo.job_no == 7}" th:text="'💭 ' + ${jobCategoryVo.job_name}"></span>
+                    	
+                    	
+                    </th:block>                                        
+                </span>
+                <span class="group-btns w-full">
+                    <span class='btn-medium btn-cf-sky' th:text="${data.workTypeCategoryVo.workType_name}"></span>
+                    <span th:if="${data.projectBoardVo.cooperation_no == 1}" class='btn-medium btn-cf-sky' th:text="${data.memberVo.member_name}"></span>
+                    <span th:unless="${data.projectBoardVo.cooperation_no == 1}" class='btn-medium btn-cf-sky' th:text="${data.cooperationCategoryVo.cooperation_name}"></span>
+                    <span class="float-right border rounded-full me-3 pt-1">
+                    	<i th:if="${myScrap > 0}" class="cursor-pointer bi bi-star-fill text-fs-24 px-2" th:attr="onclick=|doScrap(event, this, '${data.projectBoardVo.project_no}')|" style="color:rgb(255, 219, 17);"></i>
+                    	<i th:unless="${myScrap > 0}" class="cursor-pointer bi bi-star text-fs-24 px-2" th:attr="onclick=|doScrap(event, this, '${data.projectBoardVo.project_no}')|" style="color:black;"></i>
+                    </span>
+                </span>
+                <!-- <div class="shadow" style="height:3px;"></div>  -->
+                
+                <div class="etext-h2 eblank-h2 border-box-top-divider mt-5 pt-12">🎯 프로젝트 내용</div>
+                <div class="etext-p leading-relaxed bold mt-4 text-gray-c_3c" th:utext="${data.projectBoardVo.project_content}">
+
+                </div>
+                <div class="row mt-3">
+                    <div class="col"></div>
+                    <div class="col d-grid mt-5">
+                        <button th:if="${data.projectBoardVo.cooperation_no != 1}" class="btn btn-dark" onclick="openUrl()">프로젝트 상세보기</button>
+                    </div>
+                    <div class="col"></div>
+                </div>                
+            </div>
+            <div class="row mt-5 mb-5">
+                <div class="col">
+                    <div class="eframe-width mx-auto mt-5">
+		            	<div id="relativeContainer">
+			                <div class="inline-block eblank-title">
+			                    <h1 class="etext-title">추천 연관 프로젝트</h1>
+			                    <a class="next cursor-pointer" onclick="nextSlide()"><i class="block ecard-pj-roll bi bi-caret-right-square text-gray-c_25 text-fs-30 ms-5 me-3"></i></a>
+			                    <a class="prev cursor-pointer" onclick="prevSlide()"><i class="block ecard-pj-roll bi bi-caret-left-square text-gray-c_25 text-fs-30"></i></a>
+			                </div>
+			                <span class="mySlideDiv fade active">
+			                    <span id="firstSlide" class="row">
+			                                                            
+			                    </span>
+			                </span> 
+		
+		                </div>
+                    </div>
+                    <div class="row mb-5" style="height: 200px;"></div>
+                </div>
+            </div>		                    		        		        		
+        </div>
+        <div class="col-1">
+			<div class="row seenProject">
+    			<div class="col rounded-10 p-2 bg-lemon h-full">
+    				<div class="row mt-3">
+		                <div class="col text-center text-fs-18 bold">최근 본</div>            
+		            </div>
+		            <div class="row">
+		                <div class="col text-center text-fs-18 bold">프로젝트👀</div>            
+		            </div>
+    				<div class="row">
+    					<div id="seenBox" class="col">
+    					
+    					</div>
+    				</div>    				    				
+    			</div>
+    		</div>        
+        </div>
+    </div>
+
+  </div> 
+</div>
+
+<th:block th:include="commons/footer"></th:block>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

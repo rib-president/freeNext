@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<link th:href="@{/css/commons.css}" rel="stylesheet">
+	<link th:href="@{/css/style.css}" rel="stylesheet">
+	
+	<style>
+	.eblock-top{ 
+        display: inline-block; 
+        line-height: 1.5rem; 
+        margin-top: 0px; 
+        margin-bottom: 1rem; 
+        width: 100%;
+    }
+
+    .etext-top{  
+        float: left;  
+        font-weight: 500;  
+        font-size: 0.8125rem; 
+    }
+
+    .etext-head{ 
+        float: left; 
+        font-weight: 800; 
+        font-size: 2rem;
+    }
+    
+    .eblock-buttons{ 
+        display: inline-block; 
+        margin-bottom: 0.25rem; 
+        width: 100%;
+    }    
+    
+    .eblock-buttons-category{ 
+        display: inline-block; 
+        margin-bottom: 0.5rem; 
+        width: 100%;
+    }
+
+    .ebtn-round {
+        display: inline-block;
+        cursor: pointer;
+        white-space: nowrap;
+        text-align: center;
+        border-radius: 9999px;
+        border-width: 2px;
+        font-weight: 700;
+        font-size: 1rem;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }        
+
+    .ebtn-round-job {
+        display: inline-block;
+        cursor: pointer;
+        white-space: nowrap;
+        text-align: center;
+        border-radius: 9999px;
+        border-width: 2px;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 0.75rem;
+    } 
+
+    .ebtn-round-local {
+        display: inline-block;
+        cursor: pointer;
+        white-space: nowrap;
+        text-align: center;
+        border-radius: 9999px;
+        border-width: 2px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 0.5rem;
+    }    
+
+    .ebtn-r-gray{  background-color: rgba(255, 255, 255, 1); border-color: rgba(0, 0, 0, 1); }
+    .ebtn-r-gray:hover {  background-color: rgba(122, 255, 166, 0.466);  border-color: rgba(0, 0, 0, 1); animation: wobble-hor-bottom 0.2s 1 both;}
+    .ebtn-r-gray.on {  border-width: 4px; background-color: rgba(122, 255, 166, 0.466); border-color: rgba(0, 0, 0, 1); }
+
+	/*@keyframes wobble-hor-bottom {
+	  0%,
+	  100% {
+	    -webkit-transform: translateX(0%);
+	            transform: translateX(0%);
+	    -webkit-transform-origin: 25% 25%;
+	            transform-origin: 25% 25%;
+	  }
+	  15% {
+	    -webkit-transform: translateX(-15px) rotate(-3deg);
+	            transform: translateX(-15px) rotate(-3deg);
+	  }
+	  30% {
+	    -webkit-transform: translateX(7px) rotate(3deg);
+	            transform: translateX(7px) rotate(3deg);
+	  }
+	  45% {
+	    -webkit-transform: translateX(-7px) rotate(-2.0deg);
+	            transform: translateX(-7px) rotate(-2.0deg);
+	  }
+	  60% {
+	    -webkit-transform: translateX(5px) rotate(1.2deg);
+	            transform: translateX(5px) rotate(1.2deg);
+	  }
+	  75% {
+	    -webkit-transform: translateX(-3px) rotate(-0.6deg);
+	            transform: translateX(-3px) rotate(-0.6deg);
+	  }
+	}*/
+	
+	@keyframes wobble-hor-bottom {
+	  0%,
+	  100% {
+	    -webkit-transform: translateX(0%);
+	            transform: translateX(0%);
+	    -webkit-transform-origin: 25% 25%;
+	            transform-origin: 25% 25%;
+	  }
+	  50% {
+	    -webkit-transform: translateX(5px);
+	            transform: translateX(5px);
+	  }
+	}	
+
+    .pagination > li > a { color: #272727; font-weight: bold;}
+
+    .pagination > li > a:focus,
+    .pagination > li > a:hover,
+    .pagination > li > span:focus,
+    .pagination > li > span:hover
+    { color: #272727; background-color: #eee; border-color: #686868; box-shadow: 0 0 1px #272727 !important;}
+
+    .pagination > .active > a { color: white; background-color: #272727 !Important; border: solid 1px #272727 !Important; box-shadow: 0 0 1px #272727 !important;}
+
+    .pagination > .active > a:hover {background-color: #272727 !Important; border: solid 1px #272727; box-shadow: 0 0 1px #272727 !important;}
+    
+    .searchbar-frame-m {
+        background-image: -moz-linear-gradient(right, #afaeaece, #d4b3b09a); /* FF3.6 */
+        background-image: -webkit-gradient(linear,left top,right bottom,color-stop(0, #afaeaece),color-stop(1, #d4b3b09a)); /* Saf4+, Chrome */
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300'); /* IE6,IE7 */
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300')"; /* IE8 */
+        background-image: -ms-linear-gradient(right, #afaeaece 0%, #d4b3b09a 100%); /* IE10 */
+
+        border-radius: 9999px;
+        cursor: pointer;
+        padding: 0.2rem;
+        position: static;
+    }
+    
+    .searchbar-frame-m:hover {
+        background-image: -moz-linear-gradient(right, rgba(75, 73, 73, 0.938), #d84a3d); /* FF3.6 */
+        background-image: -webkit-gradient(linear,left top,right bottom,color-stop(0, rgba(75, 73, 73, 0.938)),color-stop(1, #d84a3d)); /* Saf4+, Chrome */
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300'); /* IE6,IE7 */
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#7485c9', EndColorStr='#f16300')"; /* IE8 */
+        background-image: -ms-linear-gradient(right, rgba(75, 73, 73, 0.938) 0%, #d84a3d 100%); /* IE10 */
+
+        border-radius: 9999px;
+        cursor: pointer;
+        padding: 0.2rem;
+        position: static;
+    }
+
+    .searchmain-inner-m {
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 9999px;
+        cursor: pointer;
+        height: 2.25rem;
+        line-height: 2.5rem;
+        padding: 0.5px;
+        padding-left: 1rem;
+        padding-right: 0.25rem;
+        position: relative;
+        width: 100%;
+    }
+
+    .searchmain-text-m {
+        border-width:0;
+        font-size:1rem;
+        font-weight: bold;
+        line-height:0.5;
+        margin-top:0;
+        margin-left:1rem;
+        padding:0;        
+        }    
+
+	.project-box:hover {
+	  border-color: black;
+	}    
+        
+	</style>
+	
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		const sessionUser =  /*[[ ${session.sessionUser} ]]*/;
+		/*]]*/
+		var pageNum = 1;
+		var startPage = 1;
+		var endPage = 1;
+		var currentPage = 1;
+		var totalPage = 1;
+		var searchKeyword = /*[[ ${searchKeyword} ]]*/;
+		var recruit_list = [];
+		var recruitType_no = /*[[ ${recruit_list} ]]*/;		
+		var job_no_list = [];
+		var job_no = /*[[ ${job_no_list} ]]*/;
+
+		if(recruitType_no != null) {
+			recruit_list.push(recruitType_no);
+		}
+		
+		if(job_no != null) {
+			job_no_list.push(job_no);	
+		}						
+		var local_no_list = [];
+		var project_state = "Y";
+		
+		function movePage(obj) {
+			pageNum = obj.innerText;
+			
+			if(pageNum == "<") {
+				pageNum = parseInt(startPage) - 1;
+			} else if(pageNum == ">") {
+				pageNum = parseInt(endPage) + 1;
+			}
+
+			loadProjectList();
+		}
+		
+		function selectJob(obj) {
+			var resetBtn = document.querySelector("#resetBtn");
+			if(resetBtn.classList.contains("on")) {
+				resetBtn.classList.remove("on");
+			}
+			
+			if(obj.classList.contains("on")) {
+				obj.classList.remove("on");
+			} else {
+				obj.classList.add("on");	
+			}			
+			
+			job_no_list = [];
+			recruit_list = [];
+			
+			for(var jobBtn of document.querySelectorAll(".job_no_list")) {
+				if(jobBtn.classList.contains("on")) {
+					if(jobBtn.value > 0) {
+						job_no_list.push(jobBtn.value);	
+					} else {
+						recruit_list.push(jobBtn.value);												
+					}
+						
+				}					
+			}		
+			
+			pageNum = 1;
+			
+			loadProjectList();
+		}					
+		
+		function selectLocal(obj) {
+			var resetBtn = document.querySelector("#resetBtn");
+			if(resetBtn.classList.contains("on")) {
+				resetBtn.classList.remove("on");
+			}
+			
+			if(obj.classList.contains("on")) {
+				obj.classList.remove("on");
+			} else {
+				obj.classList.add("on");
+			}
+			
+			local_no_list = [];
+			for(var localBtn of document.querySelectorAll(".local_no_list")) {
+				if(localBtn.classList.contains("on")) {
+					local_no_list.push(localBtn.value);
+				}
+			}
+			pageNum = 1;
+			
+			loadProjectList();
+		}
+		
+		function selectReset(obj) {
+			job_no_list = [];
+			local_no_list = [];
+			recruit_list = [];
+			searchKeyword = null;
+			
+			for(var e of document.querySelectorAll(".on")) {				
+				e.classList.remove("on");
+			}
+			
+			document.querySelector("#searchBar").value = "";
+			
+			obj.classList.add("on");
+			loadProjectList();
+		}
+		
+		function search() {			
+			
+			searchKeyword = document.querySelector("#searchBar").value;
+			pageNum = 1;
+			
+			loadProjectList();
+		}
+	
+		function checkState(obj) {
+			if(obj.checked) {
+				project_state = "Y";
+			} else {
+				project_state = "ALL";
+			}
+			pageNum = 1;
+			
+			loadProjectList();
+		}
+		
+		function loadProjectList() {
+			
+			var xhr = new XMLHttpRequest();
+			
+			var sendData = {
+				"pageNum" : pageNum,
+				"searchKeyword" : searchKeyword,
+				"recruit_list" : recruit_list,
+				"job_no_list" : job_no_list,
+				"local_no_list" : local_no_list,
+				"project_state" : project_state,				
+			};
+			
+			var shuffle = [0, 1, 2, 3, 4, 5, 6];
+			shuffle.sort(() => Math.random() - 0.5);
+			shuffle = shuffle.slice(0, 3);
+			
+			var cnt = 0;
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var data = JSON.parse(xhr.responseText);
+					
+					document.querySelector("#projectBox").innerHTML = "";
+					document.querySelector(".pagination").innerHTML = "";
+					for(var v of data.result) {						
+						createProjectBox(v);
+						if(data.hotResult != "" && shuffle.includes(cnt)) {
+							createProjectBox(data.hotResult.shift(), true);
+						}
+						cnt++;
+					}
+					
+					startPage = data.startPage;
+					endPage = data.endPage;
+					currentPage = data.currentPage;
+					totalPage = data.totalPage;
+					
+					createPagination();					
+				}				
+			};
+
+
+			xhr.open("post", "./getProjectList", true);
+	        xhr.setRequestHeader("Content-type","application/json"); //Post
+			xhr.send(JSON.stringify(sendData));
+
+		}
+		
+		function createProjectBox(data, isHot=false) {
+			var recruitType_no = 0;
+			if(isHot) {
+				recruitType_no = data.projectVo.recruitType_no;
+			} else {
+				recruitType_no = data.recruitType_no;
+			}
+			
+			var project_box = document.createElement("div");
+			project_box.setAttribute("class", "row project-box mt-3 cursor-pointer");
+			if(isHot) {
+				project_box.setAttribute("onclick", "location.href='../normal/projectDetailPage?project_no=" + data.projectVo.project_no + "'");				
+			}else {
+				project_box.setAttribute("onclick", "location.href='../normal/projectDetailPage?project_no=" + data.project_no + "'");	
+			}
+			
+			
+			var col = document.createElement("div");
+			col.setAttribute("class", "col");
+			
+			var row1 = document.createElement("div");
+			row1.setAttribute("class", "row");
+
+			
+			
+			var row1_col1 = document.createElement("div")
+			row1_col1.setAttribute("class", "col bold text-fs-25");
+
+			if(isHot) {
+				row1_col1.innerText = data.projectVo.project_name;
+			}else {
+				row1_col1.innerText = data.project_name;
+			}
+
+			var row1_col2 = document.createElement("div")
+			row1_col2.setAttribute("class", "col-1 pl-10");
+			var i = document.createElement("i");
+
+			if(data.myScrap > 0) {
+				i.setAttribute("class", "bi bi-star-fill text-fs-23 bg-gray-c_ff")
+				i.setAttribute("style", "color:rgb(255, 219, 17);")
+			} else {
+				i.setAttribute("class", "bi bi-star text-fs-23 bg-gray-c_ff")	
+			}
+			
+			if(isHot) {
+				i.setAttribute("onclick", "doScrap(event, this, " + data.projectVo.project_no + ")");	
+			}else {
+				i.setAttribute("onclick", "doScrap(event, this, " + data.project_no + ")");
+			}
+						
+			row1_col2.appendChild(i);
+			row1.appendChild(row1_col1);
+			row1.appendChild(row1_col2);
+			
+			var row2 = document.createElement("div");
+			row2.setAttribute("class", "row mt-2");
+			var row2_col = document.createElement("div");
+			row2_col.setAttribute("class", "col text-blue");
+			var row2_col_span1 = document.createElement("span");
+			row2_col_span1.setAttribute("class", "bold");			
+			if(isHot) {
+				row2_col_span1.innerText = "￦ " + data.projectVo.project_price;
+			} else {
+				row2_col_span1.innerText = "￦ " + data.project_price;	
+			}
+					
+			var row2_col_span2 = document.createElement("span");
+			row2_col_span2.setAttribute("class", "px-0");
+			row2_col_span2.innerText = " | ";
+			var row2_col_span3 = document.createElement("span");
+			row2_col_span3.setAttribute("class", "bold");
+			var i2 = document.createElement("i");
+			i2.setAttribute("class", "bi bi-clock");
+			row2_col_span3.appendChild(i2);
+			var row2_col_span4 = document.createElement("span");
+			row2_col_span4.setAttribute("class", "bold");
+			if(isHot) {
+				row2_col_span4.innerText = " " + data.projectVo.project_period;
+			}else {
+				row2_col_span4.innerText = " " + data.project_period;	
+			}
+									
+			row2_col.appendChild(row2_col_span1);
+			row2_col.appendChild(row2_col_span2);
+			row2_col.appendChild(row2_col_span3);
+			row2_col.appendChild(row2_col_span4);			
+			
+			if(data.localVo != null) {
+				var row2_col_span6 = document.createElement("span");
+				row2_col_span6.setAttribute("class", "bold");
+				var row2_col_span5 = document.createElement("span");
+				row2_col_span5.setAttribute("class", "px-0");
+				row2_col_span5.innerText = " | ";
+				row2_col_span6.innerText = data.localVo.local_name;
+				row2_col.appendChild(row2_col_span5);
+				row2_col.appendChild(row2_col_span6);
+			}
+			row2.appendChild(row2_col);
+			
+			var row3 = document.createElement("div");
+			row3.setAttribute("class", "row mt-3");
+			var row3_col = document.createElement("div");
+			row3_col.setAttribute("class", "col text-gray-c_8c text-fs-15 h-18");
+			var content = data.project_content;
+			if(isHot) {
+				content = data.projectVo.project_content;
+			}
+			
+			if(content.length > 201) {
+				content = content.slice(0, 201) + "...";
+			}			
+			row3_col.innerText = content;
+			row3.appendChild(row3_col);
+			
+			var row4 = document.createElement("div");
+			row4.setAttribute("class", "row mt-3");
+			var row4_col1 = document.createElement("div");
+			row4_col1.setAttribute("class", "col text-gray-c_25 relative");
+
+			var row4_col1_span1 = document.createElement("span");
+			row4_col1_span1.setAttribute("class", "bold");
+			
+			var job_names = "";
+			for(var jobVo of data.jobVoList) {
+				job_names += jobVo.job_name + "·";		 
+			}
+			row4_col1_span1.innerText = job_names.slice(0, job_names.length-1);
+			
+			var row4_col1_span2 = document.createElement("span");
+			row4_col1_span2.setAttribute("class", "px-0");
+			row4_col1_span2.innerText = " | ";
+			var row4_col1_span3 = document.createElement("span");
+			row4_col1_span3.setAttribute("class", "bold");
+			if(data.workTypeVo == null) {
+				row4_col1_span3.innerText = "기타";
+			} else {
+				row4_col1_span3.innerText = data.workTypeVo.workType_name;	
+			}
+			
+			row4_col1.appendChild(row4_col1_span1);
+			row4_col1.appendChild(row4_col1_span2);
+			row4_col1.appendChild(row4_col1_span3);					
+
+			var row4_col1_span4 = document.createElement("span");
+			row4_col1_span4.setAttribute("class", "px-0");
+			row4_col1_span4.innerText = " | ";
+			var row4_col1_span5 = document.createElement("span");
+			row4_col1_span5.setAttribute("class", "bold");
+			row4_col1_span5.innerText = data.cooperationVo.cooperation_name;
+			row4_col1.appendChild(row4_col1_span4);
+			row4_col1.appendChild(row4_col1_span5);
+
+			var row4_col1_span6 = document.createElement("span");
+			row4_col1_span6.setAttribute("class", "px-0");
+			row4_col1_span6.innerText = " | ";
+			var row4_col1_span7 = document.createElement("span");
+			row4_col1_span7.setAttribute("class", "bold");
+			row4_col1_span7.innerText = data.recruitTypeVo.recruitType_name;	
+			
+			row4_col1.appendChild(row4_col1_span6);
+			row4_col1.appendChild(row4_col1_span7);			
+			
+			if(isHot) {
+				var row4_col1_span8 = document.createElement("span");
+				row4_col1_span8.setAttribute("class", "badge bg-danger me-2 text-fs-10 mx-2 absolute");
+				row4_col1_span8.setAttribute("style", "padding-bottom:.25rem; padding-top:.25rem; top:10%");
+				row4_col1_span8.innerText = " AD ";
+				row4_col1.appendChild(row4_col1_span8);				
+			}			
+			
+			var row4_col2 = document.createElement("div");
+			row4_col2.setAttribute("class", "col-3 float-right text-fs-15 bold text-gray-c_3c pl-15");			
+			var row4_col2_span1 = document.createElement("span");
+			row4_col2_span1.setAttribute("class", "text-red-soft");
+			row4_col2_span1.innerText = data.scrapCount + "명";
+			var row4_col2_span2 = document.createElement("span");
+			row4_col2_span2.innerText = "의 관심을 받고 있어요";			
+			row4_col2.appendChild(row4_col2_span1);
+			row4_col2.appendChild(row4_col2_span2);
+			row4.appendChild(row4_col1);
+			row4.appendChild(row4_col2);
+			
+			col.appendChild(row1);
+			col.appendChild(row2);
+			col.appendChild(row3);
+			col.appendChild(row4);
+			project_box.appendChild(col);
+			
+			document.querySelector("#projectBox").appendChild(project_box);
+			
+		}
+		
+		function createPagination() {
+			var root = document.querySelector(".pagination");
+			
+			var lt = document.createElement("li");
+			if(startPage <= 1) {
+				lt.setAttribute("class", "page-item disabled");
+			} else {
+				lt.setAttribute("class", "page-item cursor-pointer");
+				lt.setAttribute("onclick", "movePage(this)");
+			}
+			var lt_a = document.createElement("a");
+			lt_a.setAttribute("class", "page-link");
+			lt_a.innerText = "<"
+			lt.appendChild(lt_a);
+			root.appendChild(lt);
+			
+			for(var i=startPage;i<=endPage;i++) {
+				var li = document.createElement("li");
+				li.setAttribute("class", "page-item cursor-pointer")
+				if(i == currentPage) {
+					li.classList.add("active");
+				}
+				li.setAttribute("onclick", "movePage(this)");
+				var a = document.createElement("a");
+				a.setAttribute("class", "page-link");
+				a.innerText = i;
+				
+				li.appendChild(a);
+				root.appendChild(li);
+			}
+			
+			var gt = document.createElement("li");
+			if(endPage >= totalPage) {
+				gt.setAttribute("class", "page-item disabled");
+			} else {
+				gt.setAttribute("class", "page-item cursor-pointer");
+				gt.setAttribute("onclick", "movePage(this)");
+			}
+			var gt_a = document.createElement("a");
+			gt_a.setAttribute("class", "page-link");
+			gt_a.innerText = ">"
+			gt.appendChild(gt_a);
+			root.appendChild(gt);
+			window.scrollTo(0,0);
+		}
+		
+		function doScrap(event, starBox, project_no){
+			event.stopPropagation();
+			project_no = parseInt(project_no);
+			//AJAX...호출...
+			var xhr = new XMLHttpRequest();
+			
+			//응답 받을때...
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var data = JSON.parse(xhr.responseText);
+					
+					if(data.result == "success") {
+						refreshStar(starBox, project_no);
+						getStarCount(starBox, project_no);
+					} else {
+						alert(data.reason);
+						return;
+					}
+				}				
+			};
+			
+			xhr.open("POST", "/normal/doScrap", true);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xhr.send("project_no=" + project_no);
+			
+		}
+		
+		function refreshStar(starBox, project_no){
+			//AJAX...호출...
+			var xhr = new XMLHttpRequest();
+			
+			//응답 받을때...
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var data = JSON.parse(xhr.responseText);
+					
+					if(data.result == 'error'){
+						alert(data.reason);
+						return;
+					}
+					
+					if(data.state == 'scrap'){
+						starBox.setAttribute("class","bi bi-star-fill text-fs-23 bg-gray-c_ff");
+						starBox.setAttribute("style", "color: rgb(255, 219, 17);");					
+					}else{
+						starBox.setAttribute("class","bi bi-star text-fs-23 bg-gray-c_ff");
+						starBox.setAttribute("style", "color: black;");
+					}
+					
+				}
+				
+			};
+			
+			xhr.open("get" , "/normal/getMyScrapState?project_no="+project_no , true);
+			xhr.send();		
+		}
+		
+		function getStarCount(starBox, project_no) {
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);
+					
+					starBox.closest(".project-box").querySelector(".text-red-soft").innerText = data.totalScrapCount + "명";
+				}
+			}
+			
+			xhr.open("get", "/normal/getTotalScrapState?project_no=" + project_no, true);
+			xhr.send();
+		}
+		
+		window.addEventListener("DOMContentLoaded" , function(){
+			loadProjectList();			
+		});
+		
+		
+	</script>
+	<script th:inline="javascript" src="/js/nav.js"></script>
+</head>
+<body>
+<div style="width: 1200px; margin:0 auto;">
+  <div class="container-fluid">
+  
+  <th:block th:include="commons/normal_navbar"></th:block>
+
+    <div class="row mt-4">
+        <div class="col">
+            <div class="eframe-width py-6 mx-auto">	
+                <div class="eblock-top">                    
+                    <h3 class="etext-top w-full">국내 프리랜서 플랫폼들의</h3>
+                    <h1 class="etext-head leading-tight">모든 프로젝트를 <br> 한 곳에 모아 편리하게 찾을 수 있어요</h1>                    
+                </div>
+                <div class="eblock-buttons">
+                    <button class="ebtn-round ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${recruitType_no == 1} ? on" onclick="selectJob(this)" value="-1"> 👩‍💻 프리랜서 매칭 </button>
+					<button class="ebtn-round ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${recruitType_no == 2} ? on" onclick="selectJob(this)" value="0"> 👨‍👩‍👧‍👦 IT 아웃소싱</button>
+					<button id="resetBtn" class="ebtn-round ebtn-r-gray mr-2 my-1" onclick="selectReset(this)"> 🌞 조건 초기화</button>                                        
+                </div>                
+                <div class="eblock-buttons-category">
+                    <button class="ebtn-round-job ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${job_no_list == 1} ? on" onclick="selectJob(this)" value="1"> 🎨  디자인 </button>       
+                    <button class="ebtn-round-job ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${job_no_list == 2} ? on" onclick="selectJob(this)" value="2"> 💻  프로그래머 </button>
+                    <button class="ebtn-round-job ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${job_no_list == 3} ? on" onclick="selectJob(this)" value="3"> 📃  웹/모바일기획 </button> 
+                    <button class="ebtn-round-job ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${job_no_list == 4} ? on" onclick="selectJob(this)" value="4"> 📢  PM </button>                                        
+                    <button class="ebtn-round-job ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${job_no_list == 5} ? on" onclick="selectJob(this)" value="5"> 🚀  퍼블리싱/스크립트 </button>                                        
+                    <button class="ebtn-round-job ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${job_no_list == 6} ? on" onclick="selectJob(this)" value="6"> 🛒  마케팅/AE </button>                                        
+                    <button class="ebtn-round-job ebtn-r-gray mr-2 my-1 job_no_list" th:classappend="${job_no_list == 7} ? on" onclick="selectJob(this)" value="7"> 💭  기타 </button>                                        
+                </div>
+                <div class="eblock-buttons-category">
+                	<button th:each="localCategory : ${localCategoryList}" class="ebtn-round-local ebtn-r-gray mr-2 my-1 local_no_list" onclick="selectLocal(this)"
+                	 th:text="${localCategory.local_name}" th:value="${localCategory.local_no}" th:classappend="${#strings.length(localCategory.local_name)} < 3 ? px-3"></button>              
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="eframe-width mx-auto">
+                <div class="row">
+                    <div class="col">
+                        <div class="searchbar-frame-m">
+                            <div class="searchmain-inner-m">
+	                            <input type="text" id="searchBar" placeholder="내가 찾는 프로젝트는?" class="etext-base searchmain-text-m w-10_12 items-center" th:onKeypress="javascript:if(event.keyCode==13) {search()}" th:value="${searchKeyword}">
+	                            <button class="btn-border-none absolute ms-2" onclick="search()">
+	                                <i class="bi bi-search text-fs-20" style="color:#291d44;"></i>
+	                            </button>
+                            </div>
+                        </div>                    
+                    </div>
+                    <div class="col-2 mt-3 float-right text-center text-fs-15 text-gray-c_3c bold relative pl-16">
+                        <input id="chkBox" class="top-1 absolute right-27" type="checkbox" value="Y" onclick="checkState(this)" checked> 모집마감 제외
+                    </div>
+                </div>
+                <div class="row">
+                	<div id="projectBox" class="col">              	
+                	
+                	</div>
+                </div>                                
+                <div class="row mb-5"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col">
+            <div class="eframe-width mx-auto">
+                <div class="row">
+                    <div class="col">
+                        <nav aria-label="Page navigation example">
+                          <ul class="pagination justify-center">
+                         					  		 
+                          </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  </div> 
+</div>
+
+<th:block th:include="commons/footer"></th:block>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

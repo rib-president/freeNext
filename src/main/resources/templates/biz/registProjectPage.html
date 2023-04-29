@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/js/nav.js"></script>
+	<link th:href="@{/css/commons.css}" rel="stylesheet">
+	
+	<style>
+	#load { 
+        width: 100%; 
+        height: 100%; 
+        top: 0; left: 0; 
+        position: fixed; 
+        display:none;
+        opacity: 0.6; 
+        background: white; 
+        z-index: 99999; 
+        text-align: center;
+    }
+    
+     #load.show { display:block }
+    
+    #load > img { position: absolute; top: 35%; left: 45%; z-index: 100; }	
+	
+	</style>
+	
+	<script th:inline="javascript">
+
+		const sessionUser =  null;
+		
+		/*function createJobOption(selectBox) {
+			
+			var jobCategoryBox = document.querySelector("#jobCategory");
+			
+			var jobCategoryList = '${jobCategoryList}';
+
+
+			if(selectBox.value == 1) {
+				jobCategoryBox.disabled = false;
+				
+				for(var jobCategory of jobCategoryList) {
+					var option = document.createElement("option");
+					option.innerText = jobCategory.job_name;
+					option.value = jobCategory.job_no;
+					
+					jobCategoryBox.appendChild(option);
+				}
+				
+			}else {
+				for(var option of jobCategoryBox.querySelectorAll("option")) {
+					if(option.id != "invalidJob") {
+						option.remove();
+					}					
+				}	
+				jobCategoryBox.disabled = true;
+				return;	
+			}
+		}*/    
+		
+		function sendData() {
+			var frm = document.querySelector("form");
+			
+			var nameBox = document.querySelector("#nameBox");
+			if(nameBox.value == "") {
+				alert("프로젝트 제목을 입력해주세요");
+				nameBox.focus();
+				return;
+			}
+			
+			var recruitType_box = document.getElementsByName("recruitType_no")[0];
+			
+			if(recruitType_box.value == 0) {
+				alert("프로젝트 분야를 선택해주세요");
+				return;
+			}			
+			
+			if(document.querySelector("#jobCategory").value == 0) {
+				alert("2차 구분을 선택해주세요");
+				return;
+			}
+			
+			var localBox = document.querySelector("#localBox");
+			if(localBox.value == 0) {
+				alert("지역을 선택해주세요");
+				localBox.focus();				
+				return;
+			}
+			
+			var today = new Date();
+			var start_date = document.querySelector("#start_date").value;
+			var end_date = document.querySelector("#end_date").value;			
+			
+			if(new Date(start_date) >  new Date(end_date)) {
+				alert("시작일이 마감일보다 클 수 없습니다")
+				return;
+			}			
+			
+			if(today > new Date(end_date)) {
+				alert("마감일은 오늘 날짜보다 커야합니다");
+				return;
+			}
+			
+			document.querySelector("#period").value = start_date + "~" + end_date;
+			
+			var priceBox = document.querySelector("#priceBox");
+			
+			if(priceBox.value == "") {
+				alert("비용을 입력해주세요(만원 단위)");
+				priceBox.focus();
+				return;
+			}
+			
+			var workTypeBox = document.querySelector("#workTypeBox");
+			if(workTypeBox.value == 0) {
+				alert("근무형태를 선택해주세요");
+				workTypeBox.focus();
+				return;
+			}						
+			
+			 var contentBox = document.querySelector("#contentBox");
+			 if(contentBox.value == 0) {
+				 alert("내용을 입력해주세요");
+				 contentBox.focus();
+				 return;
+			 }			
+						
+			var subAdBox = document.getElementsByName("subAd")[0];
+
+			if(subAdBox.checked) {
+
+				var result = kakaoPay(50000);
+			} else {
+
+				frm.submit();	
+			}								
+			
+		}
+		
+		function kakaoPay(total_amount) {
+			var xhr = new XMLHttpRequest();	
+			
+			var quantity = 1;			
+			
+			var item_name = "FreeNext 광고(7일)";			
+		
+			var newWindow;
+			
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					var data = JSON.parse(xhr.responseText);				
+
+					newWindow = window.open(data.next_redirect_pc_url, "_blank", "width=500, height=600");
+					
+					document.querySelector("#load").classList.add("show");
+				}
+			};
+			
+			xhr.open("post", "../biz/payToKakao", false);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xhr.send("item_name=" + item_name + "&quantity=" + quantity + "&total_amount=" + total_amount);
+		}
+		
+		function sendMeData(data) {
+			document.querySelector("#load").classList.remove("show");
+			var frm = document.querySelector("form");
+
+			if(data == 200) {
+				frm.submit();
+			} else {
+				alert(data);
+				return;
+			}
+		}	
+		
+		function hideAdBanner() {
+			document.querySelector(".adBanner").setAttribute("style", "display: none;");
+		}
+		
+		function checkAd() {
+			document.getElementsByName("subAd")[0].checked = true;
+		}
+		
+		window.addEventListener("DOMContentLoaded" , function(){
+			var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+			var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+			  return new bootstrap.Popover(popoverTriggerEl)
+			})
+		});			
+				
+    </script>
+</head>
+<body>
+<div style="width: 1200px; margin:0 auto;">
+  <div class="container-fluid">
+  
+    <th:block th:include="commons/normal_navbar"></th:block>
+
+		<form action="registProjectProcess" method="post">
+        <div class="row mt-5">
+        	<div class="col-2 me-5">
+        		<div class="row sticky-top">
+        			<img src="../img/jin_banner.jpg">
+        		</div>
+        	</div>
+        	<div class="col">
+        		<div class="row mb-50">
+		            <div class="col bg-gray-c_e1t rounded-10 px-20 pt-10 pb-10 me-4">
+		                <div class="row mt-4">
+		                    <div class="col bold text-fs-30 mb-3 pl-5 text-gray-c_25" style="border-left:3px solid black;">프로젝트 등록 📝</div>
+		                </div>
+		                <div class="row mt-5">
+		                    <div class="col">
+		                        <div class="row">
+		                            <div class="col-2 bold pt-2">프로젝트명</div>                            
+		                            <div class="col"><input id="nameBox" class="form-control" type="text" name="project_name"></div>
+		                        </div>
+		                        <div class="row mt-3">
+		                            <div class="col-2 pt-2 bold">분야</div>
+		                            <div class="col">
+		                                <select class="form-control" name="recruitType_no">
+		                                    <option id="invalidRecruitType" selected value="0">구분선택</option>
+		                                    <option th:each="recruitTypeCategory : ${recruitTypeCategoryList}"
+		                                    	th:value="${recruitTypeCategory.recruitType_no}"
+		                                    	th:utext="${recruitTypeCategory.recruitType_name}"></option>
+		                                </select>
+		                            </div>
+		                            <div class="col">
+		                                <select class="form-control" id="jobCategory" name="job_no_list">
+		                                    <option id="invalidJob" value="0" selected>2차구분 선택</option> 
+											<option th:each="jobCategory : ${jobCategoryList}"
+		                                    	th:value="${jobCategory.job_no}"
+		                                    	th:utext="${jobCategory.job_name}"></option>                                     						
+		                                </select>
+		                            </div>  				
+		                        </div>
+		                        <div class="row mt-3">
+		                            <div class="col-2 pt-2 bold">지역</div>
+		                            <div class="col">
+		                                <select id="localBox" class="form-control" name="local_no_list">
+		                                    <option id="invalidLocalType" selected value="0">지역선택</option>
+		                                    <option th:each="localCategory : ${localCategoryList}"
+		                                    	th:value="${localCategory.local_no}"
+		                                    	th:utext="${localCategory.local_name}"></option>
+		                                </select>
+		                            </div>  				
+		                        </div>                                                
+		                        <div class="row mt-3">
+		                            <div class="col-2 pt-2 bold">기간</div>
+		                            <div class="col"><input class="form-control"id="start_date" type="date"></div>
+		                            <div class="col-1 pt-2 text-center">~</div>
+		                            <div class="col"><input class="form-control" id="end_date" type="date"></div>
+		                            <div class="col-1 pt-2">까지</div>
+		                            <input id="period" type="hidden" name="project_period">
+		                        </div>
+		                        <div class="row mt-3">
+		                            <div class="col-2 pt-2 bold">비용</div>
+		                            <div class="col"><input id="priceBox" class="form-control" type="text" name="project_price"></div>
+		                        </div>
+		                        <div class="row mt-3">
+		                            <div class="col-2 pt-2 bold">형태</div>
+		                            <div class="col">
+		                                <select id="workTypeBox" class="form-control" name="workType_no">
+		                                    <option value="0" selected>구분선택</option>                                   
+		                                    <option th:each="workTypeCategory : ${workTypeCategoryList}"
+		                                    	th:value="${workTypeCategory.workType_no}"
+		                                    	th:utext="${workTypeCategory.workType_name}"></option>
+		                                </select>
+		                            </div>
+		                        </div>
+		                        <div class="row mt-3">
+		                        	<div class="col">
+			                            <div class="row pt-2">
+		                                    <div class="col-2 bold">작성자</div>
+		                                    <div class="col" th:text="${session.sessionBizUser.member_name}"></div>
+		                                    <input type="hidden" name="project_state" value="Y" checked>					
+			                            </div>
+			                        </div> 				
+		                        </div>
+		                        <div class="row mt-3 pt-2">
+		                        	<div class="col-2 bold">광고신청</div>
+		                        	<div class="col">
+		                        		<input type="checkbox" name="subAd" value="Y"> 신청하기
+		                        		<span class="ms-2"><img src="../img/kakaopay.png" style="height:60%"></span>
+		                        		<i class="bi bi-info-circle text-gray-c_8c cursor-pointer" data-bs-toggle="popover" title="📢 FreeNext 광고(7일, 50,000원)" data-bs-content="광고 기간동안 프로젝트 리스트, 일반회원 추천 알람 공고 페이지에  노출 및 추천 메일에 함께 발송됩니다"></i>
+		                        	</div>
+		                        </div>
+		                        <div class="row mt-3">
+		                            <div class="col-2 bold">내용</div>
+		                            <div class="col">
+		                                <textarea id="contentBox" class="form-control" rows=10 name="project_content">
+1.프로젝트명:
+		
+2.담당업무:
+		
+3.필요 스킬:
+		
+4.장소:
+		
+5.개발기간:
+		
+6.비용:
+		
+7.근무형태:</textarea>                                
+		                                <input type="hidden" name="cooperation_no" value="1">
+		                            </div>
+		                        </div>  		  	
+		                    </div>
+		                </div>
+		                <div class="row mt-5 mb-4">
+		                	<div class="col-8"></div>
+		                    <div class="col d-grid"><button class="btn btn-dark" type="button" onclick="sendData()">확인</button></div>
+		                    <div class="col d-grid"><button type="button" th:onclick="location.href='../normal/main'" class="btn btn-outline-dark">취소</button></div>
+		                </div>
+		            </div>  
+        		
+        		</div>
+        	</div>        	        	         
+            <div class="col-1"></div>
+        </div>      
+        </form>            
+  </div> 
+</div>
+
+<div class="fixed adBanner" style="top:480px; right:240px; z-index:99; width:120px; height:120px;">
+	<div class="relative">
+		<img src="../img/ad2.png" class="cursor-pointer img-fluid" onclick="checkAd()">
+		<img src="../img/cancel.png" class="absolute cursor-pointer" style="width:20px; height:20px; top:10px; right:10px; z-index:99;" onclick="hideAdBanner()">
+	</div>				
+</div>
+   
+<div id="load"><img src="../img/loading.gif" alt="loading"></div>  
+  <th:block th:include="commons/footer"></th:block>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

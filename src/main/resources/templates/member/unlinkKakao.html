@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script th:inline="javascript">        
+
+	const jsKey = /*[[ ${jsKey }]]*/;
+
+	Kakao.init(jsKey);
+
+	Kakao.API.request({
+		  url: '/v1/user/unlink',
+		  success: function(response) {
+		    console.log(response);
+		    location.href="../normal/main";
+		  },
+		  fail: function(error) {
+		    console.log(error);
+		  },
+		});	
+	
+</script>
+</head>
+<body>
+
+</body>
+</html>
